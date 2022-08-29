@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+cluster_name: <cluster name>
+cluster_namespace: <cluster namespace>
+cluster_cr: <url for clusterapi cluster CRD, file:// or http://>
+controlplane_cr: <url for clusterapi control plane CRD, file:// or http://>
+worker_cr: <url for clusterapi worker CRD, file:// or http://>
+baremetalhost_cr: <url for clusterapi baremetal CRD, file:// or http://>

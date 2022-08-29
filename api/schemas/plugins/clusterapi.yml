@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  clusterapi:
+    type: object
+    properties:
+      cluster_name:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      cluster_namespace:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      cluster_cr:
+        type: string 
+        pattern: @PATTERNURL@
+      controlplane_cr:
+        type: string
+        pattern: @PATTERNURL@
+      worker_cr:
+        type: string
+        pattern: @PATTERNURL@
+      baremetalhost_cr:
+        type: string
+        pattern: @PATTERNURL@

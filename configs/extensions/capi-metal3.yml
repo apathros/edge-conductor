@@ -1,0 +1,40 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+extension:
+- name: Infra-provider
+  config:
+  - name: Management-cluster-kubeconfig
+    value: ""
+  - name: Workload-cluster-network
+    value: "10.10.10.0/24"
+  - name: Workload-cluster-network-gateway
+    value: "10.10.10.1"
+  - name: Workload-cluster-controlplane-endpoint
+    value: "10.10.10.249"
+  - name: Workload-cluster-node-address-start
+    value: "10.10.10.100"
+  - name: Workload-cluster-node-address-end
+    value: "10.10.10.200"
+  - name: Workload-cluster-node-address-prefix
+    value: "24"
+  - name: Workload-cluster-node-username
+    value: "metal3"
+  - name: Workload-cluster-nic-name
+    value: "enp1s0"
+  - name: Authorized-ssh-public-key
+    value: ""
+- name: Ironic-config
+  config:
+  - name: Ironic-provision-nic
+    value: "provisioning"
+  - name: Ironic-provision-ip
+    value: "10.10.10.1"
+  - name: Ironic-dhcp-range
+    value: "10.10.10.100,10.10.10.200"
+  - name: Ironic-http-port
+    value: "6180"
+  - name: Ironic-os-image
+    value: "{{ .Workspace }}/UBUNTU_22.04_NODE_IMAGE_K8S_v1.23.5-raw.img"

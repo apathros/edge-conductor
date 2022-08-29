@@ -1,0 +1,31 @@
+{
+  "ep-params": {
+    "runtimebin": "mock_kindbin",
+    "runtimedir": "mock_dir",
+    "kitconfig": {
+      "Host": {
+        "httpport": "80",
+        "server": "test"
+      }
+    }
+  },
+  "files": {
+    "files": [
+      {
+        "url": "http://example.com",
+        "hash": "mock hash value",
+        "hashtype": "md5",
+        "mirrorurl": "http://samplemirror.tk",
+        "urlreplacement": {
+          "origin": "",
+          "new": ""
+        }
+      }
+    ]
+  },
+  "kind-config": {
+    "filecontent": {
+      "content": "mock file content"
+    }
+  }
+}

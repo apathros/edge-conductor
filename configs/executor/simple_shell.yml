@@ -1,0 +1,70 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: simple-shell
+spec:
+  steps:
+  - name: shell
+    nodes:
+    {{ if and (not .Value.AllOf) (not .Value.AnyOf) }}
+      anyOf:
+      - day-0
+    {{ else }}
+      {{ if .Value.AllOf }}
+      allOf:
+        {{ range $k, $v := .Value.AllOf }}
+      - {{ $v }}
+        {{ end }}
+      {{ end }}
+      {{ if .Value.AnyOf }}
+      anyOf:
+        {{ range $k, $v := .Value.AnyOf }}
+      - {{ $v }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    commands:
+    {{ if .Value.PreCopyFromDay0 }}
+      {{ range $k, $v := .Value.PreCopyFromDay0 }}
+    - type: copyFromDay0
+      cmd:
+      - {{ $v.From }}
+      - {{ $v.To }}
+      {{ end }}
+    {{ end }}
+    {{ if .Value.ShellCmd }}
+    - type: shell
+      cmd:
+      {{ range $k, $v := .Value.ShellCmd }}
+      - {{ $v }}
+      {{ end }}
+    {{ end }}
+    {{ if .Value.PostCopyToDay0 }}
+      {{ range $k, $v := .Value.PostCopyToDay0 }}
+    - type: copyToDay0
+      cmd:
+      - {{ $v.From }}
+      - {{ $v.To }}
+      {{ end }}
+    {{ end }}
+    {{ if .Value.PostPushImages }}
+      {{ range $k, $v := .Value.PostPushImages }}
+    - type: pushImage
+      cmd:
+      - {{ $v.From }}
+      - {{ $v.To }}
+      {{ end }}
+    {{ end }}
+    {{ if .Value.PostPushFiles }}
+      {{ range $k, $v := .Value.PostPushFiles }}
+    - type: pushFile
+      cmd:
+      - {{ $v.From }}
+      - {{ $v.To }}
+      {{ end }}
+    {{ end }}

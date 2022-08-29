@@ -1,0 +1,48 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+containers:
+- name: esp-start
+  image: docker/compose:debian-1.29.2
+  userInContainer: auto
+  runInBackground: false
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  # If the container already exists, remove it and restart
+  force: true
+  env:
+  - name: http_proxy
+    value: "{{ env "http_proxy" }}"
+  - name: https_proxy
+    value: "{{ env "https_proxy" }}"
+  - name: no_proxy
+    value: "{{ env "no_proxy" }}"
+  - name: HTTP_PROXY
+    value: "{{ env "http_proxy" }}"
+  - name: HTTPS_PROXY
+    value: "{{ env "https_proxy" }}"
+  - name: NO_PROXY
+    value: "{{ env "no_proxy" }}"
+  - name: DOCKER_CONFIG
+    value: "/tmp/config"
+  bindMounts:
+  - mountPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  - mountPath: {{ .Workspace }}/esp/esp
+    hostPath: {{ .Workspace }}/esp/esp
+  - mountPath: /tmp/config
+{{- if ne (env "DOCKER_CONFIG") "" }}
+    hostPath: {{ env "DOCKER_CONFIG" }}
+{{- else }}
+    hostPath: {{ env "HOME" }}/.docker
+{{- end }}
+    readOnly: true
+  command: ["bash"]
+  args:
+  - "-c"
+  - "set -e;
+     cd {{ .Workspace }}/esp/esp;
+     ./run.sh --force --no-tail-logs"

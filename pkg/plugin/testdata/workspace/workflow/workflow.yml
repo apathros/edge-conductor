@@ -1,0 +1,75 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: ep/v1
+kind: Workflow
+metadata:
+  name: ep-workflow
+  namespace: edgepeak
+spec:
+  plugins:
+  - name: test-c
+    container: ep-plugin
+  data:
+  - name: ep-params
+    confidential: true
+
+  - name: test1-data
+    value: |
+      content: |
+        test001
+  - name: export-test1-data
+    value: |
+      path: {{ printf "%s/%s" .Runtimedir "test1.data" }}
+  - name: test2-data
+    confidential: true
+    value: |
+      content: |
+        test002
+  workflows:
+  - name: test
+    steps:
+    - name: file-exporter
+      input:
+      - name: test1-data
+        schema: exportcontent
+      - name: export-test1-data
+        schema: exportpath
+    - name: file-exporter
+      input:
+      - name: test1-data
+        schema: exportcontent
+      - name: export-test1-data
+        schema: exportpath
+    - name: test
+      input:
+      - name: test1-data
+        schema: test-input
+      output:
+      - name: test1-data
+        schema: test-output
+    - name: test
+      input:
+      - name: test1-data
+        schema: test-input
+      output:
+      - name: test1-data
+        schema: test-output
+    - name: test
+      input:
+      - name: test2-data
+        schema: test-input
+      output:
+      - name: test2-data
+        schema: test-output
+    - name: test
+      input:
+      - name: test2-data
+        schema: test-input
+      output:
+      - name: test2-data
+        schema: test-output
+  containers:
+  - name: ep-plugin

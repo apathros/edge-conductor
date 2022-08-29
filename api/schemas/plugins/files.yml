@@ -1,0 +1,35 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  files:
+    type: object
+    properties:
+      files:
+        type: array
+        items:
+          properties:
+            filename:
+              type: string
+            url:
+              type: string
+              pattern: @PATTERNURL@
+            hash:
+              type: string
+            hashtype:
+              type: string
+              enum:
+              - md5
+              - sha256
+            mirrorurl:
+              type: string
+              pattern: @PATTERNURL@
+            urlreplacement:
+              type: object
+              properties:
+                origin:
+                  type: string
+                new:
+                  type: string

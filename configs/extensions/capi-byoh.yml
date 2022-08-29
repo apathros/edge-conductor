@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+extension:
+- name: Infra-provider
+  config:
+  - name: Management-cluster-kubeconfig
+    value: ""
+  - name: Workload-cluster-network
+    value: "10.10.10.0/24"
+  - name: Workload-cluster-network-gateway
+    value: "10.10.10.1"
+  - name: Workload-cluster-controlplane-endpoint
+    value: "10.10.10.249"
+  - name: Workload-cluster-node-address-start
+    value: "10.10.10.100"
+  - name: Workload-cluster-node-address-end
+    value: "10.10.10.200"
+  - name: Workload-cluster-node-address-prefix
+    value: "24"

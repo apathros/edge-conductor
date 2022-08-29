@@ -1,0 +1,13 @@
+ca:
+  cert: testdata/ca.crt
+  csr: testdata/ca-csr.json
+  key: testdata/ca.key
+client:
+  cert: testdata/fake.crt
+  csr: testdata/client-csr.json
+  key: testdata/fake.key
+name: fakeworkflow-server
+server:
+  cert: testdata/fake.crt
+  csr: testdata/server-csr.json
+  key: testdata/fake.key

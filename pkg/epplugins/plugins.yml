@@ -1,0 +1,258 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+plugins:
+- name: docker-run
+  input:
+  - name: containers
+    schema: api/schemas/plugins/containers.yml
+    description: |
+      Container definitions.
+- name: docker-remove
+  input:
+  - name: containers
+    schema: api/schemas/plugins/containers.yml
+    description: |
+      Container definitions.
+
+- name: esp-init
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: os-provider-manifest
+    schema: api/schemas/plugins/osprovidermanifest.yml
+
+- name: kind-parser
+  input:
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+  output:
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+    description: |
+      Docker images used by kind
+      This images array include image name and url info
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+
+- name: kind-deployer
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+  - name: kind-config
+    schema: api/schemas/plugins/filecontent.yml
+  output:
+  - name: kubeconfig
+    schema: api/schemas/plugins/filecontent.yml
+
+- name: kind-remover
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download - Cluster Files (binary)
+
+- name: rke-parser
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+  output:
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+    description: |
+      Docker images used by rke
+      This images array include image name and url info
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+
+- name: rke-deployer
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+  output:
+  - name: kubeconfig
+    schema: api/schemas/plugins/filecontent.yml
+
+- name: rke-injector
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+  output:
+  - name: rkeconfig
+    schema: api/schemas/plugins/filecontent.yml
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+
+- name: capi-parser
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+  output:
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+
+- name: capi-provision-binary-download
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+
+- name: capi-provider-launch
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+
+- name: capi-host-provision
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+
+- name: capi-cluster-deploy
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: cluster-manifest
+    schema: api/schemas/plugins/clustermanifest.yml
+  output:
+  - name: kubeconfig
+    schema: api/schemas/plugins/filecontent.yml
+
+- name: capi-deinit
+  input: []
+
+- name: debug-dump
+  input:
+  - name: nodes
+    schema: api/schemas/plugins/nodes.yml
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+  - name: local-docker-images
+    schema: api/schemas/plugins/images.yml
+
+- name: docker-image-downloader
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+    description: |
+      Docker images list for download
+
+- name: file-downloader
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list to download
+  output:
+  - name: files
+    schema: api/schemas/plugins/files.yml
+    description: |
+      File list downloaded to local mirror
+
+- name: file-exporter
+  input:
+  - name: exportcontent
+    schema: api/schemas/plugins/filecontent.yml
+  - name: exportpath
+    schema: api/schemas/plugins/filepath.yml
+
+- name: service-parser
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  output:
+  - name: serviceconfig
+    schema: api/schemas/ep/serviceconfig.yml
+  - name: downloadfiles
+    schema: api/schemas/plugins/files.yml
+  - name: docker-images
+    schema: api/schemas/plugins/images.yml
+
+
+- name: service-build
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: serviceconfig
+    schema: api/schemas/plugins/serviceconfig.yml
+
+- name: service-injector
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: downloadfiles
+    schema: api/schemas/plugins/files.yml
+  - name: serviceconfig
+    schema: api/schemas/plugins/serviceconfig.yml
+  output:
+  - name: serviceconfig
+    schema: api/schemas/plugins/serviceconfig.yml
+
+- name: pre-service-deploy
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+
+- name: service-deployer
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: serviceconfig
+    schema: api/schemas/plugins/serviceconfig.yml
+
+- name: service-list
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+  - name: serviceconfig
+    schema: api/schemas/plugins/serviceconfig.yml
+
+- name: node-join-deploy
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+
+- name: node-join-prepare
+  input:
+  - name: ep-params
+    schema: api/schemas/plugins/ep-params.yml
+

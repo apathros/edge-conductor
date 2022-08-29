@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+containers:
+- name: test-hello
+  runInBackground: true
+  userInContainer: "1000:1000"
+  image: hello-world:latest
+  imagePullPolicy: Always
+  privileged: false
+  hostNetwork: false
+  ports:
+  - protocol: tcp
+    containerPort: 3050
+    hostPort: 50
+  bindMounts:
+  - mountPath: /test
+    hostPath: /
+    readOnly: true
+  env:
+  - name: HTTP_PROXY
+    value: "n/a"
+  cap_add:
+  - "NET_ADMIN"

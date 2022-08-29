@@ -1,0 +1,74 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+containers:
+- name: harbor-prepare
+  image: goharbor/prepare:v2.3.0
+  userInContainer: auto
+  force: true
+  bindMounts:
+  - mountPath: /hostfs/registry.pem
+    hostPath: {{ .Workspace }}/{{ .Registrycert.Server.Cert }}
+  - mountPath: /hostfs/registry-key.pem
+    hostPath: {{ .Workspace }}/{{ .Registrycert.Server.Key }}
+  - mountPath: /hostfs/ca.crt
+    hostPath: {{ .Workspace }}/{{ .Registrycert.Ca.Cert }}
+  - mountPath: /etc/docker/certs.d
+    hostPath: /etc/docker/certs.d
+  - mountPath: /compose_location
+    hostPath: {{ .Runtimedir }}/harbor
+  - mountPath: /data
+    hostPath: {{ .Runtimedir }}/harbor
+  - mountPath: /config
+    hostPath: {{ .Runtimedir }}/harbor/common/config
+  - mountPath: /input/harbor.yml.tmpl
+    hostPath: {{ .Workspace }}/config/harbor/harbor.yml.tmpl
+  - mountPath: /usr/src/app/extfile.cnf
+    hostPath: {{ .Workspace }}/config/harbor/extfile.cnf
+  tmpfs:
+  - /tmp
+  - /input
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "cp /input/harbor.yml.tmpl /input/harbor.yml;
+     sed -i 's#\\$HOSTIP\\$#{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}#' /input/harbor.yml;
+     sed -i 's#\\$REGISTRYPORT\\$#{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}#' /input/harbor.yml;
+     sed -i 's#\\$HARBORDATA\\$#{{ .Runtimedir }}/harbor#' /input/harbor.yml;
+     sed -i 's#\\$HARBORADMINPASSWD\\$#{{ .Kitconfig.Parameters.Customconfig.Registry.Password }}#' /input/harbor.yml;
+     python3 main.py prepare --with-notary --with-trivy --with-chartmuseum;
+     sed -i -e 's#\\(.*\\)ssl_protocols\\(.*\\)#    ssl_protocols TLSv1.2 TLSv1.3;#' -e \"s#\\(.*\\)ssl_ciphers\\(.*\\)#    ssl_ciphers \'EECDH+AESGCM\';#\" -e \"/ssl_prefer_server_ciphers/i\\    ssl_ecdh_curve secp384r1;\" /config/nginx/nginx.conf;
+     sed -i -e 's#\\(.*\\)ssl_protocols\\(.*\\)#    ssl_protocols TLSv1.2 TLSv1.3;#' -e \"s#\\(.*\\)ssl_ciphers\\(.*\\)#    ssl_ciphers \'EECDH+AESGCM\';#\" -e \"/ssl_prefer_server_ciphers/i\\    ssl_ecdh_curve secp384r1;\" /config/nginx/conf.d/notary.server.conf;
+     mkdir -p /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}\\:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }};
+     cp /hostfs/ca.crt /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}\\:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt;
+     chmod 444 /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}\\:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt;
+     sed -i '/- 80:8080/d' /compose_location/docker-compose.yml;"
+
+- name: harbor-compose
+  image: docker/compose:1.29.2
+  userInContainer: auto
+  force: true
+  env:
+  - name: DOCKER_CONFIG
+    value: "/tmp/config"
+  bindMounts:
+  - mountPath: {{ .Runtimedir }}/harbor
+    hostPath: {{ .Runtimedir }}/harbor
+  - mountPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  - mountPath: /tmp
+    hostPath: /tmp
+  - mountPath: /tmp/config
+{{- if ne (env "DOCKER_CONFIG") "" }}
+    hostPath: {{ env "DOCKER_CONFIG" }}
+{{- else }}
+    hostPath: {{ env "HOME" }}/.docker
+{{- end }}
+    readOnly: true
+  args:
+  - "-f"
+  - "{{ .Runtimedir }}/harbor/docker-compose.yml"
+  - "up"
+  - "-d"

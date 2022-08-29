@@ -1,0 +1,54 @@
+## This is the official Kit for KIND cluster.
+## Features:
+## - The "cluster deploy" and "service deploy" can be run in an offline mode (no external network connection needed).
+## - The container runtime used in the KIND cluster is containerd.
+
+Use:
+## import the configs set in common.yml
+- kit/common.yml
+
+Parameters:
+  customconfig:
+    registry:
+      ## set the password before running the command of "./conductor init -c *.yml"
+      password:
+
+  ## "nodes" field defines a list of nodes which are to be setup and added into the target cluster.
+  ## the below is a two-nodes cluster with one control plane node and 
+  ## one worker node.  
+  nodes:
+  - role:
+    - controlplane
+  ## support one control plane node only. It is caused by Kind project known issue (https://github.com/kubernetes-sigs/kind/issues/1689)
+  ## to work around this issue, if there is more than one control plane node are set, only one control plane is created. 
+  - role:
+    - worker
+  ## to add a worker node by setting a role with the worker.
+  ## ## worker:
+  ## - role:
+  ##   - worker
+  extensions:
+  - cpu-manager
+  - service-tls
+
+Cluster:
+  manifests:
+  - "config/manifests/cluster_provider_manifest.yml"
+  provider: kind
+  config: "config/cluster-provider/kind_cluster.yml"
+
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: nginx-ingress
+    override:
+      url: file://{{ .Workspace }}/config/service-overrides/ingress/kind-nginx-ingress.yml
+      type: yaml
+      images:
+        - k8s.gcr.io/ingress-nginx/controller:v1.2.1
+        - k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+      supported-clusters:
+      - kind
+      namespace: ingress-nginx
+  - name: portainer-ce

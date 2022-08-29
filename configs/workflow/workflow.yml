@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  plugins:
+{{ "workflow/config.d" | include_plugins | nindent 2 }}
+{{ "addon/workflow/config.d" | include_plugins | nindent 2 }}
+
+  data:
+{{ "workflow/config.d" | include_data | nindent 2 }}
+{{ "addon/workflow/config.d" | include_data | nindent 2 }}
+
+  workflows:
+{{ "workflow/config.d" | include_workflows | nindent 2 }}
+{{ "addon/workflow/config.d" | include_workflows | nindent 2 }}
+
+  containers:
+{{ "workflow/config.d" | include_containers | nindent 2 }}
+{{ "addon/workflow/config.d" | include_containers | nindent 2 }}

@@ -1,0 +1,228 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+Components:
+  - name: cert-manager-crd
+    url: https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.crds.yaml
+    type: yaml
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: cert-manager
+    namespace: cert-manager
+    helmrepo: https://charts.jetstack.io
+    chartname: cert-manager
+    chartversion: v1.9.1
+    type: helm
+    wait:
+      timeout: 600
+    images:
+      - quay.io/jetstack/cert-manager-controller:v1.9.1
+      - quay.io/jetstack/cert-manager-webhook:v1.9.1
+      - quay.io/jetstack/cert-manager-cainjector:v1.9.1
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: cert-manager-cluster-issuer
+    url: file://{{ .Workspace }}/services/cert-manager/selfsigned-ca-cert-creator.yaml
+    type: yaml
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: calico
+    url: file://{{ .Workspace }}/config/service/calico/calico.yaml
+    type: yaml
+    images:
+      - docker.io/calico/cni:v3.23.1
+      - docker.io/calico/kube-controllers:v3.23.1
+      - docker.io/calico/node:v3.23.1
+    supported-clusters:
+    - capi
+
+  - name: nginx-ingress
+    url: https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-4.2.0/ingress-nginx-4.2.0.tgz
+    type: helm
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/ingress/generic-nginx-ingress.yml
+    images:
+      - registry.k8s.io/ingress-nginx/controller:v1.3.0
+      - registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+      - registry.k8s.io/defaultbackend-amd64:1.5
+    wait:
+      timeout: 300
+    supported-clusters:
+    - capi
+
+  - name: prometheus
+    namespace: prometheus
+    url: https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-36.2.1/kube-prometheus-stack-36.2.1.tgz
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/prometheus/prometheus-override.yml
+    type: helm
+    images:
+      - quay.io/prometheus-operator/prometheus-config-reloader:v0.57.0
+      - quay.io/prometheus/alertmanager:v0.24.0
+      - quay.io/kiwigrid/k8s-sidecar:1.19.2
+      - grafana/grafana:9.0.1
+      - quay.io/prometheus-operator/prometheus-operator:v0.57.0
+      - quay.io/prometheus/prometheus:v2.36.1
+      - k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+      - quay.io/thanos/thanos:v0.25.2
+      - quay.io/thanos/thanos:v0.24.0
+      - curlimages/curl:7.73.0
+      - busybox:1.31.1
+      - grafana/grafana-image-renderer:latest
+      - registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.5.0
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+    wait:
+      timeout: 900
+
+  - name: multus
+    url: file://{{ .Workspace }}/services/multus/multus-daemonset.yml
+    type: yaml
+    images:
+      - ghcr.io/k8snetworkplumbingwg/multus-cni:stable
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: rook-ceph
+    namespace: rook-ceph
+    url: https://charts.rook.io/release/rook-ceph-v1.9.6.tgz
+    type: helm
+    images:
+      - rook/ceph:v1.9.6
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/rook-ceph/rook-ceph-override.yml
+    supported-clusters:
+    - rke
+    - capi
+    wait:
+      timeout: 300
+
+  - name: rook-ceph-cluster
+    namespace: rook-ceph
+    url: https://charts.rook.io/release/rook-ceph-cluster-v1.9.6.tgz
+    type: helm
+    images:
+      - quay.io/ceph/ceph:v16.2.9                                   
+      - quay.io/cephcsi/cephcsi:v3.6.2                              
+      - quay.io/csiaddons/k8s-sidecar:v0.4.0                        
+      - quay.io/csiaddons/volumereplication-operator:v0.3.0         
+      - registry.k8s.io/sig-storage/csi-attacher:v3.4.0             
+      - registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.1
+      - registry.k8s.io/sig-storage/csi-provisioner:v3.1.0          
+      - registry.k8s.io/sig-storage/csi-resizer:v1.4.0              
+      - registry.k8s.io/sig-storage/csi-snapshotter:v6.0.1          
+      - registry.k8s.io/sig-storage/nfsplugin:v4.0.0                
+      - rook/ceph:v1.9.6
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/rook-ceph/rook-ceph-cluster-override.yml
+    supported-clusters:
+    - rke
+    - capi
+    wait:
+      timeout: 300
+
+  - name: kubevirt-operator
+    url: https://github.com/kubevirt/kubevirt/releases/download/v0.54.0/kubevirt-operator.yaml
+    type: yaml
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: kubevirt-cr
+    url: https://github.com/kubevirt/kubevirt/releases/download/v0.54.0/kubevirt-cr.yaml
+    type: yaml
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: akri
+    namespace: akri-component
+    url: https://project-akri.github.io/akri/akri-0.8.4.tgz
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/akri/akri-override.yml
+    hash: 11922f4760eef7c2fd93a552fd87128dcb1e2995927f0e4e6eccfd579e26631c
+    hashtype: sha256
+    chartname: akri
+    type: helm
+    images:
+      - ghcr.io/project-akri/akri/controller:v0.8.4
+      - ghcr.io/project-akri/akri/agent:v0.8.4
+      - ghcr.io/project-akri/akri/udev-discovery:v0.8.4
+      - ghcr.io/project-akri/akri/udev-video-broker:v0.8.4
+      - ghcr.io/project-akri/akri/onvif-discovery:v0.8.4
+      - ghcr.io/project-akri/akri/onvif-video-broker:v0.8.4
+    supported-clusters:
+    - rke
+    - capi
+
+  - name: portainer-ce
+    url: https://github.com/portainer/k8s/releases/download/portainer-1.0.32/portainer-1.0.32.tgz
+    type: helm
+    images:
+    - portainer/portainer-ce:2.14.1
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+  - name: nfd
+    namespace: node-feature-discovery
+    helmrepo: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+    chartname: node-feature-discovery
+    chartversion: v0.11.0
+    chartoverride: file://{{ .Workspace }}/config/service-overrides/nfd/nfd-override.yml
+    type: helm
+    images:
+    - k8s.gcr.io/nfd/node-feature-discovery:v0.11.0
+    supported-clusters:
+    - rke
+    - capi
+
+  - name: intel-gpu-plugin
+    namespace: kube-system
+    url: file://{{ .Workspace }}/config/gpu/intel-gpu-plugin.yml
+    type: yaml
+    images:
+    - intel/intel-gpu-initcontainer:0.24.0
+    - intel/intel-gpu-plugin:0.24.0
+    supported-clusters:
+    - rke
+    - capi
+
+  - name: intel-sriov-network
+    url: file://{{ .Workspace }}/config/sriov/setup_sriov_network.yml
+    type: yaml
+    images:
+    - ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.5.1
+    - ghcr.io/k8snetworkplumbingwg/sriov-cni
+    supported-clusters:
+    - rke
+    - capi
+
+  - name: rt-linux-detection
+    type: dce
+    executor:
+      build: config/executor/rt-linux-detection/build-rt-linux-detection.yml
+      deploy: config/executor/rt-linux-detection/deploy-rt-linux-detection.yml
+    resources:
+      - name: "helm"
+        value: https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
+    supported-clusters:
+    - kind
+    - rke
+    - capi
+
+
+    

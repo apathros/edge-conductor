@@ -1,0 +1,105 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+containers:
+- name: esp-local-git-repo
+  image: ubuntu:focal
+  userInContainer: auto
+  runInBackground: false
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  # If the container already exists, remove it and restart
+  force: true
+  env:
+  - name: http_proxy
+    value: "{{ env "http_proxy" }}"
+  - name: https_proxy
+    value: "{{ env "https_proxy" }}"
+  - name: no_proxy
+    value: "{{ env "no_proxy" }}"
+  - name: HTTP_PROXY
+    value: "{{ env "http_proxy" }}"
+  - name: HTTPS_PROXY
+    value: "{{ env "https_proxy" }}"
+  - name: NO_PROXY
+    value: "{{ env "no_proxy" }}"
+  bindMounts:
+  - mountPath: {{ .Workspace }}/esp
+    hostPath: {{ .Workspace }}/esp
+  - mountPath: {{ .Workspace }}/config
+    hostPath: {{ .Workspace }}/config
+  - mountPath: /opt/sshkey
+    hostPath: {{ .Kitconfig.Parameters.DefaultSSHKeyPath }}
+  - mountPath: /etc/apt/apt.conf
+    hostPath: /etc/apt/apt.conf
+  command: ["bash"]
+  args:
+  - "-c"
+  - "set -e;
+     export DEBIAN_FRONTEND=noninteractive;
+     apt update;
+     apt -y install git rsync wget;
+     rm -rf {{ .Workspace }}/esp/esp/localprofiles;
+     rm -rf {{ .Workspace }}/esp/esp/data/usr/share/nginx/html/profile;
+     rm -rf ~/.gitconfig;
+     rm -rf /etc/gitconfig;
+     echo \"[user]\" |  tee -a /etc/gitconfig;
+     echo \"        email = test@example.com\"  |  tee -a /etc/gitconfig;
+     echo \"        name = test \" |  tee -a /etc/gitconfig;
+     echo \"[safe]\" |  tee -a /etc/gitconfig;
+     echo \"        directory = {{ .Workspace }}/esp/esp\" | tee -a /etc/gitconfig;
+     echo \"        directory = {{ .Workspace }}/esp/esp/localprofiles\" | tee -a /etc/gitconfig;
+     sed -i 's#//#/#g' /etc/gitconfig;
+     pushd {{ .Workspace }}/esp/esp;
+     if [ -d .git ]; then git reset --hard HEAD^ ;
+     else git init && git add .;
+     git commit -m \" ESP base template release \";
+     fi;
+     popd;
+     git clone https://github.com/intel/rni-profile-base-ubuntu  -b master -q --single-branch {{ .Workspace }}/esp/esp/localprofiles/base;
+     git clone https://github.com/intel/rni-profile-base-ubuntu  -b slim -q --single-branch {{ .Workspace }}/esp/esp/localprofiles/slim;
+     rsync -a {{ .Workspace }}/esp/esp/localprofiles/slim/ {{ .Workspace }}/esp/esp/localprofiles;
+     rsync -a {{ .Workspace }}/esp/esp/localprofiles/base/ {{ .Workspace }}/esp/esp/localprofiles;
+     rm -rf  {{ .Workspace }}/esp/esp/localprofiles/slim  {{ .Workspace }}/esp/esp/localprofiles/base;
+     rsync -a {{ .Workspace }}/config/os-provider/localprofile/{{ .Kitconfig.OS.Distro }}/ {{ .Workspace }}/esp/esp/localprofiles;
+     pushd {{ .Workspace }}/esp/esp/localprofiles;
+     rm -rf .git;
+     git init;
+     git add . ;
+     git commit -m \"Release local git repo\";
+     git checkout -b main;
+     popd;
+     pushd {{ .Workspace }}/esp/esp;
+     git apply {{ .Workspace }}/config/os-provider/esp-patch/0001-prepare-for-local-git-repository.patch;
+     git add .;
+     git commit -m \"Enable local git repo\";
+     popd;
+     ESPCONFIG=\"{{ .Workspace }}/esp/esp/localprofiles/conf/config.yml\";
+     kernelargs=$(cat $ESPCONFIG | grep kernel_arguments | xargs echo -n);
+     [ ! -z {{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }} ] && httpproxyval={{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}  ;
+     combinehttpproxy=\"httpproxy=\"${httpproxyval};
+     kernelargs=${kernelargs}\" \"${combinehttpproxy};
+     [ ! -z {{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }} ] && httpsproxyval={{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}  ;
+     combinehttpsproxy=\"httpsproxy=\"${httpsproxyval};
+     kernelargs=${kernelargs}\" \"${combinehttpsproxy};
+     [ ! -z {{ .Kitconfig.Parameters.GlobalSettings.NoProxy }} ]  && noproxyval={{ .Kitconfig.Parameters.GlobalSettings.NoProxy }}  ;
+     combinenoproxy=\"noproxy=\"${noproxyval};
+     kernelargs=${kernelargs}\" \"${combinenoproxy};
+     endLine=$(wget -q -O - https://raw.githubusercontent.com/intel/rni-profile-base-ubuntu/slim/conf/config.yml | sed -n '6,6p' | awk -F ' ' '{print $7}' );
+     kernelargs=${kernelargs}\" \"${endLine};
+     echo -n ${kernelargs} |  xargs -I {} sed -i 's#.*kernel_arguments.*$#{}#g' $ESPCONFIG;
+     pushd {{ .Workspace }}/esp/esp/localprofiles;
+     git add .;
+     git commit -m \"Update kernel arguments\";
+     popd;
+     pushd {{ .Workspace }}/esp/esp/localprofiles;
+     cp /opt/sshkey .;
+     git add .;
+     git commit -m \"Add ssh public key\";
+     popd;
+     "
+
+     

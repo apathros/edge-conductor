@@ -1,0 +1,15 @@
+{
+    "CN": "Ironic Root CA",
+    "key": {
+        "algo": "ecdsa-p521"
+    },
+    "names": [
+        {
+            "C": "",
+            "L": "",
+            "ST": "",
+            "O": "",
+            "OU": ""
+        }
+    ]
+}

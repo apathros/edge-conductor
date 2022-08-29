@@ -1,0 +1,19 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  osprovidermanifest:
+    type: object
+    properties:
+      esp:
+        type: object
+        properties:
+          rel_url:
+            type: string
+            pattern: @PATTERNURL@
+          rel_sha256:
+            type: string
+          rel_version:
+            type: string

@@ -1,0 +1,60 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+definitions:
+  customconfig:
+    type: object
+    properties:
+      registry:
+        type: object
+        properties:
+          externalurl:
+            type: string
+            pattern: @PATTERNURL@
+          user:
+            type: string
+          password:
+            type: string
+          capath:
+            type: string
+            pattern: @PATTERNFILEPATH@
+      ironic:
+        type: object
+        properties:
+          kubeconfigpath:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          provisioningip:
+            type: string
+            pattern: @PATTERNIPV4@       
+          provisioninginterface:
+            type: string
+          httpport:
+            type: string
+            pattern: @PATTERNPORT@
+          dhcprange:
+            type: string
+          ironicuser:
+            type: string
+          ironicpassword:
+            type: string
+          ironicinspectoruser:
+            type: string
+          ironicinspectorpassword:
+            type: string
+          mariadbpassword:
+            type: string
+      cluster:
+        $ref: 'cluster.yml#/definitions/cluster'
+      resources:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            value:
+              type: string

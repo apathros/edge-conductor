@@ -1,0 +1,52 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  data:
+  - name: ep-params
+    confidential: true
+    value: |
+      {{ . | structtoyaml | nindent 6 }}
+  - name: cluster-manifest
+    value: |
+      {{ .Kitconfig.Cluster.Manifests | mergeconfig | nindent 6 }}
+  - name: os-provider-manifest
+    value: |
+      {{ .Kitconfig.OS.Manifests | mergeconfig | nindent 6 }}
+  - name: ep-kubeconfig
+    confidential: true
+    value: |
+      content: |
+        {{ printf "%s" .Kubeconfig | readfile | nindent 8 }}
+  - name: export-kubeconfig
+    value: |
+      path: {{ .Kubeconfig }}
+  - name: clusterfiles
+  - name: serviceconfig
+
+  - name: cluster-config
+    confidential: true
+{{ if eq .Kitconfig.Cluster.Config "" }}
+    value:
+{{ else }}
+    value: |
+      content: |
+        {{- printf "%s" .Kitconfig.Cluster.Config | readfile | nindent 8 }}
+{{ end }}
+
+  - name: containers-harbor
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/init/harbor.yml" | readfile | nindent 6 }}
+  - name: containers-harbor-cleanup
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/init/harbor-cleanup.yml" | readfile | nindent 6 }}
+  - name: containers-ironic-cleanup
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/init/ironic-cleanup.yml" | readfile | nindent 6 }}

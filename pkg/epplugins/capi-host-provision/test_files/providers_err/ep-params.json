@@ -1,0 +1,12 @@
+{
+  "kitconfig": {
+    "Cluster": {
+      "provider": "clusterapi"
+    },
+    "Parameters": {
+      "Extensions": [
+        "test_err"
+      ]
+    }
+  }
+}

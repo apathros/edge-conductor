@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: rke-preflight
+spec:
+  steps:
+  - name: rke-preflight
+    nodes:
+      allOf:
+      - controlplane
+      - etcd
+      - worker
+    commands:
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/cert/pki/ca.pem
+      - /tmp/
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "mkdir -p /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }} \
+         && cp -f /tmp/ca.pem /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt"
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "swapoff -a \
+         && sed -i '/swap/d' /etc/fstab"

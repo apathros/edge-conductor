@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+extension:
+- name: esp_network_topologic
+  config:
+  - name: host_nic
+    value: eno1
+  - name: host_ip
+    value: 10.10.10.1
+  - name: dhcp_range_minimum
+    value: 10.10.10.2
+  - name: dhcp_range_maximum
+    value: 10.10.10.100
+  - name: network_broadcast_ip
+    value: 10.10.10.255
+  - name: network_gateway_ip
+    value: 10.10.10.1
+  - name: network_dns_primary
+    value: 10.10.10.1
+  - name: network_dns_secondary
+    value: 8.8.8.8
+

@@ -1,0 +1,59 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+extension:
+- name: sriov
+  config:
+  - name: sriov_enabled
+    value: "false"
+  # The SRIOV PF vendors ID
+  - name: vendors
+    value: "0x8086"
+  # The SRIOV PF devices ID
+  - name: pfdevices
+    value: "0x37d0 0x37d2 0x15e4"
+  # The total VFs number that will be created for containers and VMs
+  - name: num_vfs
+    value: "8"
+  # The VFs number that will be created for VMs
+  - name: num_vfio_vfs
+    value: "0"
+- name: nicselector
+  config:
+  # The SRIOV VF devices ID that is created
+  - name: vfdevices
+    value: '["1520", "1565", "37cd", "154c", "1889", "15c5"]'
+  # The PF interface name
+  - name: pfNames
+    value: ""
+- name: sriov-network-1
+  config:
+  - name: "type"
+    value: "host-local"
+  - name: "subnet"
+    value: "10.56.217.0/24"
+  - name: "rangeStart"
+    value: "10.56.217.171"
+  - name: "rangeEnd"
+    value: "10.56.217.181"
+  - name: "routes"
+    value: '[{"dst": "0.0.0.0/0"}]'
+  - name: "gateway"
+    value: "10.56.217.1"
+- name: sriov-net-vm
+  config:
+  - name: "type"
+    value: "host-local"
+  - name: "subnet"
+    value: "10.56.218.0/24"
+  - name: "rangeStart"
+    value: "10.56.218.171"
+  - name: "rangeEnd"
+    value: "10.56.218.181"
+  - name: "routes"
+    value: '[{"dst": "0.0.0.0/0"}]'
+  - name: "gateway"
+    value: "10.56.218.1"
+

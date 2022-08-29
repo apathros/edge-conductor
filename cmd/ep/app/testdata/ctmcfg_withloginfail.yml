@@ -1,0 +1,18 @@
+Parameters:
+  customconfig:
+    ironic:
+      dhcprange: 10.0.0.0/24
+      httpport: '80'
+      ironicinspectorpassword: '123'
+      ironicinspectoruser: somemon
+      ironicpassword: notsafe
+      ironicuser: someadmin
+      kubeconfigpath: "/tmp/mockconfigpath"
+      mariadbpassword: notsafe
+      provisioninginterface: unnamedinterface1
+      provisioningip: 0.0.0.0
+    registry:
+      capath: "/tmp/mockcapath"
+      user: admin
+      externalurl: ''
+      password: ''

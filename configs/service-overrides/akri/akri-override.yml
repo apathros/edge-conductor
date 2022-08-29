@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+kubernetesDistro: k8s
+udev:
+  configuration:
+    enabled: true
+    name: akri-udev
+    discoveryDetails:
+      udevRules:
+      -  'KERNEL=="video0"'
+    brokerPod:
+      image:
+        repository: "ghcr.io/project-akri/akri/udev-video-broker"
+        tag: "v0.8.4"
+  discovery:
+    enabled: true
+    image:
+      tag:  "v0.8.4"
+onvif:
+  configuration:
+    enabled: true
+    name: akri-onvif
+    discoveryDetails:
+      ipAddresses:
+        action: Exclude
+        items: ["10.0.0.1","10.0.0.2"]
+    brokerPod:
+      image:
+        repository: "ghcr.io/project-akri/akri/onvif-video-broker"
+        tag: "v0.8.4"
+  discovery:
+    enabled: true
+    image:
+      tag:  "v0.8.4"

@@ -1,0 +1,29 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{- $infrastructure := "" }}
+{{- if ( has "capi-byoh" .Kitconfig.Parameters.Extensions ) }}
+{{- $infrastructure = "byoh" -}}
+{{- else if ( has "capi-metal3" .Kitconfig.Parameters.Extensions ) -}}
+{{- $infrastructure = "metal3" -}}
+{{- end }}
+
+{{- if eq $infrastructure "metal3" }}
+baremetel-operator:
+  url: file://{{ .Workspace }}/config/cluster-provider/capi/metal3/baremetal-operator.yaml
+  ironic-containers: file://{{ .Workspace }}/workflow/init/ironic.yml
+  bmhost: file://{{ .Workspace }}/config/cluster-provider/capi/metal3/bmhosts_template.yaml
+workload-cluster:
+  name: metal3
+  namespace: metal3
+  url: file://{{ .Workspace }}/config/cluster-provider/capi/metal3/metal3_v1-1-2.yaml
+{{- else if eq $infrastructure "byoh"}}
+byoh-agent:
+  init-script: {{ .Workspace }}/config/executor/byoh-preflight.yml
+workload-cluster:
+  name: byoh
+  namespace: byoh
+  url: file://{{ .Workspace }}/config/cluster-provider/capi/byoh/byoh_v0-2-0.yaml
+{{- end }}

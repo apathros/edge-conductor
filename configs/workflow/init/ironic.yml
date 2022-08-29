@@ -1,0 +1,427 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+containers:
+- name: httpd-infra
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic/
+  command: ["/bin/runhttpd"]
+
+- name: httpd
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: DHCP_RANGE
+    value: {{ .CapiSetting.IronicConfig.IronicDhcpRange }}
+  - name: DEPLOY_KERNEL_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.kernel
+  - name: DEPLOY_RAMDISK_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.initramfs
+  - name: DEPLOY_ISO_URL
+    value: ""
+  - name: IRONIC_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:6385/v1/
+  - name: IRONIC_INSPECTOR_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:5050/v1/
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: IRONIC_KERNEL_PARAMS
+    value: console=ttyS0
+  - name: IRONIC_BOOT_ISO_SOURCE
+    value: local
+  - name: IRONIC_TLS_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_TLS_SETUP
+    value: "true"
+  - name: IRONIC_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_VLAN_INTERFACES
+    value: all
+  - name: IPA_BASEURI
+    value: ""
+  - name: IRONIC_USE_MARIADB
+    value: "false"
+  - name: HTTP_BASIC_HTPASSWD
+    value: {{ htpasswd .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic/
+  - mountPath: /certs/ca/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic.pem
+  - mountPath: /certs/ironic/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-key.pem
+  - mountPath: /certs/ca/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector.pem
+  - mountPath: /certs/ironic-inspector/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector-key.pem
+  - mountPath: /auth/ironic/ironic-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-auth-config-tpl
+  - mountPath: /auth/ironic-rpc/ironic-rpc-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-rpc-auth-config-tpl
+  - mountPath: /auth/ironic-inspector/ironic-inspector-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-inspector-auth-config-tpl
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "cp /auth/ironic/ironic-auth-config-tpl /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic/auth-config;
+     cp /auth/ironic-rpc/ironic-rpc-auth-config-tpl /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic-rpc/auth-config;
+     cp /auth/ironic-inspector/ironic-inspector-auth-config-tpl /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser }}#' /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}#' /auth/ironic-inspector/auth-config;
+     /bin/runhttpd;"
+
+- name: ipa-downloader
+  image: quay.io/metal3-io/ironic-ipa-downloader:capm3-v0.4.1
+  runInBackground: false
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:8080/images
+  - name: IPA_BASEURI
+    value: https://images.rdoproject.org/centos8/master/rdo_trunk/current-tripleo
+  - name: http_proxy
+    value: "{{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}"
+  - name: https_proxy
+    value: "{{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}"
+  - name: no_proxy
+    value: "{{ .Kitconfig.Parameters.GlobalSettings.NoProxy }}"
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic/
+  command: ["/usr/local/bin/get-resource.sh"]
+
+- name: dnsmasq
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  cap_add:
+  - "NET_ADMIN"
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: DHCP_RANGE
+    value: {{ .CapiSetting.IronicConfig.IronicDhcpRange }}
+  - name: DEPLOY_KERNEL_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.kernel
+  - name: DEPLOY_RAMDISK_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.initramfs
+  - name: DEPLOY_ISO_URL
+    value: ""
+  - name: IRONIC_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:6385/v1/
+  - name: IRONIC_INSPECTOR_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:5050/v1/
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: IRONIC_KERNEL_PARAMS
+    value: console=ttyS0
+  - name: IRONIC_BOOT_ISO_SOURCE
+    value: local
+  - name: IRONIC_TLS_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_TLS_SETUP
+    value: "true"
+  - name: IRONIC_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_VLAN_INTERFACES
+    value: all
+  - name: IPA_BASEURI
+    value: ""
+  - name: IRONIC_USE_MARIADB
+    value: "false"
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic/
+  command: ["/bin/rundnsmasq"]
+
+- name: ironic
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: DHCP_RANGE
+    value: {{ .CapiSetting.IronicConfig.IronicDhcpRange }}
+  - name: DEPLOY_KERNEL_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.kernel
+  - name: DEPLOY_RAMDISK_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.initramfs
+  - name: DEPLOY_ISO_URL
+    value: ""
+  - name: IRONIC_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:6385/v1/
+  - name: IRONIC_INSPECTOR_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:5050/v1/
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: IRONIC_KERNEL_PARAMS
+    value: console=ttyS0
+  - name: IRONIC_BOOT_ISO_SOURCE
+    value: local
+  - name: IRONIC_TLS_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_TLS_SETUP
+    value: "true"
+  - name: IRONIC_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_VLAN_INTERFACES
+    value: all
+  - name: IPA_BASEURI
+    value: ""
+  - name: IRONIC_USE_MARIADB
+    value: "false"
+  - name: HTTP_BASIC_HTPASSWD
+    value: {{ htpasswd .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic
+  - mountPath: /certs/ca/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic.pem
+  - mountPath: /certs/ironic/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-key.pem
+  - mountPath: /certs/ca/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector.pem
+  - mountPath: /certs/ironic-inspector/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector-key.pem
+  - mountPath: /auth/ironic/ironic-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-auth-config-tpl
+  - mountPath: /auth/ironic-rpc/ironic-rpc-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-rpc-auth-config-tpl
+  - mountPath: /auth/ironic-inspector/ironic-inspector-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-inspector-auth-config-tpl
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "cp /auth/ironic/ironic-auth-config-tpl /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic/auth-config;
+     cp /auth/ironic-rpc/ironic-rpc-auth-config-tpl /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic-rpc/auth-config;
+     cp /auth/ironic-inspector/ironic-inspector-auth-config-tpl /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser }}#' /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}#' /auth/ironic-inspector/auth-config;
+     /bin/runironic;"
+
+- name: ironic-endpoint-keepalived
+  image: quay.io/metal3-io/keepalived:capm3-v0.5.5
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: DHCP_RANGE
+    value: {{ .CapiSetting.IronicConfig.IronicDhcpRange }}
+  - name: DEPLOY_KERNEL_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.kernel
+  - name: DEPLOY_RAMDISK_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.initramfs
+  - name: DEPLOY_ISO_URL
+    value: ""
+  - name: IRONIC_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:6385/v1/
+  - name: IRONIC_INSPECTOR_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:5050/v1/
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: IRONIC_KERNEL_PARAMS
+    value: console=ttyS0
+  - name: IRONIC_BOOT_ISO_SOURCE
+    value: local
+  - name: IRONIC_TLS_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_TLS_SETUP
+    value: "true"
+  - name: IRONIC_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_VLAN_INTERFACES
+    value: all
+  - name: IPA_BASEURI
+    value: ""
+  - name: IRONIC_USE_MARIADB
+    value: "false"
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic
+
+- name: ironic-log-watch
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  command: ["/bin/runlogwatch.sh"]
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic
+
+- name: ironic-inspector
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  env:
+  - name: HTTP_PORT
+    value: "{{ .CapiSetting.IronicConfig.IronicHTTPPort }}"
+  - name: PROVISIONING_IP
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionIP }}
+  - name: PROVISIONING_INTERFACE
+    value: {{ .CapiSetting.IronicConfig.IronicProvisionNic }}
+  - name: DHCP_RANGE
+    value: {{ .CapiSetting.IronicConfig.IronicDhcpRange }}
+  - name: DEPLOY_KERNEL_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.kernel
+  - name: DEPLOY_RAMDISK_URL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:{{ .CapiSetting.IronicConfig.IronicHTTPPort }}/images/ironic-python-agent.initramfs
+  - name: DEPLOY_ISO_URL
+    value: ""
+  - name: IRONIC_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:6385/v1/
+  - name: IRONIC_INSPECTOR_ENDPOINT
+    value: https://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}:5050/v1/
+  - name: CACHEURL
+    value: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images
+  - name: IRONIC_FAST_TRACK
+    value: "true"
+  - name: IRONIC_KERNEL_PARAMS
+    value: console=ttyS0
+  - name: IRONIC_BOOT_ISO_SOURCE
+    value: local
+  - name: IRONIC_TLS_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_TLS_SETUP
+    value: "true"
+  - name: IRONIC_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: INSPECTOR_REVERSE_PROXY_SETUP
+    value: "true"
+  - name: IRONIC_INSPECTOR_VLAN_INTERFACES
+    value: all
+  - name: IPA_BASEURI
+    value: ""
+  - name: IRONIC_USE_MARIADB
+    value: "false"
+  - name: HTTP_BASIC_HTPASSWD
+    value: {{ htpasswd .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/{{ .CapiSetting.Provider }}/ironic
+  - mountPath: /certs/ca/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic.pem
+  - mountPath: /certs/ironic/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-key.pem
+  - mountPath: /certs/ca/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironic/ironic-ca.pem
+  - mountPath: /certs/ironic-inspector/tls.crt
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector.pem
+  - mountPath: /certs/ironic-inspector/tls.key
+    hostPath: {{ .Workspace }}/cert/pki/ironicinspector/ironicinspector-key.pem
+  - mountPath: /auth/ironic/ironic-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-auth-config-tpl
+  - mountPath: /auth/ironic-rpc/ironic-rpc-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-rpc-auth-config-tpl
+  - mountPath: /auth/ironic-inspector/ironic-inspector-auth-config-tpl
+    hostPath: {{ .Workspace }}/config/ironic/ironic-inspector-auth-config-tpl
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "cp /auth/ironic/ironic-auth-config-tpl /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic/auth-config;
+     cp /auth/ironic-rpc/ironic-rpc-auth-config-tpl /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicuser }}#' /auth/ironic-rpc/auth-config;
+     sed -i 's#\\$IRONIC_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicpassword }}#' /auth/ironic-rpc/auth-config;
+     cp /auth/ironic-inspector/ironic-inspector-auth-config-tpl /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_USERNAME\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectoruser }}#' /auth/ironic-inspector/auth-config;
+     sed -i 's#\\$IRONIC_INSPECTOR_PASSWORD\\$#{{ .Kitconfig.Parameters.Customconfig.Ironic.Ironicinspectorpassword }}#' /auth/ironic-inspector/auth-config;
+     /bin/runironic-inspector;"
+

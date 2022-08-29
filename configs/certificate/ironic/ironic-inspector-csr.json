@@ -1,0 +1,28 @@
+{{- range .Extensions -}}
+{{- if eq .Name "capi-metal3" -}}
+{{- range .Extension.Extension -}}
+{{- if eq .Name "Ironic-config" -}}
+{{- range .Config -}}
+{{- if eq .Name "Ironic-provision-nic"}}
+{
+    "CN": "{{ .Value }}",
+    "hosts": ["localhost", "127.0.0.1"],
+    "key": {
+        "algo": "ecdsa-p384"
+    },
+    "names": [
+        {
+            "C": "",
+            "L": "",
+            "ST": "",
+            "O": "",
+            "OU": ""
+        }
+    ]
+}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end }}

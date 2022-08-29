@@ -1,0 +1,101 @@
+## This is an Kit example of RKE cluster with preinstalled Ubuntu nodes.
+##
+## Preconditions:
+## - Users need to preinstall a set of nodes with Ubuntu systems.
+## - Before running the "init" command, users need to:
+##     - Input the IP addresses of the nodes in the "Parameters - nodes" config section.
+##     - Input the user names to login the nodes in the "Parameters - nodes" config section.
+##     - Input the password of the nodes or a ssh key to access the nodes in the "Parameters - nodes" config section.
+##
+## Features:
+## - The "cluster deploy" can be run in an offline mode (no external network connection needed).
+## - The offline "service deploy" is not supported.
+
+Use:
+##import the configs set in common.yml
+- kit/common.yml
+
+Parameters:
+  customconfig:
+    registry:
+      ## set the password before running the command of "./conductor init -c *.yml"
+      password: 
+
+  ##nodes field contains a list of node objects.
+  ## the below is a two-nodes cluster with one node supporting both controlplane and etcd and 
+  ## one node supporting node.
+  nodes:
+  - ip:
+    role:
+      - controlplane
+      - etcd
+    user:
+    ssh_key_path: ~/.ssh/id_rsa
+  - ip:
+    role:
+      - worker
+    user:
+    ssh_key_path: ~/.ssh/id_rsa
+  ##labels:
+  ###  - name:
+  ###    value:
+  ## to add a work (or controlplane) node by setting a group of attributor as below. 
+  ## controlplane node is at least 1 and up to 3.
+  ## ## Controlplane:
+  ## - mac:
+  ##  ip:
+  ##  role:
+  ##    - controlplane
+  ##    - etcd
+  ##  user: sys-admin
+  ##  ssh_passwd:
+  ##  (or ssh_key_path: ~/.ssh/id_rsa)
+  ##
+  ## ## Worker:
+  ## - mac:
+  ##  ip:
+  ##  role:
+  ##    - worker
+  ##  user: sys-admin
+  ##  ssh_passwd:
+  ##  (or ssh_key_path: ~/.ssh/id_rsa)
+
+  extensions:
+  - ingress
+  - cpu-manager
+  - service-tls
+  - sriov
+
+Cluster:
+  manifests:
+  - "config/manifests/cluster_provider_manifest.yml"
+  provider: rke
+  config: "config/cluster-provider/rke_cluster.yml"
+  # RKE config files will be exported under this folder.
+  # Make sure the path is accessible.
+  # Use absolute path or relative path.
+  # DO NOT use "~" representing home directory.
+  export_config_folder: {{ env "HOME" }}/.ec/rke/cluster
+
+# To enable rook ceph, make sure there're at least 1 controller + 1 worker and
+# a clean hard disk with >1GB storage must be available.
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: nfd
+  - name: intel-sriov-network
+  - name: nginx-ingress
+    override:
+      url: https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-4.0.15/ingress-nginx-4.0.15.tgz
+      type: helm
+      chartoverride: file://{{ .Workspace }}/config/service-overrides/ingress/rke-nginx-ingress.yml
+      supported-clusters:
+      - rke
+      images: []
+  - name: rook-ceph
+  - name: rook-ceph-cluster
+  - name: portainer-ce
+  - name: intel-gpu-plugin
+  - name: akri
+

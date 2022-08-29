@@ -1,0 +1,379 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+
+---
+apiVersion: v1
+kind: Namespace
+spec:
+  finalizers: null
+metadata:
+  name: web-indexing
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: solr-cluster-config
+  namespace: web-indexing
+data:
+  solrHeap: 12g
+  solrHome: /store/data
+  solrLogsDir: /store/logs
+  solrPort: '8983'
+  solrHost: solr-service.web-indexing.svc.cluster.local
+  zkHost: zookeeper-service.web-indexing.svc.cluster.local:2181
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web-indexing
+  name: solr-cluster
+  labels:
+    app: web-indexing-solr
+spec:
+  clusterIP: None
+  selector:
+    app: web-indexing-solr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web-indexing
+  name: solr-service
+  labels:
+    app: web-indexing-solr
+spec:
+  ports:
+    - protocol: TCP
+      port: 8983
+      targetPort: 8983
+  type: NodePort
+  selector:
+    app: web-indexing-solr
+
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: web-indexing
+  name: web-indexing-solr
+spec:
+  selector:
+    matchLabels:
+      app: web-indexing-solr
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web-indexing-solr
+    spec:
+      terminationGracePeriodSeconds: 10
+      restartPolicy: Always
+      containers:
+        - name: solr
+          image: solr:8.1.1
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 1
+            limits:
+              memory: 4Gi
+              cpu: 2
+          imagePullPolicy: IfNotPresent
+          readinessProbe:
+            tcpSocket:
+              port: 8983
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8983
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          volumeMounts:
+            - name: volsolr
+              mountPath: /store
+          ports:
+            - name: solrport
+              containerPort: 8983
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SOLR_HOME
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrHome
+            - name: ZK_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: zkHost
+            - name: POD_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: SOLR_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrHost
+            - name: SOLR_LOGS_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrLogsDir
+            - name: SOLR_HEAP
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrHeap
+      initContainers:
+        - name: init-solr-data
+          image: busybox:stable
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "if [ ! -d $SOLR_HOME/lib ] ; then mkdir -p $SOLR_HOME/lib && chown -R 8983:8983 $SOLR_HOME ; else true; fi"
+          env:
+            - name: SOLR_HOME
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrHome
+          volumeMounts:
+            - name: volsolr
+              mountPath: /store
+        - name: init-solr-logs
+          image: busybox:stable
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "if [ ! -d $SOLR_LOGS_DIR ] ; then mkdir -p $SOLR_LOGS_DIR && chown 8983:8983 $SOLR_LOGS_DIR ; else true; fi"
+          env:
+            - name: SOLR_LOGS_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrLogsDir
+          volumeMounts:
+            - name: volsolr
+              mountPath: /store
+        - name: init-solr-xml
+          image: solr:8.1.1
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "if [ ! -f $SOLR_HOME/solr.xml ] ; then cp /opt/solr/server/solr/solr.xml $SOLR_HOME/solr.xml;\
+               sed -i \"s/<solr>/<solr><str name='sharedLib'>\\/store\\/data\\/lib<\\/str>/g\" $SOLR_HOME/solr.xml ; else true; fi "
+          env:
+            - name: SOLR_HOME
+              valueFrom:
+                configMapKeyRef:
+                  name: solr-cluster-config
+                  key: solrHome
+          volumeMounts:
+            - name: volsolr
+              mountPath: /store
+  serviceName: solr-cluster
+  volumeClaimTemplates:
+    - metadata:
+        name: volsolr
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: web-indexing
+  name: web-indexing-zookeeper-config
+data:
+  ensemble: "web-indexing-zookeeper-0"
+  jvm.heap: "1G"
+  tick_time: "2000"
+  init: "10"
+  sync: "5"
+  client.cnxns: "60"
+  snap.retain: "3"
+  purge.interval: "1"
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-indexing-zookeeper-ensemble-config
+  namespace: web-indexing
+data:
+  zooDataDir: /store/data
+  zooDataLogDir: /store/datalog
+  zooLogDir: /store/logs
+  zooServers: server.1=web-indexing-zookeeper-0.web-indexing:2888:3888
+  zooStandaloneEnabled: 'false'
+
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  namespace: web-indexing
+  name: web-indexing-zookeeper-pdb
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper
+  minAvailable: 2
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web-indexing
+  name: zookeeper-ensemble
+  labels:
+    app: web-indexing-zookeeper
+spec:
+  clusterIP: None
+  selector:
+    app: web-indexing-zookeeper
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web-indexing
+  name: zookeeper-headless
+  labels:
+    app: web-indexing-zookeeper
+spec:
+  ports:
+    - port: 2888
+      name: server
+    - port: 3888
+      name: leader-election
+  selector:
+    app: web-indexing-zookeeper
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web-indexing
+  name: zookeeper-service
+  labels:
+    app: web-indexing-zookeeper
+spec:
+  ports:
+    - port: 2181
+      protocol: TCP
+      targetPort: 2181
+  type: NodePort
+  selector:
+    app: web-indexing-zookeeper
+
+
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: web-indexing
+  name: web-indexing-zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: web-indexing-zookeeper
+  serviceName: web-indexing-zookeeper-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web-indexing-zookeeper
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: zookeeper
+          imagePullPolicy: Always
+          image: gcr.io/google_samples/k8szk:v1
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: server
+            - containerPort: 3888
+              name: leader-election
+          env:
+            - name: ZK_ENSEMBLE
+              valueFrom:
+                configMapKeyRef:
+                  name: web-indexing-zookeeper-config
+                  key: ensemble
+            - name: ZK_HEAP_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  key: jvm.heap
+                  name: web-indexing-zookeeper-config
+            - name: ZK_TICK_TIME
+              valueFrom:
+                configMapKeyRef:
+                  key: tick_time
+                  name: web-indexing-zookeeper-config
+            - name: ZK_SYNC_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  key: tick_time
+                  name: web-indexing-zookeeper-config
+            - name: ZK_MAX_CLIENT_CNXNS
+              valueFrom:
+                configMapKeyRef:
+                  key: client.cnxns
+                  name: web-indexing-zookeeper-config
+            - name: ZK_SNAP_RETAIN_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  key: snap.retain
+                  name: web-indexing-zookeeper-config
+            - name: ZK_PURGE_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  key: purge.interval
+                  name: web-indexing-zookeeper-config
+            - name: ZK_CLIENT_PORT
+              value: "2181"
+            - name: ZK_SERVER_PORT
+              value: "2888"
+            - name: ZK_ELECTION_PORT
+              value: "3888"
+          command:
+            - sh
+            - -c
+            - zkGenConfig.sh && zkServer.sh start-foreground
+

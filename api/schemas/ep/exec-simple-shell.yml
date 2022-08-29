@@ -1,0 +1,62 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  exec-simple-shell:
+    type: object
+    properties:
+      spec:
+        type: string
+      Value:
+        type: object
+        properties:
+          AnyOf:
+            type: array
+            items:
+              type: string
+          AllOf:
+            type: array
+            items:
+              type: string
+          PreCopyFromDay0:
+            type: array
+            items:
+              type: object
+              properties:
+                From:
+                  type: string
+                To:
+                  type: string
+          ShellCmd:
+            type: array
+            items:
+              type: string
+          PostCopyToDay0:
+            type: array
+            items:
+              type: object
+              properties:
+                From:
+                  type: string
+                To:
+                  type: string
+          PostPushImages:
+            type: array
+            items:
+              type: object
+              properties:
+                From:
+                  type: string
+                To:
+                  type: string
+          PostPushFiles:
+            type: array
+            items:
+              type: object
+              properties:
+                From:
+                  type: string
+                To:
+                  type: string

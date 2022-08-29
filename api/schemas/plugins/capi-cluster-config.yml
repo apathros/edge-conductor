@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  capi-cluster-config:
+    type: object
+    properties:
+      workload-cluster:
+        type: object
+        properties:
+          name:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          namespace:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          url:
+            type: string
+            pattern: @PATTERNURL@
+      baremetel-operator:
+        type: object
+        properties:
+          url:
+            type: string
+            pattern: @PATTERNURL@
+          ironic-containers:
+            type: string
+            pattern: @PATTERNURL@
+          bmhost:
+            type: string
+            pattern: @PATTERNURL@
+      byoh-agent:
+        type: object
+        properties:
+          init-script:
+            type: string

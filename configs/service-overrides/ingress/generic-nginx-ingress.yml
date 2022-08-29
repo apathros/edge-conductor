@@ -1,0 +1,10 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+controller:
+  config:
+    ssl-ecdh-curve: secp384r1:secp521r1
+    ssl-protocols: TLSv1.3

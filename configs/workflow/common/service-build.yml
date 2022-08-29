@@ -1,0 +1,57 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  workflows:
+  - name: service-build
+    steps:
+    - name: service-parser
+      input:
+      - name: ep-params
+        schema: ep-params
+      output:
+      - name: serviceconfig
+        schema: serviceconfig
+      - name: service-files
+        schema: downloadfiles
+      - name: service-container-images
+        schema: docker-images
+    - name: service-build
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: serviceconfig
+        schema: serviceconfig
+    - name: docker-image-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: service-container-images
+        schema: docker-images
+    - name: file-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: service-files
+        schema: files
+      output:
+      - name: service-files
+        schema: files
+    - name: service-injector
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: service-files
+        schema: downloadfiles
+      - name: serviceconfig
+        schema: serviceconfig
+      output:
+      - name: serviceconfig
+        schema: serviceconfig

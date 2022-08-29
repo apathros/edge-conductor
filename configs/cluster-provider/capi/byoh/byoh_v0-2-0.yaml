@@ -1,0 +1,518 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  labels:
+    cni: byoh-cluster-crs-0
+    crs: "true"
+  name: byoh
+  namespace: byoh
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/18
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    kind: KubeadmControlPlane
+    name: byoh-cluster-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: ByoCluster
+    name: byoh
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: ByoCluster
+metadata:
+  name: byoh
+  namespace: byoh
+spec:
+  bundleLookupBaseRegistry: projects.registry.vmware.com/cluster_api_provider_bringyourownhost
+  bundleLookupTag: "22.04"
+  controlPlaneEndpoint:
+    host: {{ .CapiSetting.InfraProvider.WorkloadClusterControlplaneEndpoint }}
+    port: 6443
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: ByoMachineTemplate
+metadata:
+  name: byoh-cluster-control-plane
+  namespace: byoh
+spec:
+  template:
+    spec:
+      selector:
+        matchLabels:
+          type: controlplane
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  labels:
+    nodepool: pool0
+  name: byoh-cluster-control-plane
+  namespace: byoh
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      controllerManager:
+        extraArgs:
+          enable-hostpath-provisioner: "true"
+    files:
+    - content: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-vip
+          namespace: kube-system
+        spec:
+          containers:
+          - args:
+            - start
+            env:
+            - name: vip_loglevel
+              value: "5"
+            - name: vip_arp
+              value: "true"
+            - name: vip_leaderelection
+              value: "true"
+            - name: vip_address
+              value: "{{ .CapiSetting.InfraProvider.WorkloadClusterControlplaneEndpoint }}"
+            - name: vip_cidr
+              value: "{{ .CapiSetting.InfraProvider.WorkloadClusterNodeAddressPrefix }}"
+            - name: vip_interface
+              value: {{ printf "{%s}" "{ .DefaultNetworkInterfaceName }" }}
+            - name: vip_leaseduration
+              value: "15"
+            - name: vip_renewdeadline
+              value: "10"
+            - name: vip_retryperiod
+              value: "2"
+            image: ghcr.io/kube-vip/kube-vip:v0.3.5
+            imagePullPolicy: IfNotPresent
+            name: kube-vip
+            securityContext:
+              capabilities:
+                add:
+                - NET_ADMIN
+                - SYS_TIME
+            volumeMounts:
+            - mountPath: /etc/kubernetes/admin.conf
+              name: kubeconfig
+          hostNetwork: true
+          volumes:
+          - hostPath:
+              path: /etc/kubernetes/admin.conf
+              type: FileOrCreate
+            name: kubeconfig
+      owner: root:root
+      path: /etc/kubernetes/manifests/kube-vip.yaml
+      permissions: "0644"
+    - content: |
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+        Acquire::http::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}";
+        {{- end }}
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+        Acquire::https::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}";
+        {{- end }}
+      owner: root:root
+      path: /etc/apt/apt.conf
+      permissions: "0644"
+    - content: |
+        [Service]
+        Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf"
+        Environment="KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml"
+        EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+        EnvironmentFile=-/etc/default/kubelet
+        ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
+      owner: root:root
+      path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+      permissions: "0644"
+    - content: |
+        [Service]
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }},192.168.0.0/18,10.96.0.0/12"
+      owner: root:root  
+      path: /etc/systemd/system/containerd.service.d/http-proxy.conf
+      permissions: "0644"
+    - content: |
+        [Service]
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }},192.168.0.0/18,10.96.0.0/12"
+      owner: root:root
+      path: /etc/systemd/system/crio.service.d/http-proxy.conf
+      permissions: "0644"
+    - content: |
+        version = 2
+
+        disabled_plugins = []
+
+        [plugins]
+          [plugins."io.containerd.grpc.v1.cri"]
+            [plugins."io.containerd.grpc.v1.cri".containerd]
+              default_runtime_name = "runc"
+              discard_unpacked_layers = true
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                  runtime_type = "io.containerd.runc.v2"
+                  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                    SystemdCgroup = true
+            [plugins."io.containerd.grpc.v1.cri".registry]
+              [plugins."io.containerd.grpc.v1.cri".registry.configs]
+                [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".auth]
+                    username = "{{ .Kitconfig.Parameters.Customconfig.Registry.User }}"
+                    password = "{{ .Kitconfig.Parameters.Customconfig.Registry.Password }}"
+                  [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".tls]
+                    ca_file = "/etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt"
+              [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/docker.io", "https://registry-1.docker.io"]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."gcr.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/gcr.io", "https://gcr.io"]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/k8s.gcr.io", "https://k8s.gcr.io"]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."quay.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/quay.io", "https://quay.io"]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."ghcr.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/ghcr.io", "https://docker.pkg.github.com"]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.k8s.io"]
+                  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/registry.k8s.io", "https://registry.k8s.io"]                  
+      owner: root:root
+      path: /etc/containerd/config.toml
+      permissions: "0644"
+    - content: |
+        {
+            "auths": {
+                "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}": {
+                    "auth": {{ .CapiSetting.Registry.Auth }} 
+                }
+            }
+        }   
+      owner: root:root
+      path: /etc/containers/auth.json
+      permissions: "0644"
+    - content: |
+        [[registry]]  
+        prefix = "docker.io"
+        insecure = false
+        blocked = false
+        location = "docker.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "k8s.gcr.io"
+        insecure = false
+        blocked = false
+        location = "k8s.gcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/k8s.gcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "gcr.io"
+        insecure = false
+        blocked = false
+        location = "gcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/gcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "quay.io"
+        insecure = false
+        blocked = false
+        location = "quay.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/quay.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "ghcr.io"
+        insecure = false
+        blocked = false
+        location = "ghcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ghcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "registry.k8s.io"
+        insecure = false
+        blocked = false
+        location = "registry.k8s.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/registry.k8s.io"
+        insecure = false
+      owner: root:root
+      path: /etc/containers/registries.conf
+      permissions: "0644"
+    initConfiguration:
+      nodeRegistration:
+        criSocket: {{ .CapiSetting.CRI.Endpoint }}
+        ignorePreflightErrors:
+        - Swap
+        - DirAvailable--etc-kubernetes-manifests
+        - FileAvailable--etc-kubernetes-kubelet.conf
+        kubeletExtraArgs:
+          container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+    joinConfiguration:
+      nodeRegistration:
+        criSocket: {{ .CapiSetting.CRI.Endpoint }}
+        ignorePreflightErrors:
+        - Swap
+        - DirAvailable--etc-kubernetes-manifests
+        - FileAvailable--etc-kubernetes-kubelet.conf
+        kubeletExtraArgs:
+          container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+          {{- if eq .CapiSetting.CRI.Name "crio" }}
+          pod-infra-container-image: k8s.gcr.io/pause:3.6
+          {{- end }}
+    postKubeadmCommands: []
+    preKubeadmCommands:
+    - sudo rm /etc/cni/net.d/*{{ .CapiSetting.CRI.Name }}* || true
+    - sudo systemctl daemon-reload
+    - sudo systemctl restart {{ .CapiSetting.CRI.Name }}
+    - sleep 10
+    - sudo sed -i "/127.0.0.1 localhost/i127.0.0.1 $(hostname | tr '\n' ' ')" /etc/hosts
+    - sudo sed -i '/127.0.0.1 localhost/i127.0.0.1 {{ printf "{%s}" "{fqdn}" }} {{ printf "{%s}" "{hostname}"}}' /etc/cloud/templates/hosts.debian.tmpl
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: ByoMachineTemplate
+      name: byoh-cluster-control-plane
+      namespace: byoh
+  replicas: {{ .CapiSetting.InfraProvider.WorkloadClusterControlPlaneNum }}
+  version: v1.23.5
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: ByoMachineTemplate
+metadata:
+  name: byoh-cluster-md-0
+  namespace: byoh
+spec:
+  template:
+    spec:
+      selector:
+        matchLabels:
+          type: worker
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: byoh-cluster-md-0
+  namespace: byoh
+spec:
+  clusterName: byoh
+  replicas:  {{ .CapiSetting.InfraProvider.WorkloadClusterWorkerNodeNum }}
+  selector:
+    matchLabels: null
+  template:
+    metadata:
+      labels:
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+          name: byoh-cluster-md-0
+      clusterName: byoh
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: ByoMachineTemplate
+        name: byoh-cluster-md-0
+      version: v1.23.5
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: byoh-cluster-md-0
+  namespace: byoh
+spec:
+  template:
+    spec:
+      files:
+      - content: |
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+          Acquire::http::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}";
+          {{- end }}
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+          Acquire::https::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}";
+          {{- end }}
+        owner: root:root
+        path: /etc/apt/apt.conf
+        permissions: "0644"
+      - content: |
+          [Service]
+          Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf"
+          Environment="KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml"
+          EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+          EnvironmentFile=-/etc/default/kubelet
+          ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
+        owner: root:root
+        path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        permissions: "0644"
+      - content: |
+          [Service]
+          # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+          Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP}},192.168.0.0/18,10.96.0.0/12"
+        owner: root:root
+        path: /etc/systemd/system/containerd.service.d/http-proxy.conf
+        permissions: "0644"
+      - content: |
+          [Service]
+          # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+          Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }},192.168.0.0/18,10.96.0.0/12"
+        owner: root:root
+        path: /etc/systemd/system/crio.service.d/http-proxy.conf
+        permissions: "0644"
+      - content: |
+          version = 2
+
+          disabled_plugins = []
+
+          [plugins]
+            [plugins."io.containerd.grpc.v1.cri"]
+              [plugins."io.containerd.grpc.v1.cri".containerd]
+                default_runtime_name = "runc"
+                discard_unpacked_layers = true
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+                  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                    runtime_type = "io.containerd.runc.v2"
+                    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                      SystemdCgroup = true
+              [plugins."io.containerd.grpc.v1.cri".registry]
+                [plugins."io.containerd.grpc.v1.cri".registry.configs]
+                  [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}"]
+                    [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".auth]
+                      username = "{{ .Kitconfig.Parameters.Customconfig.Registry.User }}"
+                      password = "{{ .Kitconfig.Parameters.Customconfig.Registry.Password }}"
+                    [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".tls]
+                      ca_file = "/etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt"
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/docker.io", "https://registry-1.docker.io"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."gcr.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/gcr.io", "https://gcr.io"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/k8s.gcr.io", "https://k8s.gcr.io"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."quay.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/quay.io", "https://quay.io"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."ghcr.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/ghcr.io", "https://docker.pkg.github.com"]
+                  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.k8s.io"]
+                    endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/registry.k8s.io", "https://registry.k8s.io"]                    
+        owner: root:root
+        path: /etc/containerd/config.toml
+        permissions: "0644"
+      - content: |
+          {
+              "auths": {
+                  "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}": {
+                      "auth": {{ .CapiSetting.Registry.Auth }}
+                  }
+              }
+          }
+        owner: root:root
+        path: /etc/containers/auth.json
+        permissions: "0644"
+      - content: |
+          unqualified-search-registries = ["{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}", "docker.io"]
+
+          [[registry]]
+          prefix = "docker.io"
+          insecure = false
+          blocked = false
+          location = "docker.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io"
+          insecure = false
+
+          [[registry]]
+          prefix = "k8s.gcr.io"
+          insecure = false
+          blocked = false
+          location = "k8s.gcr.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/k8s.gcr.io"
+          insecure = false
+
+          [[registry]]
+          prefix = "gcr.io"
+          insecure = false
+          blocked = false
+          location = "gcr.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/gcr.io"
+          insecure = false
+
+          [[registry]]
+          prefix = "quay.io"
+          insecure = false
+          blocked = false
+          location = "quay.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/quay.io"
+          insecure = false
+
+          [[registry]]
+          prefix = "ghcr.io"
+          insecure = false
+          blocked = false
+          location = "ghcr.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ghcr.io"
+          insecure = false
+
+          [[registry]]
+          prefix = "registry.k8s.io"
+          insecure = false
+          blocked = false
+          location = "registry.k8s.io"
+
+          [[registry.mirror]]
+          location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/registry.k8s.io"
+          insecure = false          
+        owner: root:root
+        path: /etc/containers/registries.conf
+        permissions: "0644"
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: {{ .CapiSetting.CRI.Endpoint }}
+          ignorePreflightErrors:
+          - Swap
+          - DirAvailable--etc-kubernetes-manifests
+          - FileAvailable--etc-kubernetes-kubelet.conf
+          kubeletExtraArgs:
+            container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+            {{- if eq .CapiSetting.CRI.Name "crio" }}
+            pod-infra-container-image: k8s.gcr.io/pause:3.6
+            {{- end }}
+      postKubeadmCommands: []
+      preKubeadmCommands:
+      - sudo rm /etc/cni/net.d/*{{ .CapiSetting.CRI.Name }}* || true
+      - sudo systemctl daemon-reload
+      - sudo systemctl restart {{ .CapiSetting.CRI.Name }}
+      - sleep 10

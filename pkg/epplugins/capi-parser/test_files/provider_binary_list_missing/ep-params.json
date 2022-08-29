@@ -1,0 +1,45 @@
+{
+  "extensions": null,
+  "kitconfig": {
+    "Cluster": {
+      "manifests": null
+    },
+    "Components": {
+      "manifests": null,
+      "selector": null
+    },
+    "OS": {
+      "manifests": null
+    },
+    "Parameters": {
+      "customconfig": {
+        "cluster": {
+          "management_cluster": {
+            "endpoint": {}
+          },
+          "work_cluster": {
+            "controller": {
+              "role": null
+            }
+          }
+        },
+        "ironic": {},
+        "registry": {},
+        "resources": null
+      },
+      "extensions": [
+        "capi-metal3"
+      ],
+      "global_settings": {
+        "dns_server": null
+      },
+      "nodes": null
+    },
+    "Use": null
+  },
+  "registrycert": {
+    "ca": {},
+    "client": {},
+    "server": {}
+  }
+}

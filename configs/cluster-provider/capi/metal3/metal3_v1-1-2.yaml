@@ -1,0 +1,511 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ $dnsservers := "" }}
+{{- if .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+{{- range $server := .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+{{- if eq $dnsservers "" -}}
+{{ $dnsservers = printf "%s" $server }}
+{{- else -}}
+{{ $dnsservers = printf "%s,%s" $dnsservers $server }}
+{{- end -}}
+{{- end }}
+{{- end }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: metal3
+  namespace: metal3
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/18
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    kind: KubeadmControlPlane
+    name: metal3-cluster-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: Metal3Cluster
+    name: metal3
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3Cluster
+metadata:
+  name: metal3
+  namespace: metal3
+spec:
+  controlPlaneEndpoint:
+    host: {{ .CapiSetting.InfraProvider.WorkloadClusterControlplaneEndpoint }}
+    port: 6443
+  noCloudProvider: true
+---
+apiVersion: ipam.metal3.io/v1alpha1
+kind: IPPool
+metadata:
+  name: provisioning-pool
+  namespace: metal3
+spec:
+  clusterName: metal3
+  gateway: {{ .CapiSetting.InfraProvider.WorkloadClusterNetworkGateway }}
+  namePrefix: metal3-prov
+  pools:
+  - end: {{ .CapiSetting.InfraProvider.WorkloadClusterNodeAddressEnd }}
+    start: {{ .CapiSetting.InfraProvider.WorkloadClusterNodeAddressStart }}
+  prefix: {{ .CapiSetting.InfraProvider.WorkloadClusterNodeAddressPrefix }}
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  name: metal3-cluster-control-plane
+  namespace: metal3
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration: {}
+    files:
+    - content: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          creationTimestamp: null
+          name: kube-vip
+          namespace: kube-system
+        spec:
+          containers:
+          - args:
+            - start
+            env:
+            - name: vip_arp
+              value: "true"
+            - name: vip_leaderelection
+              value: "true"
+            - name: vip_address
+              value: "{{ .CapiSetting.InfraProvider.WorkloadClusterControlplaneEndpoint }}"
+            - name: vip_cidr
+              value: "{{ .CapiSetting.InfraProvider.WorkloadClusterNodeAddressPrefix }}"
+            - name: vip_interface
+              value: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+            - name: vip_leaseduration
+              value: "15"
+            - name: vip_renewdeadline
+              value: "10"
+            - name: vip_retryperiod
+              value: "2"
+            image: ghcr.io/kube-vip/kube-vip:v0.3.5
+            imagePullPolicy: IfNotPresent
+            name: kube-vip
+            resources: {}
+            securityContext:
+              capabilities:
+                add:
+                - NET_ADMIN
+                - SYS_TIME
+            volumeMounts:
+            - mountPath: /etc/kubernetes/admin.conf
+              name: kubeconfig
+          hostNetwork: true
+          volumes:
+          - hostPath:
+              path: /etc/kubernetes/admin.conf
+              type: FileOrCreate
+            name: kubeconfig
+        status: {}
+      owner: root:root
+      path: /etc/kubernetes/manifests/kube-vip.yaml
+    - content: |
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+        Acquire::http::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}";
+        {{- end }}
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+        Acquire::https::proxy "{{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}";
+        {{- end }}
+      owner: root:root
+      path: /etc/apt/apt.conf
+      permissions: "0644"
+    - content: |
+        [Service]
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+        Environment="HTTP_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}"
+        {{- end }}
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+        Environment="HTTPS_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}"
+        {{- end }}
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.NoProxy }},192.168.0.0/18,10.96.0.0/12"
+      owner: root:root
+      path: /etc/systemd/system/containerd.service.d/http_proxy.conf
+      permissions: "0644"
+    - content: |
+        [Service]
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+        Environment="HTTP_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}"
+        {{- end }}
+        {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+        Environment="HTTPS_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}"
+        {{- end }}
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.NoProxy }},192.168.0.0/18,10.96.0.0/12"
+      owner: root:root
+      path: /etc/systemd/system/crio.service.d/http-proxy.conf.bk
+      permissions: "0644"
+    - content: |
+        version = 2
+        disabled_plugins = []
+        [plugins]
+          [plugins."io.containerd.grpc.v1.cri"]
+            [plugins."io.containerd.grpc.v1.cri".containerd]
+              default_runtime_name = "runc"
+              discard_unpacked_layers = true
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                  runtime_type = "io.containerd.runc.v2"
+                  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                    SystemdCgroup = true
+      owner: root:root
+      path: /etc/containerd/config.toml
+      permissions: "0644"
+    initConfiguration:
+      nodeRegistration:
+        criSocket: {{ .CapiSetting.CRI.Endpoint }}
+        kubeletExtraArgs:
+          cgroup-driver: systemd
+          container-runtime: remote
+          container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+          feature-gates: AllAlpha=false
+          node-labels: metal3.io/uuid={{  printf "{%s}" "{ ds.meta_data.uuid }" }}
+          provider-id: metal3://{{  printf "{%s}" "{ ds.meta_data.uuid }" }}
+          runtime-request-timeout: 5m
+          {{- if eq .CapiSetting.CRI.Name "crio" }}
+          pod-infra-container-image: k8s.gcr.io/pause:3.6
+          {{- end }}
+        name: '{{ printf "{%s}" "{ ds.meta_data.name }" }}'
+    joinConfiguration:
+      controlPlane: {}
+      nodeRegistration:
+        criSocket: {{ .CapiSetting.CRI.Endpoint }}
+        ignorePreflightErrors:
+        - DirAvailable--etc-kubernetes-manifests
+        kubeletExtraArgs:
+          cgroup-driver: systemd
+          container-runtime: remote
+          container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+          feature-gates: AllAlpha=false
+          node-labels: metal3.io/uuid={{ printf "{%s}" "{ ds.meta_data.uuid }" }}
+          provider-id: metal3://{{ printf "{%s}" "{ ds.meta_data.uuid }" }}
+          runtime-request-timeout: 5m
+          {{- if eq .CapiSetting.CRI.Name "crio" }}
+          pod-infra-container-image: k8s.gcr.io/pause:3.6
+          {{- end }}
+        name: '{{ printf "{%s}" "{ ds.meta_data.name }" }}'
+    postKubeadmCommands:
+    - mkdir -p /home/{{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}/.kube
+    - cp /etc/kubernetes/admin.conf /home/{{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}/.kube/config
+    - chown {{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}:{{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }} /home/{{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}/.kube/config
+    preKubeadmCommands:
+    - netplan apply
+    - sudo sed -i "1s/$/ $(hostname | tr '\n' ' ')/" /etc/hosts
+    {{- if eq .CapiSetting.CRI.Name "containerd" }}
+    - export CONTAINERD_VERSION={{ .CapiSetting.CRI.Version }}
+    - curl -fsSL https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz --proxy {{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }} --dns-servers {{ $dnsservers }} -o cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+    - sudo tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+    - rm /etc/cni/net.d/*containerd* || true
+    # in case the OS had installed crio previously
+    - rm /etc/cni/net.d/*crio* || true 
+    - systemctl daemon-reload
+    - systemctl enable --now containerd
+    {{- else if eq .CapiSetting.CRI.Name "crio" }}
+    - curl -fsSL {{ .CapiSetting.CRI.BinURL }} --proxy {{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }} -o /tmp/crio.tar.gz
+    - mkdir /tmp/crio && tar xzf /tmp/crio.tar.gz -C /tmp/crio && cd /tmp/crio/cri-o/ && ./install
+    - cp /etc/systemd/system/crio.service.d/http-proxy.conf.bk /etc/systemd/system/crio.service.d/http-proxy.conf
+    - rm /etc/cni/net.d/*crio* || true
+    - systemctl daemon-reload
+    - systemctl restart crio
+    {{- end }}
+    - systemctl enable --now  kubelet
+    - sysctl net.ipv4.conf.all.rp_filter=1
+    {{- if .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}
+    users:
+    - name: {{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}
+      {{- if .CapiSetting.InfraProvider.AuthorizedSSHPublicKey }}
+      sshAuthorizedKeys:
+      - {{ .CapiSetting.InfraProvider.AuthorizedSSHPublicKey }}
+      {{- else }}
+      sshAuthorizedKeys: []
+      {{- end }}
+      sudo: ALL=(ALL) NOPASSWD:ALL
+    {{- end }}
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: Metal3MachineTemplate
+      name: metal3-controlplane
+    nodeDrainTimeout: 0s
+  replicas: 1
+  rolloutStrategy:
+    rollingUpdate:
+      maxSurge: 1
+  version: v1.23.5
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3MachineTemplate
+metadata:
+  name: metal3-controlplane
+  namespace: metal3
+spec:
+  template:
+    spec:
+      dataTemplate:
+        name: metal3-controlplane-template
+      image:
+        checksum: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images/UBUNTU_22.04_NODE_IMAGE_K8S_v1.23.5-raw.img.shasum
+        checksumType: sha256
+        format: raw
+        url: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images/UBUNTU_22.04_NODE_IMAGE_K8S_v1.23.5-raw.img
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3DataTemplate
+metadata:
+  name: metal3-controlplane-template
+  namespace: metal3
+spec:
+  clusterName: metal3
+  metaData:
+    ipAddressesFromIPPool:
+    - key: provisioningIP
+      name: provisioning-pool
+    objectNames:
+    - key: name
+      object: machine
+    - key: local-hostname
+      object: machine
+    - key: local_hostname
+      object: machine
+    prefixesFromIPPool:
+    - key: provisioningCIDR
+      name: provisioning-pool
+  networkData:
+    links:
+      ethernets:
+      - id: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        macAddress:
+          fromHostInterface: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        type: phy
+    networks:
+      ipv4:
+      - id: provisional
+        ipAddressFromIPPool: provisioning-pool
+        link: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        routes:
+        - gateway:
+            fromIPPool: provisioning-pool
+          network: 0.0.0.0
+          prefix: 0
+    {{- if .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+    services:
+      dns:
+      {{- range $server := .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+      - "{{- $server }}"
+      {{- end }}
+    {{- end }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: metal3
+    nodepool: nodepool-0
+  name: metal3
+  namespace: metal3
+spec:
+  clusterName: metal3
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: metal3
+      nodepool: nodepool-0
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: metal3
+        nodepool: nodepool-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+          name: metal3-workers
+      clusterName: metal3
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: Metal3MachineTemplate
+        name: metal3-workers
+      nodeDrainTimeout: 0s
+      version: v1.23.5
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3MachineTemplate
+metadata:
+  name: metal3-workers
+  namespace: metal3
+spec:
+  template:
+    spec:
+      dataTemplate:
+        name: metal3-workers-template
+      image:
+        checksum: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images/UBUNTU_22.04_NODE_IMAGE_K8S_v1.23.5-raw.img.shasum
+        checksumType: sha256
+        format: raw
+        url: http://{{ .CapiSetting.IronicConfig.IronicProvisionIP }}/images/UBUNTU_22.04_NODE_IMAGE_K8S_v1.23.5-raw.img
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3DataTemplate
+metadata:
+  name: metal3-workers-template
+  namespace: metal3
+spec:
+  clusterName: metal3
+  metaData:
+    ipAddressesFromIPPool:
+    - key: provisioningIP
+      name: provisioning-pool
+    objectNames:
+    - key: name
+      object: machine
+    - key: local-hostname
+      object: machine
+    - key: local_hostname
+      object: machine
+    prefixesFromIPPool:
+    - key: provisioningCIDR
+      name: provisioning-pool
+  networkData:
+    links:
+      ethernets:
+      - id: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        macAddress:
+          fromHostInterface: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        type: phy
+    networks:
+      ipv4:
+      - id: provisional
+        ipAddressFromIPPool: provisioning-pool
+        link: {{ .CapiSetting.InfraProvider.WorkloadClusterNicName }}
+        routes:
+        - gateway:
+            fromIPPool: provisioning-pool
+          network: 0.0.0.0
+          prefix: 0
+    {{- if .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+    services:
+      dns:
+      {{- range $server := .Kitconfig.Parameters.GlobalSettings.DNSServer }}
+      - "{{- $server }}"
+      {{- end }}
+    {{- end }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: metal3-workers
+  namespace: metal3
+spec:
+  template:
+    spec:
+      files:
+      - content: |
+          [Service]
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+          Environment="HTTP_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}"
+          {{- end }}
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+          Environment="HTTPS_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}"
+          {{- end }}
+          # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+          Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.NoProxy }},192.168.0.0/18,10.96.0.0/12"
+        owner: root:root
+        path: /etc/systemd/system/containerd.service.d/http_proxy.conf
+        permissions: "0644"
+      - content: |
+          [Service]
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}
+          Environment="HTTP_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPProxy }}"
+          {{- end }}
+          {{- if .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}
+          Environment="HTTPS_PROXY={{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }}"
+          {{- end }}
+          # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+          Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.NoProxy }},192.168.0.0/18,10.96.0.0/12"
+        owner: root:root
+        path: /etc/systemd/system/crio.service.d/http-proxy.conf.bk
+        permissions: "0644"
+      - content: |
+          version = 2
+          disabled_plugins = []
+          [plugins]
+            [plugins."io.containerd.grpc.v1.cri"]
+              [plugins."io.containerd.grpc.v1.cri".containerd]
+                default_runtime_name = "runc"
+                discard_unpacked_layers = true
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+                  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                    runtime_type = "io.containerd.runc.v2"
+                    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                      SystemdCgroup = true
+        owner: root:root
+        path: /etc/containerd/config.toml
+        permissions: "0644"
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: {{ .CapiSetting.CRI.Endpoint }}
+          kubeletExtraArgs:
+            cgroup-driver: systemd
+            container-runtime: remote
+            container-runtime-endpoint: {{ .CapiSetting.CRI.Endpoint }}
+            feature-gates: AllAlpha=false
+            node-labels: metal3.io/uuid={{  printf "{%s}" "{ ds.meta_data.uuid }" }}
+            provider-id: metal3://{{ printf "{%s}" "{ ds.meta_data.uuid }" }}
+            runtime-request-timeout: 5m
+            {{- if eq .CapiSetting.CRI.Name "crio" }}
+            pod-infra-container-image: k8s.gcr.io/pause:3.6
+            {{- end }}
+          name: '{{ printf "{%s}" "{ ds.meta_data.name }" }}'
+      preKubeadmCommands:
+      - netplan apply
+      {{- if eq .CapiSetting.CRI.Name "containerd" }}
+      - export CONTAINERD_VERSION={{ .CapiSetting.CRI.Version }}
+      - curl -fsSL https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz --proxy {{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }} --dns-servers {{ $dnsservers }} -o cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+      - sudo tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+      - rm  /etc/cni/net.d/*containerd* || true
+      # in case the OS had installed crio previously
+      - rm /etc/cni/net.d/*crio* || true
+      - systemctl daemon-reload
+      - systemctl enable --now containerd
+      {{- else if eq .CapiSetting.CRI.Name "crio" }}
+      - curl -fsSL {{ .CapiSetting.CRI.BinURL }} --proxy {{ .Kitconfig.Parameters.GlobalSettings.HTTPSProxy }} -o /tmp/crio.tar.gz
+      - mkdir /tmp/crio && tar xzf /tmp/crio.tar.gz -C /tmp/crio && cd /tmp/crio/cri-o/ && ./install
+      - cp /etc/systemd/system/crio.service.d/http-proxy.conf.bk /etc/systemd/system/crio.service.d/http-proxy.conf
+      - rm /etc/cni/net.d/*crio* || true
+      - systemctl daemon-reload
+      - systemctl restart crio
+      {{- end }}
+      - systemctl enable --now  kubelet
+      - sysctl net.ipv4.conf.all.rp_filter=1
+      {{- if .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}
+      users:
+      - name: {{ .CapiSetting.InfraProvider.WorkloadClusterNodeUsername }}
+        {{- if .CapiSetting.InfraProvider.AuthorizedSSHPublicKey }}
+        sshAuthorizedKeys:
+        - {{ .CapiSetting.InfraProvider.AuthorizedSSHPublicKey }}
+        {{- else }}
+        sshAuthorizedKeys: []
+        {{- end }}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+      {{- end }}

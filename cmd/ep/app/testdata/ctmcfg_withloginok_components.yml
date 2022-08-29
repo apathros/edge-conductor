@@ -1,0 +1,34 @@
+Parameters:
+  customconfig:
+    ironic:
+      dhcprange: 10.0.0.0/24
+      httpport: '80'
+      ironicinspectorpassword: '123'
+      ironicinspectoruser: somemon
+      ironicpassword: notsafe
+      ironicuser: someadmin
+      kubeconfigpath: "/tmp/mockconfigpath"
+      mariadbpassword: notsafe
+      provisioninginterface: unnamedinterface1
+      provisioningip: 0.0.0.0
+    registry:
+      capath: "/tmp/mockcapath"
+      user: admin
+      externalurl: ''
+      password: '12345'
+
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: "nginx-ingress"
+    override:
+      url: file://{{ .Workspace }}/config/service-overrides/ingress/kind-nginx-ingress.yml
+      type: yaml
+      images:
+        - k8s.gcr.io/ingress-nginx/controller:v1.1.2
+        - k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+      supported-clusters:
+      - kind
+  - name: "multus"
+  - name: "portainer-ce"

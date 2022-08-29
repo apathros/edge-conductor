@@ -1,0 +1,19 @@
+{
+  "capi_cluster_providers": [
+    {
+      "binaries": null,
+      "cert-manager": {},
+      "images": null,
+      "name": "metal3",
+      "providers": null,
+      "runtime": null
+    }
+  ],
+  "cluster_providers": [
+    {
+      "binaries": null,
+      "images": null,
+      "resources": null
+    }
+  ]
+}

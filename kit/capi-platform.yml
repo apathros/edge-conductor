@@ -1,0 +1,5 @@
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: calico

@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-cluster-helm.fullname" . }}
+  labels:
+    {{- include "hello-cluster-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      nodePort: {{ .Values.service.nodeport }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "hello-cluster-helm.selectorLabels" . | nindent 4 }}

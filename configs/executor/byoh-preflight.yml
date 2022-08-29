@@ -1,0 +1,207 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: byoh-preflight
+spec:
+  steps:
+  - name: byoh-preflight
+    nodes:
+      allOf:
+      - controlplane
+      - etcd
+      - worker
+    commands:
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/cert/pki/registry/registry.pem
+      - /tmp/
+    {{ range $k, $v := .Value.Binaries }}
+    {{ if eq $v.Name "oras" }}
+    - type: copyFromDay0
+      cmd:
+      - {{ $.Workspace }}/runtime/clusterapi/oras/oras/{{ $v.Version }}/{{ $v.Revision }}
+      - /tmp/ 
+    {{- end }}
+    {{- end }}
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/runtime/m_kubeconfig
+      - /tmp/
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/cert/pki/ca.pem
+      - /tmp/
+    {{ range $k, $v := .Value.Binaries }}
+    {{ if eq $v.Name "oras" }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "tar -xvf /tmp/{{ $v.Revision }} -C /usr/bin/"
+    {{- end }}
+    {{- end }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /tmp/kubelet.service << EOF
+        [Unit]
+        Description=kubelet: The Kubernetes Node Agent
+        Documentation=https://kubernetes.io/docs/home/
+        Wants=network-online.target
+        After=network-online.target
+
+        [Service]
+        Restart=always
+        StartLimitInterval=0
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "mkdir -p /etc/containerd/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }} && \
+         cp -f /tmp/ca.pem /etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt && \
+         mkdir -p /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }} && \
+         cp -f /tmp/ca.pem /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/host-agent/byoh-hostagent-linux-amd64:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubectl/kubectl:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubeadm/kubeadm:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubelet/kubelet:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp
+         mv /tmp/byoh-hostagent-linux-amd64 /tmp/byohHostAgent && \
+         cp -f /tmp/byohHostAgent /usr/bin   && \
+         chmod 777 /usr/bin/byohHostAgent && \
+         cp -f /tmp/kube* /usr/bin   && \
+         chmod 777 /usr/bin/kube* && \
+         cp -f /tmp/kubelet.service /lib/systemd/system/kubelet.service && \
+         ln -sf /lib/systemd/system/kubelet.service /etc/systemd/system/kubelet.service && \
+         cp -f /tmp/registry.pem /etc/ssl/   && \
+         ln -sf /etc/ssl/registry.pem /usr/share/ca-certificates/registry.pem && \
+         sed -i '\$aregistry.pem'  /etc/ca-certificates.conf                  && \
+         update-ca-certificates --fresh"
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /tmp/modules-load-containerd << EOF
+        overlay
+        br_netfilter
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        modprobe overlay && \
+        modprobe br_netfilter && \
+        cp /tmp/modules-load-containerd /etc/modules-load.d/containerd.conf
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        swapoff -a
+        sysctl -w net.bridge.bridge-nf-call-iptables=1 && \
+        sysctl -w net.bridge.bridge-nf-call-ip6tables=1 && \
+        sysctl -w net.ipv4.ip_forward=1
+        "
+
+    {{ if eq .Value.CRI.Name "crio" }}
+    {{ range $k, $v := .Value.Binaries }}
+    {{ if eq $v.Name "crio" }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/crio/{{ $v.Revision }}:0.0.0  --ca-file /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+        tar xvf /tmp/{{ $v.Revision }} -C /tmp &&\
+        cd /tmp/cri-o && ./install
+        systemctl enable crio --now 
+        "
+    {{- end }}
+    {{- end }}
+    {{- end }}
+    {{ if eq .Value.CRI.Name "containerd" }}
+    {{ range $k, $v := .Value.Binaries }}
+    {{ if eq $v.Name "containerd" }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/containerd/{{ $v.Revision }}:0.0.0  --ca-file /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+        tar xvf /tmp/{{ $v.Revision }} -C /
+        "
+    {{- end }}
+    {{- end }}
+    {{- end }}
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "swapoff -a \
+         && sed -i '/swap/d' /etc/fstab"
+
+  - name: byoh-controller-register
+    nodes:
+      allOf:
+      - controlplane
+    commands:
+    - type: shell
+      cmd:
+      - sudo
+      - -E
+      - sh
+      - -c
+      - |
+        "nohup byohHostAgent --kubeconfig /tmp/m_kubeconfig --namespace byoh --label type=controlplane --skip-installation >> /tmp/byohAgent.log 2>&1 & sleep 2"
+  - name: byoh-worker-register
+    nodes:
+      allOf:
+      - worker
+    commands:
+    - type: shell
+      cmd:
+      - sudo
+      - -E
+      - sh
+      - -c
+      - |
+        "nohup byohHostAgent --kubeconfig /tmp/m_kubeconfig --namespace byoh --label type=worker --skip-installation >> /tmp/byohAgent.log 2>&1 & sleep 2"
+

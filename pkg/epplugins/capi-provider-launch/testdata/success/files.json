@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "mirrorurl": "capi/kind",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "ControlPlaneProvider",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "CoreProvider",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "BootstrapProvider",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "InfrastructureProvider",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "cert-manager",
+      "urlreplacement": {}
+    },
+    {
+      "mirrorurl": "oras",
+      "urlreplacement": {}
+    }
+  ]
+}

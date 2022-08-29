@@ -1,0 +1,73 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rt-linux-detection-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rt-linux-detection-role
+  namespace: kube-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - update
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rt-linux-detection-rolebinding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rt-linux-detection-role
+subjects:
+- kind: ServiceAccount
+  name: rt-linux-detection-manager
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: rt-linux-detection
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: rt-linux-detection
+  template:
+    metadata:
+      labels:
+        name: rt-linux-detection
+        namespace: kube-system
+    spec:
+      serviceAccountName: rt-linux-detection-manager
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: rt-linux-detection
+        image: "{{ .Values.imageUrl }}"  
+        command: ["/scripts/rt_linux_detect.sh"]
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        ports:
+        - containerPort: 8080
+          protocol: TCP

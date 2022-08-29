@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ if printf "%s" .Cmdline | splitList " " | has "purge" }}
+containers:
+- name: ironic-cleanup
+  image: quay.io/metal3-io/ironic:capm3-v1.1.0
+  runInBackground: true
+  userInContainer: auto
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  readOnlyRootfs: false
+  bindMounts:
+  - mountPath: /shared
+    hostPath: {{ .Runtimedir }}/capi-metal3/ironic/
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "rm -rf /shared/*"
+{{ end }}

@@ -1,0 +1,18 @@
+## This is the common definition of all Kits.
+Parameters:
+  customconfig:
+    registry:
+      user: admin
+  global_settings:
+    registry_port: "9000"
+
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: multus
+  - name: rt-linux-detection
+  - name: cert-manager-crd
+  - name: cert-manager
+  - name: cert-manager-cluster-issuer
+  - name: prometheus

@@ -1,0 +1,21 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  workflows:
+  - name: init
+    steps:
+{{ if eq .Kitconfig.Parameters.Customconfig.Registry.Externalurl "" }}
+    - name: docker-run
+      input:
+      - name: containers-harbor
+        schema: containers
+{{ end }}
+

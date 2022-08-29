@@ -1,0 +1,90 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ if eq .Kitconfig.OS.Provider "esp" }}
+
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  data:
+  - name: containers-esp-local-git-repo
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/os-deploy/esp-local-git-repo.yml" | readfile | nindent 6 }}
+  - name: containers-esp-build
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/os-deploy/esp-build.yml" | readfile | nindent 6 }}
+  - name: containers-esp-start
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/os-deploy/esp-start.yml" | readfile | nindent 6 }}
+  - name: containers-esp-stop
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/os-deploy/esp-stop.yml" | readfile | nindent 6 }}
+  - name: containers-esp-cleanup
+    value: |
+      {{ printf "%s/%s" .Workspace "workflow/os-deploy/esp-cleanup.yml" | readfile | nindent 6 }}
+
+  workflows:
+  - name: os-deploy-build
+    steps:
+    - name: esp-init
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: os-provider-manifest
+        schema: os-provider-manifest
+    - name: docker-run
+      input:
+      - name: containers-esp-local-git-repo
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-esp-local-git-repo
+        schema: containers
+    - name: docker-run
+      input:
+      - name: containers-esp-build
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-esp-build
+        schema: containers
+
+  - name: os-deploy-start
+    steps:
+    - name: docker-run
+      input:
+      - name: containers-esp-start
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-esp-start
+        schema: containers
+
+  - name: os-deploy-stop
+    steps:
+    - name: docker-run
+      input:
+      - name: containers-esp-stop
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-esp-stop
+        schema: containers
+
+  - name: os-deploy-cleanup
+    steps:
+    - name: docker-run
+      input:
+      - name: containers-esp-cleanup
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-esp-cleanup
+        schema: containers
+
+{{ end }}

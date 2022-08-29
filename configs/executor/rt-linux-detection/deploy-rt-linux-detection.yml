@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: deploy-rt-linux-detection
+spec:
+  steps:
+  - name: deploy-rt-linux-detection
+    nodes:
+      allOf:
+      - day-0 
+    commands:
+    - type: shell
+      cmd:
+      - sh
+      - -c
+      - "cd {{ .Workspace }}/services/ && \
+        {{ .Workspace }}/runtime/bin/helm create --kubeconfig {{ .Kubeconfig }} rt-linux-detection && \
+        cd rt-linux-detection && \
+        rm -rf templates/* && \
+        cp -r ./rt-linux-detection.yml ./templates/ && \
+        {{- if eq .Kitconfig.Cluster.Provider "capi" }}
+        echo \"imageUrl: docker.io/library/rt-linux-detection:latest\">>values.yaml"
+        {{- else }}
+        echo \"imageUrl: {{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io/library/rt-linux-detection:latest\">>values.yaml"
+        {{- end }}
+    - type: shell
+      cmd:
+      - sh
+      - -c
+      - "cd {{ .Workspace }}/services/ && \
+        {{ .Workspace }}/runtime/bin/helm upgrade --install --kubeconfig {{ .Kubeconfig }} rt-linux-detection rt-linux-detection \
+        "

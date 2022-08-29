@@ -1,0 +1,11 @@
+{
+  "capi_cluster_providers": [
+  ],
+  "cluster_providers": [
+    {
+      "binaries": null,
+      "images": null,
+      "resources": null
+    }
+  ]
+}

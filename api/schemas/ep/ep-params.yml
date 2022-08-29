@@ -1,0 +1,44 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  ep-params:
+    type: object
+    properties:
+      workspace:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      runtimedir:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      runtimebin:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      runtimedata:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      user:
+        type: string
+      kubeconfig:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      cmdline:
+        type: string
+      kitconfig:
+        $ref: 'kitconfig.yml#/definitions/kitconfig'
+      kitconfigpath:
+        type: string
+        pattern: @PATTERNFILEPATH@
+      registrycert:
+        $ref: 'certificate.yml#/definitions/certificate'
+      extensions:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            extension:
+                $ref: 'extension.yml#/definitions/extension'

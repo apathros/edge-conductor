@@ -1,0 +1,121 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  containers:
+    properties:
+      containers:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            hostName:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            runInBackground:
+              type: boolean
+            readOnlyRootfs:
+              type: boolean
+              default: true
+            userInContainer:
+              type: string
+            image:
+              type: string
+            imagePullPolicy:
+              type: string
+              enum:
+              - IfNotPresent
+              - Always
+              - Never
+#            privileged:
+#              type: boolean
+            hostNetwork:
+              type: boolean
+            command:
+              type: array
+              items:
+                type: string
+            args:
+              type: array
+              items:
+                type: string
+            ports:
+              type: array
+              items:
+                properties:
+                  containerPort:
+                    type: integer
+                  hostPort:
+                    type: integer
+                  hostIP:
+                    type: string
+                    pattern: @PATTERNIPV4@
+                  protocol:
+                    type: string
+                    enum:
+                    - tcp
+                    - udp
+            volumeMounts:
+              type: array
+              items:
+                properties:
+                  mountPath:
+                    type: string
+                    pattern: @PATTERNFILEPATH@
+                  hostPath:
+                    type: string
+                    pattern: @PATTERNFILEPATH@
+                  readOnly:
+                    type: boolean
+            bindMounts:
+              type: array
+              items:
+                properties:
+                  mountPath:
+                    type: string
+                    pattern: @PATTERNFILEPATH@
+                  hostPath:
+                    type: string
+                    pattern: @PATTERNFILEPATH@
+                  readOnly:
+                    type: boolean
+            env:
+              type: array
+              items:
+                properties:
+                  name:
+                    type: string
+                  value:
+                    type: string
+            cap_add:
+              type: array
+              items:
+                type: string
+                enum:
+                - "NET_ADMIN"
+            securityOpt:
+              type: array
+              items:
+                type: string
+                enum:
+                - "no-new-privileges"
+            restart:
+              type: string
+              enum:
+              - "always"
+              - "no"
+            networks:
+              type: array
+              items:
+                type: string
+            force:
+              type: boolean
+            tmpfs:
+              type: array
+              items:
+                type: string
+                pattern: @PATTERNFILEPATH@

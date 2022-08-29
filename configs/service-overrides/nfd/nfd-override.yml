@@ -1,0 +1,19 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+master:
+  extraLabelNs:
+  - "gpu.intel.com"
+  resourceLabels:
+  - "gpu.intel.com/memory.max"
+  - "gpu.intel.com/millicores"
+  - "gpu.intel.com/tiles"
+tls:
+  enable: true
+{{- range .Kitconfig.Components.Selector -}}
+{{- if eq .Name "cert-manager" }}
+  certManager: true
+{{- end -}}
+{{- end }}

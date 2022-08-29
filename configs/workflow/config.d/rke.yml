@@ -1,0 +1,89 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ if eq .Kitconfig.Cluster.Provider "rke" }}
+
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  data:
+{{ "workflow/common/data.yml" | include_data | nindent 2 }}
+  - name: ep-rkeconfig
+    confidential: true
+
+  workflows:
+# Include general workflows
+{{ "workflow/common/init.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/deinit.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-build.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-deploy.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-list.yml" | include_workflows | nindent 2 }}
+
+  - name: cluster-build
+    steps:
+    - name: rke-parser
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+      output:
+      - name: rke-docker-images
+        schema: docker-images
+      - name: clusterfiles
+        schema: files
+    - name: file-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: clusterfiles
+        schema: files
+      output:
+      - name: clusterfiles
+        schema: files
+    - name: rke-injector
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: rke-docker-images
+        schema: docker-images
+      - name: clusterfiles
+        schema: files
+      output:
+      - name: ep-rkeconfig
+        schema: rkeconfig
+      - name: rke-docker-images
+        schema: docker-images
+    - name: docker-image-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: rke-docker-images
+        schema: docker-images
+
+  - name: cluster-deploy
+    steps:
+    - name: rke-deployer
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: ep-rkeconfig
+        schema: rkeconfig
+      - name: clusterfiles
+        schema: files
+      output:
+      - name: ep-kubeconfig
+        schema: kubeconfig
+    - name: file-exporter
+      input:
+      - name: ep-kubeconfig
+        schema: exportcontent
+      - name: export-kubeconfig
+        schema: exportpath
+
+{{ end }}

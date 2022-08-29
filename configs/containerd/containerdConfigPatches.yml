@@ -1,0 +1,23 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/docker.io", "https://registry-1.docker.io"]
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/k8s.gcr.io", "https://k8s.gcr.io"]
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."gcr.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/gcr.io", "https://gcr.io"]
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."quay.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/quay.io", "https://quay.io"]
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."ghcr.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/ghcr.io", "https://docker.pkg.github.com"]
+[plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.k8s.io"]
+  endpoint = ["https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/registry.k8s.io", "https://registry.k8s.io"]
+[plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".tls]
+  ca_file = "/etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt"
+[plugins."io.containerd.grpc.v1.cri".registry.configs."{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}".auth]
+  username = "{{ .Kitconfig.Parameters.Customconfig.Registry.User }}"
+  password = "{{ .Kitconfig.Parameters.Customconfig.Registry.Password }}"

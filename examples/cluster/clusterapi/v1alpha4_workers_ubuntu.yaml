@@ -1,0 +1,141 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: test1
+    nodepool: nodepool-0
+  name: test1
+  namespace: metal3
+spec:
+  clusterName: test1
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: test1
+      nodepool: nodepool-0
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: test1
+        nodepool: nodepool-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: test1-workers
+      clusterName: test1
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+        kind: Metal3MachineTemplate
+        name: test1-workers
+      nodeDrainTimeout: 0s
+      version: v1.21.2
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+kind: Metal3MachineTemplate
+metadata:
+  name: test1-workers
+  namespace: metal3
+spec:
+  template:
+    spec:
+      dataTemplate:
+        name: test1-workers-template
+      image:
+        checksum: http://192.168.206.1/images/UBUNTU_20.04_NODE_IMAGE_K8S_v1.21.1_ubuntu-raw.img.md5sum
+        checksumType: md5
+        format: raw
+        url: http://192.168.206.1/images/UBUNTU_20.04_NODE_IMAGE_K8S_v1.21.1_ubuntu-raw.img
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+kind: Metal3DataTemplate
+metadata:
+  name: test1-workers-template
+  namespace: metal3
+spec:
+  clusterName: test1
+  metaData:
+    ipAddressesFromIPPool:
+    - key: provisioningIP
+      name: provisioning-pool
+    objectNames:
+    - key: name
+      object: machine
+    - key: local-hostname
+      object: machine
+    - key: local_hostname
+      object: machine
+    prefixesFromIPPool:
+    - key: provisioningCIDR
+      name: provisioning-pool
+  networkData:
+    links:
+      ethernets:
+      - id: eno1
+        macAddress:
+          fromHostInterface: eno1
+        type: phy
+    networks:
+      ipv4:
+      - id: provisional
+        ipAddressFromIPPool: provisioning-pool
+        link: eno1
+        routes:
+        - gateway:
+            string: "192.168.206.1"
+          network: 0.0.0.0
+          prefix: 0
+    services:
+      dns:
+      - 10.248.2.1
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: test1-workers
+  namespace: metal3
+spec:
+  template:
+    spec:
+      files:
+      - content: |
+          [registries.search]
+          registries = ['docker.io']
+        path: /etc/containers/registries.conf
+      - content: |
+          [Service]
+          Environment="HTTP_PROXY=<proxy>"
+          Environment="HTTPS_PROXY=<proxy>"
+          Environment="NO_PROXY=localhost,127.0.0.1,192.168.206.0/24,,172.16.0.0/16,10.96.0.0/12"
+        owner: root:root
+        path: /etc/systemd/system/crio.service.d/http_proxy.conf
+        permissions: "0644"
+      - content: |
+          Acquire::http::proxy "<proxy>";
+          Acquire::https::proxy "<proxy>";
+        owner: root:root
+        path: /etc/apt/apt.conf
+        permissions: "0644"
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cgroup-driver: systemd
+            container-runtime: remote
+            container-runtime-endpoint: unix:///var/run/crio/crio.sock
+            feature-gates: AllAlpha=false,RunAsGroup=true
+            node-labels: metal3.io/uuid={{ ds.meta_data.uuid }}
+            provider-id: metal3://{{ ds.meta_data.uuid }}
+            runtime-request-timeout: 5m
+          name: '{{ ds.meta_data.name }}'
+      preKubeadmCommands:
+      - netplan apply
+      - apt-get install ntpdate
+      - ntpdate pool.ntp.org
+      - systemctl enable --now crio kubelet

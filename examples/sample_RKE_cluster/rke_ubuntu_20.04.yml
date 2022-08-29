@@ -1,0 +1,132 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+## This is the official kit for RKE cluster with ESP profile.
+##
+## Preconditions:
+## - Users must setup the ESP network topology (following the settings in config/extensions/esp_network.yml), and connect all the nodes to be installed to the ESP network.
+## - Before running the "init" command, users must:
+##     - Input the MAC addresses and static IP addresses of the nodes in the "Parameters - nodes" config section.
+##     - Input the default password of the nodes in the "Parameters - nodes" config section.
+##     - Input the default SSH public key path. After ESP provisioning, allowing you to connect to target nodes without a password.
+## - After OS provisioning is finished with ESP, and before "cluster deploy", login to the nodes and make sure users have permission to run "sudo" command with no password.
+##
+## Features:
+## - The ESP resource files are installed from upstream with an external network connection.
+## - The "cluster deploy" can be run in an offline mode (no external network connection needed).
+## - The offline "service deploy" is not supported.
+
+Use:
+##import the configs set in common.yml
+- kit/common.yml
+
+Parameters:
+  customconfig:
+    registry:
+      ## set the password before running the command "./conductor init -c *.yml"
+      password:
+  ## Input ssh public key path into the default_ssh_key_path field.
+  ## Example: /home/path/.ssh/id_rsa.pub 
+  ## default_ssh_key_path: /home/path/.ssh/id_rsa.pub
+  default_ssh_key_path:
+  ## Input http proxy and ESP uses this parameter to provision on target node
+  ## Example: http_proxy: "http://www.example.com"
+  ## After ESP provision, the http_proxy is already set on target node.
+  ## DO both https_proxy and no_proxy
+  global_settings:
+    http_proxy: ""
+    https_proxy: ""
+    no_proxy: "127.0.0.1,localhost,10.10.10.0/24"
+  ## nodes field contains a list of node objects.
+  ## the below is a two-nodes cluster with one node supporting both control plane and etcd and
+  ## one node supporting node.
+  nodes:
+  - mac: 52:54:00:c3:b1:cb
+    ip: 10.10.10.11
+    role:
+      - controlplane
+      - etcd
+    user: sys-admin     
+    ssh_passwd: P@ssw0rd!
+  - mac: 52:54:00:c3:b1:cc
+    ip: 10.10.10.21
+    role:
+      - worker
+    user: sys-admin
+    ssh_passwd: P@ssw0rd!
+
+  ## to add a work (or controlplane) node by setting a group of attributor as below. 
+  ## controlplane node is at least one and up to three.
+  ## ## Controlplane:
+  ## - mac:
+  ##  ip:
+  ##  role:
+  ##    - controlplane
+  ##    - etcd
+  ##  user: sys-admin
+  ##  ssh_passwd:
+  ##
+  ## ## Worker:
+  ## - mac:
+  ##  ip:
+  ##  role:
+  ##    - worker
+  ##  user: sys-admin
+  ##  ssh_passwd:
+
+  extensions:
+  - esp_network
+  - ingress
+  - sriov
+  - cpu-manager
+  - service-tls
+
+OS:
+  manifests:
+  - "config/manifests/os_provider_manifest.yml"
+  provider: esp
+  # Before running "init" with the kit config file, update ESP config
+  # with correct "git_username" and "git_token" to access the profile git repo.
+  config: "config/os-provider/esp_config_profile-ubuntu-20.04.yml"
+  # EC supports many distro for ESP. Currently, the distro it can use are
+  # "ubuntu2004"
+  # "ubuntu2204"
+  # "debian11"  
+  distro: "ubuntu2004"
+
+Cluster:
+  manifests:
+  - "config/manifests/cluster_provider_manifest.yml"
+  provider: rke
+  config: "config/cluster-provider/rke_cluster.yml"
+  # RKE config files are exported under this folder.
+  # Make sure the path is accessible.
+  # Use absolute path or relative path.
+  # DO NOT use "~" to represent the home directory.
+  export_config_folder: {{ env "HOME" }}/.ec/rke/cluster
+
+# To enable rook ceph, make sure there're at least one controller + one worker and
+# a clean additional hard disk with >1GB storage available. 
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: nfd
+  - name: intel-sriov-network
+  - name: nginx-ingress
+    override:
+      url: https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-4.0.15/ingress-nginx-4.0.15.tgz
+      type: helm
+      chartoverride: file://{{ .Workspace }}/config/service-overrides/ingress/rke-nginx-ingress.yml
+      supported-clusters:
+      - rke
+      images: []
+  - name: rook-ceph
+  - name: rook-ceph-cluster
+  - name: portainer-ce
+  - name: intel-gpu-plugin
+  - name: akri
+

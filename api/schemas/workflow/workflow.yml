@@ -1,0 +1,82 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  workflow:
+    type: object
+    properties:
+      apiVersion:
+        type: string
+      kind:
+        type: string
+      metadata:
+        type: object
+        properties:
+          name:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          namespace:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+      spec:
+        type: object
+        properties:
+          data:
+            type: array
+            items:
+              properties:
+                name:
+                  type: string
+                  pattern: @PATTERNNORMALSTRING@
+                value:
+                  type: string
+                confidential:
+                  type: boolean
+          workflows:
+            type: array
+            items:
+              properties:
+                name:
+                  type: string
+                  pattern: @PATTERNNORMALSTRING@
+                steps:
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        pattern: @PATTERNNORMALSTRING@
+                      input:
+                        type: array
+                        items:
+                          properties:
+                            name:
+                              type: string
+                              pattern: @PATTERNNORMALSTRING@
+                            schema:
+                              type: string
+                              pattern: @PATTERNNORMALSTRING@
+                      output:
+                        type: array
+                        items:
+                          properties:
+                            name:
+                              type: string
+                              pattern: @PATTERNNORMALSTRING@
+                            schema:
+                              type: string
+                              pattern: @PATTERNFILEPATH@
+          plugins:
+            type: array
+            items:
+              properties:
+                name:
+                  type: string
+                  pattern: @PATTERNNORMALSTRING@
+                container:
+                  type: string
+                  pattern: @PATTERNNORMALSTRING@
+          containers:
+            $ref: 'containers.yml#/definitions/containers/properties/containers'

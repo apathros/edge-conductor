@@ -1,0 +1,7 @@
+{
+  "kitconfig": {
+    "Cluster": {
+      "provider": "clusterapi"
+    }
+  }
+}

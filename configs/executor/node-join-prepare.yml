@@ -1,0 +1,339 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: node-join-prepare
+spec:
+  steps:
+  - name: node-join-prepare
+    nodes:
+      allOf:
+      - worker
+    commands:
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/cert/pki/registry/registry.pem
+      - /tmp/
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/runtime/capi-{{ .Value.Provider }}/oras_0.13.0_linux_amd64.tar.gz
+      - /tmp/
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/runtime/m_kubeconfig
+      - /tmp/
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/cert/pki/ca.pem
+      - /tmp/
+    - type: shell
+      cmd:
+       - sudo
+       - sh
+       - -c
+       - |
+        "tar -xvf /tmp/oras_0.13.0_linux_amd64.tar.gz -C /usr/bin/"
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /tmp/kubelet.service << EOF
+        [Unit]
+        Description=kubelet: The Kubernetes Node Agent
+        Documentation=https://kubernetes.io/docs/home/
+        Wants=network-online.target
+        After=network-online.target
+
+        [Service]
+        Restart=always
+        StartLimitInterval=0
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        "
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "mkdir -p /etc/containerd/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }} && \
+         cp -f /tmp/ca.pem /etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt && \
+         mkdir -p /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }} && \
+         mkdir -p /etc/systemd/system/containerd.service.d/ && mkdir -p /etc/systemd/system/crio.service.d/ && \
+         cp -f /tmp/ca.pem /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubectl/kubectl:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubeadm/kubeadm:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+         oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/kubelet/kubelet:0.0.0 \
+         --ca-file /etc/containers/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp
+         cp -f /tmp/kube* /usr/bin   && \
+         chmod 777 /usr/bin/kube* && \
+         cp -f /tmp/kubelet.service /lib/systemd/system/kubelet.service && \
+         ln -sf /lib/systemd/system/kubelet.service /etc/systemd/system/kubelet.service && \
+         cp -f /tmp/registry.pem /etc/ssl/   && \
+         ln -sf /etc/ssl/registry.pem /usr/share/ca-certificates/registry.pem && \
+         sed -i '\$aregistry.pem'  /etc/ca-certificates.conf                  && \
+         mkdir -p /etc/systemd/system/kubelet.service.d/ && \
+         update-ca-certificates --fresh"
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "swapoff -a \
+         && sed -i '/swap/d' /etc/fstab"
+
+    {{ if eq .Value.CRI.Name "containerd" }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/systemd/system/containerd.service.d/http-proxy.conf << EOF
+        [Service]
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment=\"NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }},192.168.0.0/18,10.96.0.0/12\"
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/containerd/config.toml << EOF
+        version = 2
+
+        disabled_plugins = []
+
+        [plugins]
+          [plugins.\"io.containerd.grpc.v1.cri\"]
+            [plugins.\"io.containerd.grpc.v1.cri\".containerd]
+              default_runtime_name = \"runc\"
+              discard_unpacked_layers = true
+              [plugins.\"io.containerd.grpc.v1.cri\".containerd.runtimes]
+                [plugins.\"io.containerd.grpc.v1.cri\".containerd.runtimes.runc]
+                  runtime_type = \"io.containerd.runc.v2\"
+                  [plugins.\"io.containerd.grpc.v1.cri\".containerd.runtimes.runc.options]
+                    SystemdCgroup = true
+            [plugins.\"io.containerd.grpc.v1.cri\".registry]
+              [plugins.\"io.containerd.grpc.v1.cri\".registry.configs]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.configs.\"{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}\"]
+                  [plugins.\"io.containerd.grpc.v1.cri\".registry.configs.\"{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}\".auth]
+                    username = \"{{ .Kitconfig.Parameters.Customconfig.Registry.User }}\"
+                    password = \"{{ .Kitconfig.Parameters.Customconfig.Registry.Password }}\"
+                  [plugins.\"io.containerd.grpc.v1.cri\".registry.configs.\"{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}\".tls]
+                    ca_file = \"/etc/containerd/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt\"
+              [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"docker.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/docker.io\", \"https://registry-1.docker.io\"]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"gcr.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/gcr.io\", \"https://gcr.io\"]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"k8s.gcr.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/k8s.gcr.io\", \"https://k8s.gcr.io\"]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"quay.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/quay.io\", \"https://quay.io\"]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"ghcr.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/ghcr.io\", \"https://docker.pkg.github.com\"]
+                [plugins.\"io.containerd.grpc.v1.cri\".registry.mirrors.\"registry.k8s.io\"]
+                  endpoint = [\"https://{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/v2/registry.k8s.io\", \"https://registry.k8s.io\"]
+        EOF
+        "
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /tmp/modules-load-containerd << EOF
+        overlay
+        br_netfilter
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        modprobe overlay && \
+        modprobe br_netfilter && \
+        cp /tmp/modules-load-containerd /etc/modules-load.d/containerd.conf
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        sysctl -w net.bridge.bridge-nf-call-iptables=1 && \
+        sysctl -w net.bridge.bridge-nf-call-ip6tables=1 && \
+        sysctl -w net.ipv4.ip_forward=1
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/containerd/cri-containerd-cni-1.6.6-linux-amd64.tar.gz:0.0.0  --ca-file /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+        tar xvf /tmp/cri-containerd-cni-1.6.6-linux-amd64.tar.gz --no-overwrite-dir  -C /
+        "
+    {{- end }}
+
+    {{ if eq .Value.CRI.Name "crio" }}
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/systemd/system/crio.service.d/http-proxy.conf << EOF
+        [Service]
+        # no proxy setting with 192.168.0.0/18 and 10.96.0.0/12 for cluster.x-k8s.io definition
+        Environment="NO_PROXY={{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }},192.168.0.0/18,10.96.0.0/12"
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        oras pull {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}:/library/capi/crio/cri-o.amd64.v1.23.2.tar.gz:0.0.0  --ca-file /etc/containers/certs.d/{{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ca.crt -o /tmp && \
+        tar xvf /tmp/cri-o.amd64.v1.23.2.tar.gz -C /tmp&&\
+        cd /tmp/cri-o && ./install
+        systemctl enable crio --now
+        "
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/containers/auth.json << EOF
+        {
+            "auths": {
+                \"{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}\": {
+                    \"auth\": {{ .Value.RegistryAuth }}
+                }
+            }
+        }
+        EOF
+        "
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/containers/registries.conf << EOF
+        [[registry]]
+        prefix = "docker.io"
+        insecure = false
+        blocked = false
+        location = "docker.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "k8s.gcr.io"
+        insecure = false
+        blocked = false
+        location = "k8s.gcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/k8s.gcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "gcr.io"
+        insecure = false
+        blocked = false
+        location = "gcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/gcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "quay.io"
+        insecure = false
+        blocked = false
+        location = "quay.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/quay.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "ghcr.io"
+        insecure = false
+        blocked = false
+        location = "ghcr.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/ghcr.io"
+        insecure = false
+
+        [[registry]]
+        prefix = "registry.k8s.io"
+        insecure = false
+        blocked = false
+        location = "registry.k8s.io"
+
+        [[registry.mirror]]
+        location = "{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/registry.k8s.io"
+        insecure = false
+        EOF
+        "
+
+    {{- end }}
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "cat > /etc/systemd/system/kubelet.service.d/10-kubeadm.conf << \EOF
+        [Service]
+        Environment=\"KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf\"
+        Environment=\"KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml\"
+        EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+        EnvironmentFile=-/etc/default/kubelet
+        ExecStart=/usr/bin/kubelet \$KUBELET_KUBECONFIG_ARGS \$KUBELET_CONFIG_ARGS \$KUBELET_KUBEADM_ARGS \$KUBELET_EXTRA_ARGS
+        EOF
+        "
+
+    - type: shell
+      cmd:
+      - sudo
+      - sh
+      - -c
+      - |
+        "
+        systemctl daemon-reload && systemctl restart {{ .Value.CRI.Name }} && systemctl restart kubelet
+        "

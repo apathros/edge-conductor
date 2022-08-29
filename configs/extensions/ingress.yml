@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+extension:
+- name: rke-ingress
+  config:
+  - name: provider
+    value: "none"
+  - name: default-backend
+    value: "false"
+

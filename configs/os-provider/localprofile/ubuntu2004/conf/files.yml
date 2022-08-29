@@ -1,0 +1,23 @@
+---
+
+# Copyright (C) 2019 Intel Corporation
+# SPDX-License-Identifier: BSD-3-Clause
+
+# Note that all fields for all items must be filled in, unless you omit
+# the entire section. For example, you cannot omit 'type' from an object in
+# the 'base_os_files' section; you must put the word "Other" or "None". Or,
+# if the section is not needed, delete the entire thing.
+
+# These files are retrieved from the public Docker hub.
+# Currently these files can go anywhere.
+public_docker_images:
+  - image: ubuntu:focal
+    tag: ubuntu:focal
+    destination_file: ubuntu_focal.tar
+
+build:
+  - container: ubuntu:focal
+    entrypoint: ""
+    cmd: bash -c
+    execute: build_mirror.sh
+

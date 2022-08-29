@@ -1,0 +1,20 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  workflows:
+  - name: service-list
+    steps:
+    - name: service-list
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: serviceconfig
+        schema: serviceconfig

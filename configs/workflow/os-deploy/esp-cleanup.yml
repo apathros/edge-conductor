@@ -1,0 +1,40 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+containers:
+- name: esp-cleanup
+  image: docker/compose:debian-1.29.2
+  userInContainer: auto
+  runInBackground: false
+  hostNetwork: true
+  imagePullPolicy: IfNotPresent
+  # If the container already exists, remove it and restart
+  force: true
+  env:
+  - name: http_proxy
+    value: "{{ env "http_proxy" }}"
+  - name: https_proxy
+    value: "{{ env "https_proxy" }}"
+  - name: no_proxy
+    value: "{{ env "no_proxy" }}"
+  - name: HTTP_PROXY
+    value: "{{ env "http_proxy" }}"
+  - name: HTTPS_PROXY
+    value: "{{ env "https_proxy" }}"
+  - name: NO_PROXY
+    value: "{{ env "no_proxy" }}"
+  bindMounts:
+  - mountPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  - mountPath: {{ .Workspace }}/
+    hostPath: {{ .Workspace }}/
+  command: ["bash"]
+  args:
+  - "-c"
+  - "set -e;
+     CODEBASE={{ .Workspace }};
+     if [ ! -z $CODEBASE ]; then
+         rm -rf $CODEBASE/esp/;
+     fi"

@@ -1,0 +1,48 @@
+{
+  "capi-parser.docker-images": {
+    "images": [
+      {
+        "name": "kind"
+      },
+      {
+        "name": "kindhaproxy"
+      }
+    ]
+  },
+  "capi-parser.files": {
+    "files": [
+      {
+        "url": "...",
+        "urlreplacement": {
+          "new": "capi/kind",
+          "origin": "://."
+        }
+      },
+      {
+        "urlreplacement": {
+          "new": "capi",
+          "origin": "://."
+        }
+      },
+      {
+        "urlreplacement": {
+          "new": "capi",
+          "origin": "://."
+        }
+      },
+      {
+        "urlreplacement": {
+          "new": "capi/cert-manager",
+          "origin": "://."
+        }
+      },
+      {
+        "hashtype": "sha256",
+        "urlreplacement": {
+          "new": "capi/kind",
+          "origin": "://."
+        }
+      }
+    ]
+  }
+}

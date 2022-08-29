@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2022 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+syntax = "proto3";
+package workflow;
+option go_package = "pkg/api/workflow";
+
+service Workflow {
+    rpc PluginConnect(PluginConnectRequest) returns (PluginConnectResponse) {}
+    rpc PluginPutLog(stream Log) returns (Result) {}
+    rpc PluginComplete(PluginCompleteRequest) returns (Result) {}
+}
+
+message PluginConnectRequest {
+    Plugin plugin = 1;
+}
+
+message PluginCompleteRequest{
+    Plugin plugin = 1;
+    Result result = 2;
+    WorkflowData workflow_data = 3;
+}
+
+message PluginConnectResponse {
+    WorkflowData workflow_data  = 1;
+    ConnectResult result = 2;
+}
+
+message WorkflowData {
+    bytes data = 1;
+    bytes plugin_data = 2;
+}
+
+message Result {
+    enum Return {
+        Success = 0;
+        Error = 1;
+    }
+    Return return = 1;
+}
+
+message ConnectResult {
+    enum Return {
+        Connected = 0;
+        Completed = 1;
+        Error = 2;
+    }
+    Return return = 1;
+}
+
+message Plugin {
+    string name = 1;
+}
+
+message Log {
+    string log = 1;
+}

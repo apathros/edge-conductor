@@ -1,0 +1,24 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  extension:
+    properties:
+      extension:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            config:
+              type: array
+              items:
+                properties:
+                  name:
+                    type: string
+                    pattern: @PATTERNNORMALSTRING@
+                  value:
+                    type: string

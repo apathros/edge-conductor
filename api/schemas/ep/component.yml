@@ -1,0 +1,73 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  component:
+    properties:
+      name:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      namespace:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      url:
+        type: string
+        pattern: @PATTERNURL@
+      helmrepo:
+        type: string
+        pattern: @PATTERNURL@
+      chartname:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      chartversion:
+        type: string
+      hash:
+        type: string
+      hashtype:
+        type: string
+        enum:
+        - sha256
+      chartoverride:
+        type: string
+        pattern: @PATTERNURL@
+      revision:
+        type: string
+      supported-clusters:
+        type: array
+        items:
+          type: string
+      type:
+        type: string
+        enum:
+        - yaml
+        - helm
+        - repo
+        - dce
+      resources:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            value:
+              type: string
+      images:
+        type: array
+        items:
+          type: string
+          pattern: @PATTERNIMAGENAMESTRING@
+      executor:
+        type: object
+        properties:
+          build:
+            type: string
+          deploy:
+            type: string
+      wait:
+        type: object
+        properties:
+          timeout:
+            type: integer

@@ -1,0 +1,58 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  cluster_manifest:
+    type: object
+    properties:
+      name:
+        type: string
+        enum:
+        - metal3
+        - byoh
+      runtime:
+        type: string
+        enum:
+        - containerd
+        - crio
+      providers:
+        $ref: 'capiprovider.yml#/definitions/provider'
+      images:
+        type: array
+        items:
+          type: string
+          pattern: @PATTERNIMAGENAMESTRING@
+      binaries:
+        type: array
+        items:
+          properties:
+            name:
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            url:
+              type: string
+              pattern: @PATTERNURL@
+            sha256:
+              type: string
+            version:
+              type: string
+            revision:
+              type: string
+      cert-manager:
+        type: object
+        properties:
+          version:
+            type: string
+          url:
+            type: string
+            pattern: @PATTERNURL@
+    required:
+    - runtime
+    - name
+    - providers
+    - cert-manager
+    default:
+      runtime: containerd
+

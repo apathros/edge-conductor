@@ -1,0 +1,49 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  cluster:
+    type: object
+    properties:
+      management_cluster:
+        type: object
+        properties:
+          capath:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          endpoint:
+            type: object
+            properties:
+              token:
+                type: string
+              apiserver_port:
+                type: string
+                pattern: @PATTERNPORT@
+              user:
+                type: string
+              ip:
+                type: string
+                pattern: @PATTERNIPV4@
+              password:
+                type: string
+      namespace:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      work_cluster:
+        type: object
+        properties:
+          name:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          discoverytoken:
+            type: string
+          apiserver:
+            type: string
+            pattern: @PATTERNURL@
+          cacerthash:
+            type: string
+          controller:
+            $ref: 'node.yml#/definitions/node'
+

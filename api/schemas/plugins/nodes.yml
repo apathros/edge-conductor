@@ -1,0 +1,13 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  nodes:
+    type: object
+    properties:
+      nodes:
+        type: array
+        items:
+          $ref: 'node.yml#/definitions/node'

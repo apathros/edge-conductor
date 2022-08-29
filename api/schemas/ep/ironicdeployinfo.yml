@@ -1,0 +1,34 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+definitions:
+  ironicdeployinfo:
+    type: object
+    properties:
+      httpport:
+        type: string
+        pattern: @PATTERNPORT@
+      provisioninginterface:
+        type: string
+      dhcprange:
+        type: string
+      fasttrack:
+        type: string
+      provisioningip:
+        type: string
+        pattern: @PATTERNIPV4@
+      kernelurl:
+        type: string
+        pattern: @PATTERNURL@
+      ramdiskurl:
+        type: string
+        pattern: @PATTERNURL@
+      endpoint:
+        type: string
+        pattern: @PATTERNURL@
+      inspectorendpoint:
+        type: string
+        pattern: @PATTERNURL@

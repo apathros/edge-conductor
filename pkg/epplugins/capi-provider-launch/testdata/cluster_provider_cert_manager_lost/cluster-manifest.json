@@ -1,0 +1,33 @@
+{
+  "capi_cluster_providers": [
+    {
+      "binaries": [
+        {}
+      ],
+      "images": [
+        "",
+        ""
+      ],
+      "name": "byoh",
+      "providers": [
+        {
+          "parameters": {}
+        }
+      ],
+      "runtime": ""
+    }
+  ],
+  "cluster_providers": [
+    {
+      "binaries": [
+        {}
+      ],
+      "images": [
+        {}
+      ],
+      "resources": [
+        {}
+      ]
+    }
+  ]
+}

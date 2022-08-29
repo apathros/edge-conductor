@@ -1,0 +1,17 @@
+
+[plugins]
+
+  [plugins.cri]
+
+    [plugins.cri.registry]
+
+      [plugins.cri.registry.configs]
+
+        [plugins.cri.registry.configs."100.100.100.100:9000"]
+
+          [plugins.cri.registry.configs."100.100.100.100:9000".auth]
+            password = "test@testpwd"
+            username = "testuser"
+
+          [plugins.cri.registry.configs."100.100.100.100:9000".tls]
+            ca_file = "/etc/containerd/certs.d/100.100.100.100:9000/ca.crt"

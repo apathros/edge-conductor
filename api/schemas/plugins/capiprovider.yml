@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  provider:
+    type: array
+    items:
+      properties:
+        provider_type:
+          type: string
+          enum:
+          - CoreProvider
+          - BootstrapProvider
+          - ControlPlaneProvider
+          - InfrastructureProvider
+        name:
+          type: string
+          enum:
+          - cluster-api
+          - kubeadm
+          - byoh
+          - metal3
+        url:
+          type: string
+          pattern: @PATTERNURL@
+        parameters:
+          type: object
+          properties:
+            provider_label:
+              type: string
+            version:
+              type: string
+            metadata:
+              type: string
+              pattern: @PATTERNURL@

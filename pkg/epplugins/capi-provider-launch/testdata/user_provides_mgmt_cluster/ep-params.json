@@ -1,0 +1,108 @@
+{
+  "cmdline": "??",
+  "extensions": [
+    {
+      "extension": {
+        "extension": [
+          {
+            "config": [
+              {
+                "name": "Management-cluster-kubeconfig",
+                "value": "66666"
+              }
+            ],
+            "name": "Infra-provider"
+          },
+          {
+            "config": [
+              {}
+            ]
+          }
+        ]
+      },
+      "name": "capi-byoh"
+    },
+    {
+      "extension": {
+        "extension": [
+          {
+            "config": [
+              {}
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "kitconfig": {
+    "Cluster": {
+      "manifests": [
+        "",
+        ""
+      ],
+      "provider": "???"
+    },
+    "Components": {
+      "manifests": [
+        ""
+      ],
+      "selector": [
+        {}
+      ]
+    },
+    "OS": {
+      "config": "?",
+      "manifests": [
+        ""
+      ]
+    },
+    "Parameters": {
+      "customconfig": {
+        "cluster": {
+          "management_cluster": {
+            "endpoint": {}
+          },
+          "work_cluster": {
+            "controller": {
+              "role": [
+                "",
+                ""
+              ]
+            }
+          }
+        },
+        "ironic": {},
+        "registry": {},
+        "resources": []
+      },
+      "extensions": [
+        "capi-byoh"
+      ],
+      "global_settings": {
+        "dns_server": [
+          "",
+          ""
+        ]
+      },
+      "nodes": [
+        {
+          "role": [
+            "controlplane",
+            "etcd",
+            "worker"
+          ]
+        }
+      ]
+    },
+    "Use": [
+      ""
+    ]
+  },
+  "kitconfigpath": "testkitconfig",
+  "kubeconfig": "testkubeconfig",
+  "registrycert": {
+    "ca": {},
+    "client": {},
+    "server": {}
+  }
+}

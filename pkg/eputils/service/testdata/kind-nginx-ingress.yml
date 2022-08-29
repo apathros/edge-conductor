@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/name: defalut
+  name: fakeName
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    helm.sh/chart: defalut
+  name: fakeName
+---
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    metadata:
+      labels:
+        fake1: defalut1
+        fake2: defalut2
+        fake3: defalut3

@@ -1,0 +1,59 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  node:
+    type: object
+    properties:
+      name:
+        type: string
+        pattern: @PATTERNNORMALSTRING@
+      critype:
+        type: string
+        enum:
+        - containerd
+        - dockerd
+      user:
+        type: string
+      ip:
+        type: string
+        pattern: @PATTERNIPV4@
+      mac:
+        type: string
+        pattern: @PATTERNMAC@
+      ssh_key_path:
+        type: string
+      ssh_key:
+        type: string
+      ssh_passwd:
+        type: string
+      ssh_port:
+        type: integer
+      role:
+        type: array
+        items:
+          type: string
+      labels:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+      bmc_user:
+        type: string
+      bmc_password:
+        type: string
+      bmc_protocol:
+        type: string
+        enum:
+        - redfish
+        - ipmi
+      bmc_endpoint:
+        type: string
+        pattern: @PATTERNURL@
+

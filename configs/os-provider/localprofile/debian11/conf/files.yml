@@ -1,0 +1,34 @@
+---
+#
+# Copyright (c) 2022 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Note that all fields for all items must be filled in, unless you omit
+# the entire section. For example, you cannot omit 'type' from an object in
+# the 'base_os_files' section; you must put the word "Other" or "None". Or,
+# if the section is not needed, delete the entire thing.
+
+# These files are retrieved from the public Docker hub.
+# Currently these files can go anywhere.
+#public_docker_images:
+#  - image: debian:focal
+#    tag: debian:focal
+#    destination_file: debian_focal.tar
+public_docker_images:
+  - image: debian:bullseye
+    tag: debian:bullseye
+    destination_file: debian_bullseye.tar
+
+general_files:
+  - url: https://github.com/docker/compose/releases/download/1.26.0/docker-compose-Linux-x86_64
+    destination_file: docker-compose
+    token: None
+
+build:
+  - container: ubuntu:focal
+    entrypoint: ""
+    cmd: bash -c
+    execute: build_mirror.sh
+

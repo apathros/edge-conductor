@@ -1,0 +1,31 @@
+{
+  "Parameters": {
+    "customconfig": {
+      "registry": {
+        "user": "test",
+        "password": "test"
+      }
+    },
+    "global_settings": {
+      "registry_port": "81",
+      "provider_ip": "10.0.0.1",
+      "workflow_port": "82"
+    }
+  },
+  "Cluster": {
+    "config": "sampleconfig",
+    "provider": "sampletype"
+  },
+  "OS": {
+    "config": "sampleconfigos",
+    "provider": "sampleprovider"
+  },
+  "Components": {
+    "manifests": [
+      "config/manifests/component_manifest.yml"
+    ],
+    "selector": [
+      {"name": "sampleconfg"}
+    ]
+  }
+}

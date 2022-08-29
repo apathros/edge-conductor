@@ -1,0 +1,40 @@
+{
+  "capi_cluster_providers": [
+    {
+      "binaries": [
+        {
+          "name": "byoh",
+          "sha256": "...",
+          "url": "...",
+          "version": "..."
+        }
+      ],
+      "cert-manager": {},
+      "images": null,
+      "name": "metal3",
+      "providers": [
+        {
+          "name": "metal3",
+          "parameters": {}
+        },
+        {
+          "name": "kind",
+          "parameters": {}
+        }
+      ],
+      "runtime": null
+    }
+  ],
+  "cluster_providers": [
+    {
+      "binaries": [
+        {
+          "name": "metal3"
+        }
+      ],
+      "images": null,
+      "name": "metal3",
+      "resources": null
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+    "CN": "Rapid Workflow Plugin",
+    "hosts": [""],
+    "key": {
+        "algo": "ecdsa-p384"
+    },
+    "names": [
+        {
+            "C": "",
+            "L": "",
+            "ST": "",
+            "O": "",
+            "OU": ""
+        }
+    ]
+}

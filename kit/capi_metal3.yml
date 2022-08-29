@@ -1,0 +1,74 @@
+## This is the official Kit for ClusterAPI Metal3 provider with ESP profile.
+##
+## Features:
+## - The ClusterAPI Metal3 provider will be used to do the cluster deployment.
+## - The default container runtime used in the target cluster is containerd.
+## - Offline deployment is not supported.
+
+Use:
+- kit/capi-platform.yml
+- kit/common.yml
+
+Parameters:
+  customconfig:
+    registry:
+      password: ""
+    ironic:
+      ironicuser: admin
+      ironicpassword: ""
+      ironicinspectoruser: admin
+      ironicinspectorpassword: ""
+      mariadbpassword: ""
+  global_settings:
+    provider_ip:
+    http_proxy: ""
+    https_proxy: ""
+    no_proxy: ""
+    dns_server: []
+    ntp_server: ""
+  nodes:
+  - name: node-0
+    user: metal3
+    mac: "<mac_addr_0>"
+    bmc_user: "<bmc_user_0>"
+    bmc_password: ""
+    bmc_protocol: redfish
+    bmc_endpoint: "<bmc_endpoint_0>"
+  - name: node-1
+    user: metal3
+    mac: "<mac_addr_1>"
+    bmc_user: "<mac_addr_1>"
+    bmc_password: ""
+    bmc_protocol: redfish
+    bmc_endpoint: "<bmc_endpoint_1>"
+  extensions:
+  - capi-metal3
+  - sriov
+  - service-tls
+
+OS:
+  manifests:
+  provider:
+  config:
+
+Cluster:
+  manifests:
+  - "config/manifests/cluster_provider_manifest.yml"
+  provider: capi
+  config: "config/cluster-provider/capi_cluster.yml"
+
+Components:
+  manifests:
+  - "config/manifests/component_manifest.yml"
+  selector:
+  - name: nfd
+  - name: nginx-ingress
+    override:
+      chartoverride: file://{{ .Workspace }}/config/service-overrides/ingress/capi-nginx-ingress.yml
+  - name: intel-sriov-network
+  - name: rook-ceph
+  - name: rook-ceph-cluster
+  - name: portainer-ce
+  - name: intel-gpu-plugin
+  - name: akri
+

@@ -1,0 +1,24 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+extension:
+- name: cpu-manager
+  config:
+  - name: CPUManagerPolicyOptions
+    value: "true"
+- name: node-config
+  config:
+  - name: cpu-manager-policy
+    value: static
+  - name: system-reserved
+    value: "cpu=1,memory=512Mi"
+  - name: kube-reserved
+    value: "cpu=1,memory=512Mi"
+  - name: reserved-cpus
+    value: "0"
+  - name: feature-gates
+    value: "CPUManager=true,CPUManagerPolicyOptions=true"
+

@@ -1,0 +1,113 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+featureGates:
+{{- range .Extensions -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Extension.Extension -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Config -}}
+{{- if eq .Name "CPUManagerPolicyOptions" }}
+  CPUManagerPolicyOptions: {{ .Value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+nodes:
+- role: control-plane
+{{- range .Extensions -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Extension.Extension -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Config -}}
+{{- if eq .Name "kind-image"}}
+  image: {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io/{{ .Value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 8088
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 9443
+    protocol: TCP
+  extraMounts:
+    - containerPath: /etc/containerd/certs.d/
+      hostPath: {{ .Runtimedir }}/data/cert/
+{{block "workers" . -}}{{- range $node := .Kitconfig.Parameters.Nodes -}}
+{{- range .Role -}}
+{{- if eq . "worker"}}
+- role: worker
+{{- range $.Extensions -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Extension.Extension -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Config -}}
+{{- if eq .Name "kind-image"}}
+  image: {{ $.Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ $.Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io/{{ .Value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+  kubeadmConfigPatches:
+  - |
+    kind: JoinConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+{{- range $.Extensions -}}
+{{- if eq .Name "cpu-manager" -}}
+{{- range .Extension.Extension -}}
+{{- if eq .Name "node-config" -}}
+{{- range .Config -}}
+{{- if eq .Name "cpu-manager-policy"}}
+        cpu-manager-policy: {{ .Value }}
+{{- end -}}
+{{- if eq .Name "system-reserved"}}
+        system-reserved: {{ .Value }}
+{{- end -}}
+{{- if eq .Name "kube-reserved"}}
+        kube-reserved: {{ .Value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}{{- end}}
+{{- end -}}
+{{- end }}
+  extraMounts:
+    - containerPath: /etc/containerd/certs.d/
+      hostPath: {{ $.Runtimedir }}/data/cert/
+{{- end -}}
+{{- end -}}
+{{- end -}}{{- end}}
+# The Kind project has a known issue (https://github.com/kubernetes-sigs/kind/issues/1689)
+# that causes HA control planes to fail to properly restart when the machine running
+# kind is rebooted.  The failure mode is the HA proxy flooding the network with DNS
+# requests.  Until this issue is fixed by the kind community we don't recommend HA control planes.
+# - role: control-plane
+#  extraMounts:
+#    {{- printf "%s/%s" .Workspace "config/cluster/kind/extraMounts_cacert.yml" | readfile | nindent 4 }}
+#- role: control-plane
+#  extraMounts:
+#    {{- printf "%s/%s" .Workspace "config/cluster/kind/extraMounts_cacert.yml" | readfile | nindent 4 }}
+containerdConfigPatches:
+  - |-
+    {{- printf "%s/%s" .Workspace "config/containerd/containerdConfigPatches.yml" | readfile | nindent 6 }}

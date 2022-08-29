@@ -1,0 +1,47 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  certificate:
+    type: object
+    properties:
+      name:
+        type: string
+      ca:
+        type: object
+        properties:
+          csr:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          cert:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          key:
+            type: string
+            pattern: @PATTERNFILEPATH@
+      server:
+        type: object
+        properties:
+          csr:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          cert:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          key:
+            type: string
+            pattern: @PATTERNFILEPATH@
+      client:
+        type: object
+        properties:
+          csr:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          cert:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          key:
+            type: string
+            pattern: @PATTERNFILEPATH@

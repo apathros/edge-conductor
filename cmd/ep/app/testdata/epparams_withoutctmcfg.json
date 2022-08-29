@@ -1,0 +1,15 @@
+{
+  "kitconfig": {
+    "Parameters": {
+      "global_settings": {
+        "registry_port": "81",
+        "provider_ip": "0.0.0.0"
+      },
+      "default_ssh_key_path": "/test"
+    },
+    "OS": {
+      "provider": ""
+    }
+  },
+  "registrycert": {}
+}

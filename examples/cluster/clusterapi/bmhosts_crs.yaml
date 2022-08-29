@@ -1,0 +1,61 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: node-0-bmc-secret
+  namespace: metal3
+type: Opaque
+data:
+  username: redfish_username_base64
+  password: redfish_password_base64
+
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: node-0
+  namespace: metal3
+spec:
+  online: true
+  # provisioning nic mac address
+  bootMACAddress: xx:xx:xx:xx:xx:xx
+  bootMode: legacy
+  bmc:
+    address: redfish+https://10.10.10.105:443/redfish/v1/Systems/System.Embedded.1
+    credentialsName: node-0-bmc-secret
+    disableCertificateVerification: true
+  firmware:
+    # enable sriov feature in BIOS
+    sriovEnabled: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: node-1-bmc-secret
+  namespace: metal3
+type: Opaque
+data:
+  username: redfish_username_base64
+  password: redfish_password_base64
+
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: node-1
+  namespace: metal3
+spec:
+  online: true
+  # provisioning nic mac address
+  bootMACAddress: xx:xx:xx:xx:xx:xx
+  bootMode: legacy
+  bmc:
+    address: redfish+https://10.10.10.104:443/redfish/v1/Systems/System.Embedded.1
+    credentialsName: node-1-bmc-secret
+    disableCertificateVerification: true

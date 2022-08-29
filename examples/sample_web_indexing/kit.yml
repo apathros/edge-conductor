@@ -1,0 +1,20 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+Use:
+  - kit/kind.yml
+
+Parameters:
+  customconfig:
+    registry:
+      password: "123456"
+
+Components:
+  manifests:
+    - "config/manifests/component_manifest.yml"
+    - "config/sample_web_indexing/manifest.yml"
+  selector:
+    - name: web-indexing

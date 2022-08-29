@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  plugins:
+  - name: test-plugin
+
+  data:
+  - name: test-data
+
+  workflows:
+  - name: test-workflow
+
+  containers:
+  - name: test-conductor

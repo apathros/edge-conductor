@@ -1,0 +1,13 @@
+ca:
+  cert: testdata/context1/ca.crt
+  csr: testdata/context1/ca-csr.json
+  key: testdata/context1/ca.key
+client:
+  cert: testdata/context1/client.crt
+  csr: testdata/context1/servcli-csr.json
+  key: testdata/context1/client.key
+name: workflow
+server:
+  cert: testdata/context1/server.crt
+  csr: testdata/context1/servcli-csr.json
+  key: testdata/context1/server.key

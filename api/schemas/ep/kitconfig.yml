@@ -1,0 +1,111 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  kitconfig:
+    type: object
+    properties:
+      Use:
+        type: array
+        items:
+          type: string
+      Parameters:
+        type: object
+        properties:
+          default_ssh_key_path:
+            type: string
+          nodes:
+            type: array
+            items:
+              $ref: 'node.yml#/definitions/node'
+          extensions:
+            type: array
+            items:
+              type: string
+              pattern: @PATTERNFILEPATH@
+          customconfig:
+            $ref: 'customconfig.yml#/definitions/customconfig'
+          global_settings:
+            type: object
+            properties:
+              registry_port:
+                type: string
+                pattern: @PATTERNPORT@
+              workflow_port:
+                type: string
+                pattern: @PATTERNPORT@
+              provider_ip:
+                type: string
+                pattern: @PATTERNIPV4@
+              http_proxy:
+                type: string
+                pattern: @PATTERNURL@
+              https_proxy:
+                type: string
+                pattern: @PATTERNURL@
+              no_proxy:
+                type: string
+              dns_server:
+                type: array
+                items:
+                  type: string
+              ntp_server:
+                type: string
+                pattern: @PATTERNNORMALSTRING@
+
+      OS:
+        type: object
+        properties:
+          provider:
+            type: string
+            enum:
+            - esp
+            - none
+          config:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          manifests:
+            type: array
+            items:
+              type: string
+              pattern: @PATTERNFILEPATH@
+          distro:
+            type: string
+            pattern: @PATTERNFILEPATH@
+
+      Cluster:
+        type: object
+        properties:
+          provider:
+            type: string
+          config:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          manifests:
+            type: array
+            items:
+              type: string
+              pattern: @PATTERNFILEPATH@
+          export_config_folder:
+            type: string
+            pattern: @PATTERNFILEPATH@
+
+      Components:
+        type: object
+        properties:
+          manifests:
+            type: array
+            items:
+              type: string
+              pattern: @PATTERNFILEPATH@
+          selector:
+            type: array
+            items:
+              properties: 
+                name:
+                  type: string
+                  pattern: @PATTERNNORMALSTRING@
+                __override_yaml__:
+                  type: string

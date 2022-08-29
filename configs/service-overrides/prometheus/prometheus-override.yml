@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+nodeExporter:
+  enabled: false
+
+kubeStateMetrics:
+  enabled: false
+
+prometheusOperator:
+  admissionWebhooks:
+    certManager:
+      enabled: true
+      rootCert:
+        duration: "26280h"
+      admissionCert:
+        duration: "26280h"
+      issuerRef:
+        name: "edge-conductor-ca"
+        kind: "ClusterIssuer"
+
+prometheus:
+  prometheusSpec:
+    externalUrl: "https://prometheus-kube-prometheus-prometheus.prometheus:9090"
+    secrets: ['prometheus-kube-prometheus-admission']
+    web:
+      tlsConfig:
+        keySecret:
+          name: prometheus-kube-prometheus-admission
+          key: tls.key
+        cert:
+          secret:
+            name: prometheus-kube-prometheus-admission
+            key: tls.crt

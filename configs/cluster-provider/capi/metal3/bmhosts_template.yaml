@@ -1,0 +1,33 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+{{- range $node := .Kitconfig.Parameters.Nodes }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $node.Name }}-bmc-secret
+  namespace: metal3
+type: Opaque
+data:
+  username: {{ base64 $node.BmcUser }}
+  password: {{ base64 $node.BmcPassword }}
+
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: {{ $node.Name }}
+  namespace: metal3
+spec:
+  online: true
+  bootMACAddress: {{ $node.Mac }}
+  bootMode: legacy
+  bmc:
+    address: {{ $node.BmcProtocol }}+{{ $node.BmcEndpoint }}
+    credentialsName: {{ $node.Name }}-bmc-secret
+    disableCertificateVerification: true
+{{- end }}

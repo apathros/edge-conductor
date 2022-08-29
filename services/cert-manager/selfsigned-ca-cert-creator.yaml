@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: bootstrapping-ca
+  namespace: cert-manager
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: edge-conductor-ca-cert
+  namespace: cert-manager
+spec:
+  isCA: true
+  duration: 26280h
+  commonName: edgecon-ca-default
+  secretName: edgecon-ca-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 521
+  usages:
+    - "cert sign"
+    - "crl sign"
+    - "digital signature"  
+  issuerRef:
+    name: bootstrapping-ca
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: edge-conductor-ca
+spec:
+  ca:
+    secretName: edgecon-ca-secret

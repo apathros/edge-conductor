@@ -1,0 +1,5 @@
+{
+  "kubeconfig": {
+    "content": "sample kubeconfig filecontent"
+  }
+}

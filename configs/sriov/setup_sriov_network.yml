@@ -1,0 +1,319 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# This yaml file contains necessary configuration to setup
+# SR-IOV, the config includes
+# the following pieces:
+# 1. SR-IOV Device Daemonset
+# 2. SR-IOV CNI daemonset
+# 3. SR-IOV NetworkAttachmentDefinition
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sriovdp-config
+  namespace: kube-system
+data:
+  config.json: |
+    {
+        "resourceList": [{
+                "resourceName": "intel_sriov_netdevice",
+                "selectors": {
+                    "vendors": ["8086"],
+                    {{- range .Extensions -}}
+                    {{- if eq .Name "sriov" -}}
+                    {{- range .Extension.Extension -}}
+                    {{- if eq .Name "nicselector" -}}
+                    {{- range .Config -}}
+                    {{- if eq .Name "vfdevices" }}
+                    "{{ .Name }}": {{ .Value }},
+                    {{- end -}}
+                    {{- if eq .Name "pfNames" }}
+                    {{- if empty .Value }}
+                    {{- else }}
+                    "{{ .Name }}": ["{{ .Value }}"],
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end }}
+                    "drivers": ["i40evf", "igbvf", "ixgbevf", "iavf"]
+                }
+            },
+            {
+                "resourceName": "intel_sriov_netdevice_vfio",
+                "selectors": {
+                    "vendors": ["8086"],
+                    {{- range .Extensions -}}
+                    {{- if eq .Name "sriov" -}}
+                    {{- range .Extension.Extension -}}
+                    {{- if eq .Name "nicselector" -}}
+                    {{- range .Config -}}
+                    {{- if eq .Name "vfdevices" }}
+                    "{{ .Name }}": {{ .Value }},
+                    {{- end -}}
+                    {{- if eq .Name "pfNames" }}
+                    {{- if empty .Value }}
+                    {{- else }}
+                    "{{ .Name }}": ["{{ .Value }}"],
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end -}}
+                    {{- end }}
+                    "drivers": ["vfio-pci"]
+                }
+            }
+        ]
+    }
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sriov-device-plugin
+  namespace: kube-system
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-sriov-device-plugin-amd64
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriovdp
+spec:
+  selector:
+    matchLabels:
+      name: sriov-device-plugin
+  template:
+    metadata:
+      labels:
+        name: sriov-device-plugin
+        tier: node
+        app: sriovdp
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      serviceAccountName: sriov-device-plugin
+      containers:
+      - name: kube-sriovdp
+        image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.5.1
+        imagePullPolicy: IfNotPresent
+        args:
+        - --log-dir=sriovdp
+        - --log-level=10
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "40Mi"
+          limits:
+            cpu: 1
+            memory: "200Mi"
+        volumeMounts:
+        - name: devicesock
+          mountPath: /var/lib/kubelet/
+          readOnly: false
+        - name: log
+          mountPath: /var/log
+        - name: config-volume
+          mountPath: /etc/pcidp
+        - name: device-info
+          mountPath: /var/run/k8s.cni.cncf.io/devinfo/dp
+      volumes:
+        - name: devicesock
+          hostPath:
+            path: /var/lib/kubelet/
+        - name: log
+          hostPath:
+            path: /var/log
+        - name: device-info
+          hostPath:
+            path: /var/run/k8s.cni.cncf.io/devinfo/dp
+            type: DirectoryOrCreate
+        - name: config-volume
+          configMap:
+            name: sriovdp-config
+            items:
+            - key: config.json
+              path: config.json
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-sriov-cni-ds-amd64
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriov-cni
+spec:
+  selector:
+    matchLabels:
+      name: sriov-cni
+  template:
+    metadata:
+      labels:
+        name: sriov-cni
+        tier: node
+        app: sriov-cni
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: kube-sriov-cni
+        image: ghcr.io/k8snetworkplumbingwg/sriov-cni
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          privileged: false
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
+        volumeMounts:
+        - name: cnibin
+          mountPath: /host/opt/cni/bin
+      volumes:
+        - name: cnibin
+          hostPath:
+            path: /opt/cni/bin
+
+# define sriov networkattachment
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: sriov-net1
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: intel.com/intel_sriov_netdevice
+spec:
+  config: '{
+  "type": "sriov",
+  "cniVersion": "0.3.1",
+  "name": "sriov-network",
+  "ipam": {
+    {{- range .Extensions -}}
+    {{- if eq .Name "sriov" -}}
+    {{- range .Extension.Extension -}}
+    {{- if eq .Name "sriov-network-1" -}}
+    {{- range .Config -}}
+    {{- if eq .Name "type" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "subnet" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "rangeStart" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "rangeEnd" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "routes" }}
+          "{{ .Name }}": {{ .Value }},
+    {{- end -}}
+    {{- if eq .Name "gateway" }}
+          "{{ .Name }}": "{{ .Value }}"
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end }}
+  }
+}'
+
+# define sriov networkattachment
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: sriov-net-vm
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: intel.com/intel_sriov_netdevice_vfio
+spec:
+  config: '{
+  "type": "sriov",
+  "cniVersion": "0.3.1",
+  "name": "sriov-network-vm",
+  "ipam": {
+    {{- range .Extensions -}}
+    {{- if eq .Name "sriov" -}}
+    {{- range .Extension.Extension -}}
+    {{- if eq .Name "sriov-net-vm" -}}
+    {{- range .Config -}}
+    {{- if eq .Name "type" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "subnet" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "rangeStart" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "rangeEnd" }}
+          "{{ .Name }}": "{{ .Value }}",
+    {{- end -}}
+    {{- if eq .Name "routes" }}
+          "{{ .Name }}": {{ .Value }},
+    {{- end -}}
+    {{- if eq .Name "gateway" }}
+          "{{ .Name }}": "{{ .Value }}"
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end }}
+  }
+}'
+
+# An example of Pod spec using above SR-IOV CRD:
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: testpod1
+#  annotations:
+#    k8s.v1.cni.cncf.io/networks: sriov-net1
+#spec:
+#  containers:
+#  - name: appcntr1
+#    image: centos/tools
+#    imagePullPolicy: IfNotPresent
+#    command: [ "/bin/bash", "-c", "--" ]
+#    args: [ "while true; do sleep 300000; done;" ]
+#    resources:
+#      requests:
+#        intel.com/intel_sriov_netdevice: '1'
+#      limits:
+#        intel.com/intel_sriov_netdevice: '1'
+

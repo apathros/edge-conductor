@@ -1,0 +1,36 @@
+{
+  "capi_cluster_providers": [
+    {
+      "binaries": [
+        {}
+      ],
+      "cert-manager": {},
+      "images": [
+        "",
+        ""
+      ],
+      "name": "byoh",
+      "providers": [
+        {
+          "parameters": {
+            "provider_label": "23333"
+          }
+        }
+      ],
+      "runtime": ""
+    }
+  ],
+  "cluster_providers": [
+    {
+      "binaries": [
+        {}
+      ],
+      "images": [
+        {}
+      ],
+      "resources": [
+        {}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+kubeVersion: 1.22
+
+# Ability to override ceph.conf
+configOverride: |
+  [global]
+  mon_allow_pool_delete = true
+  osd_pool_default_size = 1
+  osd_pool_default_min_size = 1
+  osd_crush_chooseleaf_type = 1
+  max open files = 131072
+
+  [osd]
+  osd max write size = 512
+  osd client message size cap = 2147483648
+  osd deep scrub stride = 131072
+  osd op threads = 8
+  osd disk threads = 4
+  osd map cache size = 1024
+  osd map cache bl size = 128
+  osd mount options xfs = rw,noexec,nodev,noatime,nodiratime,nobarrier
+  osd recovery op priority = 4
+  osd recovery max active = 10
+  osd max backfills = 4
+
+  [client]
+  rbd cache = true
+  rbd cache size = 268435456
+  rbd cache max dirty = 134217728
+  rbd cache max dirty age = 5
+
+# All values below are taken from the CephCluster CRD
+# More information can be found at [Ceph Cluster CRD](/Documentation/ceph-cluster-crd.md)
+cephClusterSpec:
+  mon:
+    # Set the number of mons to be started. Generally recommended to be 3.
+    # For highest availability, an odd number of mons should be specified.
+    count: 1
+  mgr:
+    # When higher availability of the mgr is needed, increase the count to 2.
+    # In that case, one mgr will be active and one in standby. When Ceph updates which
+    # mgr is active, Rook will update the mgr services to match the active mgr.
+    count: 1
+  # Network configuration, see: https://github.com/rook/rook/blob/master/Documentation/ceph-cluster-crd.md#network-configuration-settings
+  network:
+  #   # enable host networking
+    provider: host
+
+  dashboard:
+    enabled: false
+
+cephBlockPools:
+  - name: ceph-blockpool
+    spec:
+      failureDomain: host
+      replicated:
+        size: 1
+    storageClass:
+      enabled: true
+      name: ceph-block
+      isDefault: true
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      mountOptions: []
+      parameters:
+        imageFormat: "2"
+        imageFeatures: layering
+        csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+        csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+        csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+        csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+
+cephFileSystems:
+  - name: ceph-filesystem
+    spec:
+      metadataPool:
+        replicated:
+          size: 1
+      dataPools:
+        - failureDomain: host
+          replicated:
+            size: 1
+      metadataServer:
+        activeCount: 1
+        activeStandby: true
+    storageClass:
+      enabled: true
+      isDefault: false
+      name: ceph-filesystem
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      mountOptions: []
+      parameters:
+        csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+        csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+        csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+        csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+        csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+        csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+        csi.storage.k8s.io/fstype: ext4
+
+
+cephObjectStores: []

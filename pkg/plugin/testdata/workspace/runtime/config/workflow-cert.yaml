@@ -1,0 +1,13 @@
+ca:
+  cert: cert/pki/ca.pem
+  csr: config/certificate/ca-csr.json
+  key: cert/pki/ca-key.pem
+client:
+  cert: cert/pki/workflow/client.pem
+  csr: config/certificate/workflow/client-csr.json
+  key: cert/pki/workflow/client-key.pem
+name: workflow
+server:
+  cert: cert/pki/workflow/server.pem
+  csr: config/certificate/workflow/server-csr.json
+  key: cert/pki/workflow/server-key.pem

@@ -1,0 +1,103 @@
+#
+# Copyright (c) 2021 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  Capi-setting:
+    type: object
+    properties:
+      Provider:
+        type: string
+      Infra_provider:
+        type: object
+        properties:
+          Workload_cluster_name:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_namespace:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Management_cluster_kubeconfig:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_network:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_network_gateway:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_controlplane_endpoint:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_node_address_start:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_node_address_end:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_node_address_prefix:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_node_username:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_nic_name:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Workload_cluster_worker_node_num:
+            type: integer
+          Workload_cluster_control_plane_num:
+            type: integer 
+          Authorized_ssh_public_key:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+      Ironic_config:
+        type: object
+        properties:
+          Ironic_provision_nic:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Ironic_provision_ip:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Ironic_dhcp_range:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Ironic_http_port:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+          Ironic_os_image:
+            type: string
+            pattern: @PATTERNNORMALSTRING@
+      Binaries:
+        type: array
+        items:
+          properties:
+            name: 
+              type: string
+              pattern: @PATTERNNORMALSTRING@
+            version:
+              type: string
+            url:
+              type: string
+              pattern: @PATTERNURL@
+            revision:
+              type: string
+      CRI:
+        type: object
+        properties:
+          Name:
+            type: string
+          Endpoint:
+            type: string
+            pattern: @PATTERNFILEPATH@
+          Version:
+            type: string
+          BinURL:
+            type: string
+      Registry:
+        type: object
+        properties:
+          Auth:
+            type: string        

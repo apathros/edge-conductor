@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ $helmurl := "" }}
+{{- range .Value.Resources -}}
+{{- if eq .Name "helm" }}
+{{ $helmurl = .Value }}
+{{- end -}}
+{{- end -}}
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: build-rt-linux-detection
+spec:
+  steps:
+  - name: build-rt-linux-detection
+    nodes:
+      allOf:
+      - day-0
+    commands:
+    - type: shell
+      cmd:
+      - sh
+      - -c
+      - "chmod +x {{ .Workspace }}/services/rt-linux-detection/rt-linux-detection/build_image.sh && \
+         {{ .Workspace }}/services/rt-linux-detection/rt-linux-detection/build_image.sh \
+         "
+    - type: shell
+      cmd:
+      - sh
+      - -c
+      - "curl -fsSL {{ $helmurl }} -o {{ .Runtimedir }}/helm.tar.gz && \
+         mkdir helm                                                 && \
+         tar xf {{ .Runtimedir }}/helm.tar.gz -C helm               && \
+         cp helm/linux-amd64/helm {{ .Runtimedir }}/bin/            && \
+         rm -rf helm {{ .Runtimedir }}/helm.tar.gz                     \
+         "
+    - type: pushImage
+      cmd:
+      - rt-linux-detection:latest 

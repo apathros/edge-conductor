@@ -1,0 +1,31 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+nodes:
+  - address: 192.168.0.5
+    user: ubuntu
+    role:
+      - controlplane
+      - etcd
+    ssh_key_path: ~/.ssh/id_rsa
+  - address: 192.168.0.6
+    user: ubuntu
+    role:
+      - worker
+    ssh_key_path: ~/.ssh/id_rsa
+bastion_host:
+    address: 10.0.0.2
+    user: ec
+    port: 22
+    ssh_key_path: ~/.ssh/jump_rsa
+private_registries:
+    - url: {{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}/docker.io
+      user: {{ .Kitconfig.Parameters.Customconfig.Registry.User }}
+      password: {{ .Kitconfig.Parameters.Customconfig.Registry.Password }}
+      is_default: true
+system_images:
+network:
+  plugin: none

@@ -1,0 +1,27 @@
+# IP on Day-0 host to provide ESP services
+host_ip: 192.168.0.1
+
+dhcp_range_minimum: 192.168.0.2
+dhcp_range_maximum: 192.168.0.100
+network_broadcast_ip: 192.168.0.255
+# Also use Day-0 host as the gateway
+network_gateway_ip: 192.168.0.1
+
+# Also use Day-0 host as the DNS server
+network_dns_primary: 192.168.0.1
+# The secondary DNS server
+network_dns_secondary: 8.8.8.8
+dhcp-host0: 52:54:00:bf:3d:d4,192.168.0.2
+dhcp-host1: 52:54:00:f1:0c:f4,192.168.0.3
+
+# OS profiles
+profiles:
+  - git_remote_url: https://github.com/intel/rni-profile-base-ubuntu.git
+    profile_branch: slim
+    profile_base_branch: master
+    git_username: ""
+    git_token: ""
+    # This is the name that will be shown on the PXE menu (NOTE: No Spaces)
+    name: Ubuntu_20.04
+    custom_git_arguments: --depth=1
+

@@ -1,0 +1,13 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+definitions:
+  filepath:
+    type: object
+    properties:
+      path:
+        type: string
+        pattern: @PATTERNFILEPATH@
+

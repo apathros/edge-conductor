@@ -1,0 +1,81 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ if eq .Kitconfig.Cluster.Provider "kind" }}
+
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  data:
+{{ "workflow/common/data.yml" | include_data | nindent 2 }}
+
+  workflows:
+# Include general workflows
+{{ "workflow/common/init.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/deinit.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-build.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-deploy.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-list.yml" | include_workflows | nindent 2 }}
+
+  - name: cluster-build
+    steps:
+    - name: kind-parser
+      input:
+      - name: cluster-manifest
+        schema: cluster-manifest
+      output:
+      - name: kind-docker-images
+        schema: docker-images
+      - name: clusterfiles
+        schema: files
+    - name: docker-image-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: kind-docker-images
+        schema: docker-images
+    - name: file-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: clusterfiles
+        schema: files
+      output:
+      - name: clusterfiles
+        schema: files
+
+  - name: cluster-deploy
+    steps:
+    - name: kind-deployer
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: clusterfiles
+        schema: files
+      - name: cluster-config
+        schema: kind-config
+      output:
+      - name: ep-kubeconfig
+        schema: kubeconfig
+    - name: file-exporter
+      input:
+      - name: ep-kubeconfig
+        schema: exportcontent
+      - name: export-kubeconfig
+        schema: exportpath
+
+  - name: cluster-remove
+    steps:
+    - name: kind-remover
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: clusterfiles
+        schema: files
+
+{{ end }}

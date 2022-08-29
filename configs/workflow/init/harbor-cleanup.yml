@@ -1,0 +1,46 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+containers:
+- name: harbor-compose
+  image: docker/compose:1.29.2
+  userInContainer: auto
+  force: true
+  bindMounts:
+  - mountPath: {{ .Runtimedir }}/harbor
+    hostPath: {{ .Runtimedir }}/harbor
+  - mountPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  - mountPath: /tmp
+    hostPath: /tmp
+  args:
+  - "-f"
+  - "{{ .Runtimedir }}/harbor/docker-compose.yml"
+  - "down"
+{{ if printf "%s" .Cmdline | splitList " " | has "purge" }}
+  - "-v"
+{{ end }}
+
+{{ if printf "%s" .Cmdline | splitList " " | has "purge" }}
+- name: harbor-prepare
+  image: goharbor/prepare:v2.3.0
+  userInContainer: auto
+  force: true
+  bindMounts:
+  - mountPath: /runtime
+    hostPath: {{ .Runtimedir }}/harbor
+  - mountPath: /etc/docker/certs.d
+    hostPath: /etc/docker/certs.d
+  - mountPath: /usr/src/app/extfile.cnf
+    hostPath: {{ .Workspace }}/config/harbor/extfile.cnf
+  tmpfs:
+  - /tmp
+  - /input
+  command: ["/usr/bin/bash"]
+  args:
+  - "-c"
+  - "rm -rf /runtime;
+     rm -rf /etc/docker/certs.d/{{ .Kitconfig.Parameters.GlobalSettings.ProviderIP }}\\:{{ .Kitconfig.Parameters.GlobalSettings.RegistryPort }}"
+{{ end }}

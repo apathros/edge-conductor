@@ -1,0 +1,11 @@
+*.swp
+internal/pkg/config_engine/bin
+.go
+vendor
+workspace
+cover.html
+cover.out
+cover.function-coverage.log
+_workspace
+api/.schemas
+test/

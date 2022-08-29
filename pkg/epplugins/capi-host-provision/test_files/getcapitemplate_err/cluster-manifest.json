@@ -1,0 +1,13 @@
+{
+  "clusterapi": {
+    "configs": [
+      {
+        "name": "metal3",
+        "bin_url": "aaa",
+        "images": [
+          "test:test"
+        ]
+      }
+    ]
+  }
+}

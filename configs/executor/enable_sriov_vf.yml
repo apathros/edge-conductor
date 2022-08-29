@@ -1,0 +1,73 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+apiVersion: conductor/v1
+kind: Executor
+metadata:
+  name: enable-sriov-vf
+spec:
+  steps:
+  - name: enable-sriov-vf
+    nodes:
+      allOf:
+      - worker
+    commands:
+    - type: copyFromDay0
+      cmd:
+      - {{ .Workspace }}/config/sriov/setup_vf_config.sh
+      - /tmp/
+    - type: shell
+      cmd:
+      - sudo
+      - chmod
+      - "+x"
+      - "/tmp/setup_vf_config.sh"
+    - type: shell
+      cmd:
+      {{ $vendors := "" }}
+      {{ $devices := "" }}
+      {{ $pfname := "" }}
+      {{ $num_vfs := "" }}
+      {{ $num_vfio_vfs := "" }}
+      {{ range .Extensions }}
+      {{ if eq .Name "sriov" }}
+      {{ range .Extension.Extension }}
+      {{ if eq .Name "sriov" }}
+      {{ range .Config }}
+      {{ if eq .Name "vendors" }}
+      {{ $vendors = .Value }}
+      {{ end }}
+      {{ if eq .Name "pfdevices" }}
+      {{ $devices = .Value }}
+      {{ end }}
+      {{ if eq .Name "num_vfs" }}
+      {{ $num_vfs = .Value }}
+      {{ end }}
+      {{ if eq .Name "num_vfio_vfs" }}
+      {{ $num_vfio_vfs = .Value }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ range .Extensions }}
+      {{ if eq .Name "sriov" }}
+      {{ range .Extension.Extension }}
+      {{ if eq .Name "nicselector" }}
+      {{ range .Config }}
+      {{ if eq .Name "pfNames" }}
+      {{ $pfname = .Value }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+      - sudo
+      - sh
+      - -c
+      - |
+        "/tmp/setup_vf_config.sh \"{{ $vendors }}\" \"{{ $devices }}\" \"{{ $pfname }}\" \"{{ $num_vfs }}\" {{ $num_vfio_vfs }}"

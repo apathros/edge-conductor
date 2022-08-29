@@ -1,0 +1,132 @@
+#
+# Copyright (c) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+{{ if eq .Kitconfig.Cluster.Provider "capi" }}
+
+apiVersion: conductor/v1
+kind: Workflow
+metadata:
+  name: conductor-workflow
+  namespace: edgeconductor
+spec:
+  data:
+{{ "workflow/common/data.yml" | include_data | nindent 2 }}
+
+  workflows:
+# Include general workflows
+{{ "workflow/common/init.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-build.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-deploy.yml" | include_workflows | nindent 2 }}
+{{ "workflow/common/service-list.yml" | include_workflows | nindent 2 }}
+
+  - name: cluster-build
+    steps:
+    - name: capi-parser
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+      output:
+      - name: capi-docker-images
+        schema: docker-images
+      - name: clusterfiles
+        schema: files
+    - name: capi-provision-binary-download
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+    - name: file-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: clusterfiles
+        schema: files
+      output:
+      - name: clusterfiles
+        schema: files
+    - name: docker-image-downloader
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: capi-docker-images
+        schema: docker-images
+
+  - name: cluster-deploy
+    steps:
+    - name: capi-provider-launch
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+      - name: clusterfiles
+        schema: files
+    - name: capi-host-provision
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+    - name: capi-cluster-deploy
+      input:
+      - name: ep-params
+        schema: ep-params
+      - name: cluster-manifest
+        schema: cluster-manifest
+      output:
+      - name: ep-kubeconfig
+        schema: kubeconfig
+    - name: file-exporter
+      input:
+      - name: ep-kubeconfig
+        schema: exportcontent
+      - name: export-kubeconfig
+        schema: exportpath
+
+  - name: node-join
+    steps:
+    - name: node-join-prepare
+      input:
+      - name: ep-params
+        schema: ep-params
+    - name: node-join-deploy
+      input:
+      - name: ep-params
+        schema: ep-params
+
+  - name: deinit
+    steps:
+{{ if eq .Kitconfig.Parameters.Customconfig.Registry.Externalurl "" }}
+    - name: docker-remove
+      input:
+      - name: containers-harbor
+        schema: containers
+    - name: docker-run
+      input:
+      - name: containers-harbor-cleanup
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-harbor-cleanup
+        schema: containers
+{{ end }}
+    - name: capi-deinit
+{{ range .Extensions }}
+{{ if eq .Name "capi-metal3" }}
+    - name: docker-run
+      input:
+      - name: containers-ironic-cleanup
+        schema: containers
+    - name: docker-remove
+      input:
+      - name: containers-ironic-cleanup
+        schema: containers 
+{{ end }}
+{{ end }}
+
+{{ end }}

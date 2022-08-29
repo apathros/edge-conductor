@@ -1,0 +1,16 @@
+#
+# Copyright (c) 2022 Intel Corporation. 
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+#
+Components:
+  - name: hello-cluster
+    url: file://{{ .Workspace }}/config/sample_hello_cluster/hello-cluster.yml
+    type: yaml
+    images:
+      - gcr.io/google-samples/hello-app:1.0
+    supported-clusters:
+      - kind
+    namespace: hello-cluster
+
