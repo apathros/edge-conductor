@@ -7,7 +7,7 @@
 
 package orasutils
 
-//go:generate mockgen -destination=./mock/orasutil_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/orasutils OrasInterface,OrasUtilInterface
+//go:generate mockgen -destination=./mock/orasutil_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/orasutils OrasInterface,OrasUtilInterface
 
 import (
 	sysctx "context"
@@ -18,10 +18,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	dockerutils "ep/pkg/eputils/docker"
 	"github.com/deislabs/oras/pkg/content"
 	"github.com/deislabs/oras/pkg/context"
 	"github.com/deislabs/oras/pkg/oras"
+	dockerutils "github.com/intel/edge-conductor/pkg/eputils/docker"
 
 	ctndcontent "github.com/containerd/containerd/content"
 	"github.com/containerd/containerd/images"
@@ -30,7 +30,7 @@ import (
 	"github.com/docker/docker/api/types"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils"
 )
 
 type (

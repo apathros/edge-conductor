@@ -12,11 +12,11 @@ package nodejoindeploy
 import (
 	// TODO: Add Plugin Imports Here
 	"bytes"
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	nodeutils "ep/pkg/eputils/nodeutils"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	nodeutils "github.com/intel/edge-conductor/pkg/eputils/nodeutils"
 	log "github.com/sirupsen/logrus"
 	kubeadmcmd "k8s.io/kubernetes/cmd/kubeadm/app/cmd"
 	cmdutil "k8s.io/kubernetes/cmd/kubeadm/app/cmd/util"

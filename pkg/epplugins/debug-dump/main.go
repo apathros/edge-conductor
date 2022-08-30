@@ -10,7 +10,7 @@ package debugdump
 
 import (
 	// TODO: Add Plugin Imports Here
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	log "github.com/sirupsen/logrus"
 	"time"
 )

@@ -1,7 +1,7 @@
 package test_files
 
 import (
-	"ep/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/api/plugins"
 	"testing"
 )
 

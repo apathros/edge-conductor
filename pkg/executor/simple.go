@@ -7,11 +7,11 @@
 
 package executor
 
-//go:generate mockgen -destination=./mock/simple_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/executor ExecutorWrapper
+//go:generate mockgen -destination=./mock/simple_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/executor ExecutorWrapper
 
 import (
 	"context"
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 )
 
 type ExecutorWrapper interface {

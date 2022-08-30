@@ -8,8 +8,8 @@
 package capiparser
 
 import (
-	"ep/pkg/eputils"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"os"
 	"testing"

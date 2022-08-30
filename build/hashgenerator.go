@@ -14,7 +14,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 const (

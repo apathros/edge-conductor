@@ -10,9 +10,9 @@
 package fileexporter
 
 import (
-	"ep/pkg/eputils"
 	"errors"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"testing"
 
 	mpatch "github.com/undefinedlabs/go-mpatch"

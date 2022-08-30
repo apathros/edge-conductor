@@ -9,10 +9,10 @@
 package docker
 
 import (
-	api "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
-	clientmock "ep/pkg/eputils/docker/mock"
 	"errors"
+	api "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	clientmock "github.com/intel/edge-conductor/pkg/eputils/docker/mock"
 	"os/user"
 	"strings"
 	"testing"

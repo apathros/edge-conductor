@@ -9,13 +9,13 @@
 package servicedeployer
 
 import (
-	epplugins "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	repoutils "ep/pkg/eputils/repoutils"
-	serviceutil "ep/pkg/eputils/service"
-	"ep/pkg/executor"
 	"fmt"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	serviceutil "github.com/intel/edge-conductor/pkg/eputils/service"
+	"github.com/intel/edge-conductor/pkg/executor"
 	"os"
 	"path/filepath"
 	"strings"

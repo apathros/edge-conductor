@@ -8,7 +8,7 @@
 package nodeutils
 
 import (
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"

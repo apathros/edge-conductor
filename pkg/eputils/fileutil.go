@@ -7,7 +7,7 @@
 
 package eputils
 
-//go:generate mockgen -destination=./mock/fileutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/eputils FileWrapper
+//go:generate mockgen -destination=./mock/fileutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils FileWrapper
 
 import (
 	"archive/tar"

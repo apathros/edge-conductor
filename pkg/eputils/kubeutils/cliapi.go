@@ -9,10 +9,10 @@ package kubeutils
 
 import (
 	"context"
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 	"io/ioutil"
 
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

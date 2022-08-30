@@ -9,8 +9,8 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
 	"errors"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
 	"testing"
 
 	"github.com/undefinedlabs/go-mpatch"

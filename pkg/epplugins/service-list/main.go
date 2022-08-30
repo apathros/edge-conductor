@@ -9,9 +9,9 @@
 package servicelist
 
 import (
-	eputils "ep/pkg/eputils"
-	repoutils "ep/pkg/eputils/repoutils"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"

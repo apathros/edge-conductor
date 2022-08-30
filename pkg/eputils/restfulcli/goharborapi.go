@@ -4,15 +4,15 @@
 * SPDX-License-Identifier: Apache-2.0
 *
  */
-//go:generate mockgen -destination=./mock/goharborapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/restfulcli GoharborClientWrapper
+//go:generate mockgen -destination=./mock/goharborapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/restfulcli GoharborClientWrapper
 
 package restfulcli
 
 import (
 	"encoding/base64"
-	"ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
 	"net/http"
 	"os"
 	"strings"

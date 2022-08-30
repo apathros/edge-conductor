@@ -7,8 +7,8 @@
 package app
 
 import (
-	"ep/pkg/api/plugins"
-	epapiplugins "ep/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/api/plugins"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
 	"testing"
 
 	"github.com/spf13/cobra"

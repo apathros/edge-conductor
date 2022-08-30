@@ -10,10 +10,10 @@ package capiutils
 
 import (
 	"bytes"
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"reflect"
 	"testing"

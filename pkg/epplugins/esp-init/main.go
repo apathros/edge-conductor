@@ -12,8 +12,8 @@ package espinit
 import (
 	"bufio"
 	"bytes"
-	eputils "ep/pkg/eputils"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"os"
 	"os/exec"
 	"path/filepath"

@@ -9,9 +9,9 @@ package eputils
 
 import (
 	"bytes"
-	pluginapi "ep/pkg/api/plugins"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 	"github.com/pkg/sftp"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
@@ -24,7 +24,7 @@ const (
 	sudoPrefix = "sudo "
 )
 
-//go:generate mockgen -destination=./mock/sshutil_mock/sshutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/eputils SSHApiInterface,SSHDialInterface
+//go:generate mockgen -destination=./mock/sshutil_mock/sshutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils SSHApiInterface,SSHDialInterface
 type (
 	SSHApiInterface interface {
 		GenSSHConfig(server *pluginapi.Node) (*ssh.ClientConfig, error)

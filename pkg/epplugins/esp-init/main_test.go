@@ -10,10 +10,10 @@
 package espinit
 
 import (
-	"ep/pkg/eputils"
-	mock_utils "ep/pkg/eputils/mock"
 	"errors"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	mock_utils "github.com/intel/edge-conductor/pkg/eputils/mock"
 	"os"
 	"os/exec"
 	"path/filepath"

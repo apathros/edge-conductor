@@ -5,7 +5,7 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/docker_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/docker DockerInterface
+//go:generate mockgen -destination=./mock/docker_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/docker DockerInterface
 
 package docker
 
@@ -16,8 +16,8 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	log "github.com/sirupsen/logrus"
 
-	api "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
+	api "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
 )
 
 func DockerCreate(in_config *api.ContainersItems0) (string, error) {

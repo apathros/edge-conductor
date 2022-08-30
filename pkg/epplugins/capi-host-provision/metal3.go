@@ -8,13 +8,13 @@
 package capihostprovision
 
 import (
-	cmapi "ep/pkg/api/certmgr"
-	pluginapi "ep/pkg/api/plugins"
-	certmgr "ep/pkg/certmgr"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	docker "ep/pkg/eputils/docker"
-	serviceutil "ep/pkg/eputils/service"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	serviceutil "github.com/intel/edge-conductor/pkg/eputils/service"
 	"os"
 	"os/exec"
 	"path/filepath"

@@ -8,8 +8,8 @@
 package app
 
 import (
-	"ep/pkg/eputils"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"testing"
 
 	"github.com/undefinedlabs/go-mpatch"

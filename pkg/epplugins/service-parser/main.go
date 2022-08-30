@@ -18,8 +18,8 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 	"sigs.k8s.io/yaml"
 
-	papi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
+	papi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 func addFile(filelist *papi.Files, url, hash, hashtype, subfolder string) {

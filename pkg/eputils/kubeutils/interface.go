@@ -5,14 +5,14 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/cliapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/kubeutils KubeClientWrapper
-//go:generate mockgen -destination=./mock/configmap_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/kubeutils ConfigMapWrapper
-//go:generate mockgen -destination=./mock/secret_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/kubeutils SecretWrapper
+//go:generate mockgen -destination=./mock/cliapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/kubeutils KubeClientWrapper
+//go:generate mockgen -destination=./mock/configmap_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/kubeutils ConfigMapWrapper
+//go:generate mockgen -destination=./mock/secret_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/kubeutils SecretWrapper
 
 package kubeutils
 
 import (
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"

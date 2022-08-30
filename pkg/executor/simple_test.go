@@ -8,7 +8,7 @@ package executor
 
 import (
 	"context"
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 	"github.com/undefinedlabs/go-mpatch"
 	"reflect"
 	"testing"

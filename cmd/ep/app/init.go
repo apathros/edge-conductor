@@ -8,11 +8,11 @@
 package app
 
 import (
-	cmapi "ep/pkg/api/certmgr"
-	epapiplugins "ep/pkg/api/plugins"
-	certmgr "ep/pkg/certmgr"
-	"ep/pkg/eputils"
 	"fmt"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"os"
 	"path/filepath"
 	"regexp"

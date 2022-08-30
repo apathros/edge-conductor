@@ -19,12 +19,12 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 
-	epapiplugins "ep/pkg/api/plugins"
-	epplugins "ep/pkg/epplugins"
-	_ "ep/pkg/epplugins/file-exporter"
-	eputils "ep/pkg/eputils"
-	plugin "ep/pkg/plugin"
-	wf "ep/pkg/workflow"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	epplugins "github.com/intel/edge-conductor/pkg/epplugins"
+	_ "github.com/intel/edge-conductor/pkg/epplugins/file-exporter"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
+	wf "github.com/intel/edge-conductor/pkg/workflow"
 )
 
 var funcs = template.FuncMap{

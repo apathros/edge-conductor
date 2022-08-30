@@ -10,8 +10,8 @@
 package capideinit
 
 import (
-	eputils "ep/pkg/eputils"
-	epplugin "ep/pkg/plugin"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	epplugin "github.com/intel/edge-conductor/pkg/plugin"
 )
 
 var (

@@ -17,8 +17,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"sigs.k8s.io/yaml"
 
-	wfapi "ep/pkg/api/workflow"
-	eputils "ep/pkg/eputils"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 const (
@@ -52,7 +52,7 @@ package {{.PluginPkgName}}
 
 import (
 	// TODO: Add Plugin Imports Here
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -91,10 +91,10 @@ package {{.PluginPkgName}}
 
 import (
 {{ if .IsSchemaAPINeeded }}
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 {{ end -}}
-	eputils "ep/pkg/eputils"
-	epplugin "ep/pkg/plugin"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	epplugin "github.com/intel/edge-conductor/pkg/plugin"
 )
 
 var (
@@ -260,9 +260,9 @@ package {{.PluginPkgName}}
 
 import (
 {{ if .IsSchemaAPINeeded }}
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 {{ end -}}
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 {{block "ilistfunc" .}}{{range .InputList}}
 //nolint:deadcode,unused
@@ -330,7 +330,7 @@ package epplugins
 
 import (
 {{- block "list" .}}{{range .}}
-	_ "ep/pkg/epplugins/{{.PluginName}}"
+	_ "github.com/intel/edge-conductor/pkg/epplugins/{{.PluginName}}"
 {{- end -}}{{- end}}
 )
 var PluginList[]string = []string {

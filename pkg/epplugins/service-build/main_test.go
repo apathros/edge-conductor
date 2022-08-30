@@ -10,10 +10,10 @@
 package servicebuild
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	"ep/pkg/executor"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/executor"
 	"testing"
 
 	gomock "github.com/golang/mock/gomock"

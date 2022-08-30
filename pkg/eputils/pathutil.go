@@ -5,7 +5,7 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/pathutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/eputils PathWrapper
+//go:generate mockgen -destination=./mock/pathutil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils PathWrapper
 
 package eputils
 

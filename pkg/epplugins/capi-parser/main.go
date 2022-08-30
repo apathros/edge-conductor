@@ -10,10 +10,10 @@
 package capiparser
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	cutils "ep/pkg/eputils/conductorutils"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	cutils "github.com/intel/edge-conductor/pkg/eputils/conductorutils"
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"

@@ -8,9 +8,9 @@
 package main
 
 import (
-	"ep/cmd/ep/app"
-	_ "ep/pkg/epplugins"
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/cmd/ep/app"
+	_ "github.com/intel/edge-conductor/pkg/epplugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
 
 	log "github.com/sirupsen/logrus"
 )

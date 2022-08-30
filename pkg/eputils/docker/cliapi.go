@@ -5,7 +5,7 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/cliapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/docker DockerClientWrapperContainer,DockerClientWrapperImage,DockerClientInterface
+//go:generate mockgen -destination=./mock/cliapi_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/docker DockerClientWrapperContainer,DockerClientWrapperImage,DockerClientInterface
 
 package docker
 
@@ -13,7 +13,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -21,7 +21,7 @@ import (
 	"strings"
 	"syscall"
 
-	api "ep/pkg/api/plugins"
+	api "github.com/intel/edge-conductor/pkg/api/plugins"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"

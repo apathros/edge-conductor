@@ -10,9 +10,9 @@
 package servicedeployer
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	epplugin "ep/pkg/plugin"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	epplugin "github.com/intel/edge-conductor/pkg/plugin"
 )
 
 var (

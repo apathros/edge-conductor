@@ -8,8 +8,8 @@ package plugin
 
 import (
 	"context"
-	wfapi "ep/pkg/api/workflow"
-	eputils "ep/pkg/eputils"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"sync"
 
 	log "github.com/sirupsen/logrus"

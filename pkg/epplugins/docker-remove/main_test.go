@@ -10,10 +10,10 @@
 package dockerremove
 
 import (
-	docker "ep/pkg/eputils/docker"
-	dockermock "ep/pkg/eputils/docker/mock"
 	"errors"
 	gomock "github.com/golang/mock/gomock"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	dockermock "github.com/intel/edge-conductor/pkg/eputils/docker/mock"
 	mpatch "github.com/undefinedlabs/go-mpatch"
 	"testing"
 )

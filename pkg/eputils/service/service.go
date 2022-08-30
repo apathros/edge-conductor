@@ -8,11 +8,11 @@
 package service
 
 import (
-	cmapi "ep/pkg/api/certmgr"
-	epplugins "ep/pkg/api/plugins"
-	certmgr "ep/pkg/certmgr"
-	"ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
 	"io/ioutil"
 	"path/filepath"
 

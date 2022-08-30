@@ -9,9 +9,9 @@
 package dockerimagedownloader
 
 import (
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	restfulcli "ep/pkg/eputils/restfulcli"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	restfulcli "github.com/intel/edge-conductor/pkg/eputils/restfulcli"
 	"strings"
 
 	log "github.com/sirupsen/logrus"

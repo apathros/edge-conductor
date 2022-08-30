@@ -10,10 +10,10 @@
 package capiprovisionbinarydownload
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	docker "ep/pkg/eputils/docker"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
 	"os"
 	"path/filepath"
 

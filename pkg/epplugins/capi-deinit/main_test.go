@@ -13,9 +13,9 @@ import (
 	"errors"
 	"testing"
 
-	docker "ep/pkg/eputils/docker"
-	clientmock "ep/pkg/eputils/docker/mock"
 	gomock "github.com/golang/mock/gomock"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	clientmock "github.com/intel/edge-conductor/pkg/eputils/docker/mock"
 	mpatch "github.com/undefinedlabs/go-mpatch"
 )
 

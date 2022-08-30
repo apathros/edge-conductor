@@ -10,11 +10,11 @@
 package capiclusterdeploy
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	serviceutil "ep/pkg/eputils/service"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	serviceutil "github.com/intel/edge-conductor/pkg/eputils/service"
 
 	"os"
 	"os/exec"

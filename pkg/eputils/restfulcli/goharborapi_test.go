@@ -10,9 +10,9 @@ package restfulcli
 
 import (
 	"encoding/json"
-	"ep/pkg/eputils"
 	"errors"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"reflect"
 	"strconv"
 	"testing"

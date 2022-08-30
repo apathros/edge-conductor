@@ -8,7 +8,7 @@
 package app
 
 import (
-	"ep/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/api/plugins"
 	"os"
 	"testing"
 

@@ -6,7 +6,7 @@
  */
 package eputils
 
-//go:generate mockgen -destination=./mock/schemautil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/eputils SchemaWrapper
+//go:generate mockgen -destination=./mock/schemautil_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils SchemaWrapper
 
 import (
 	"bytes"

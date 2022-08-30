@@ -7,12 +7,12 @@
 package workflow
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	wfapi "ep/pkg/api/workflow"
-	epplugins "ep/pkg/epplugins"
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	plugin "ep/pkg/plugin"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	epplugins "github.com/intel/edge-conductor/pkg/epplugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
 	"io/ioutil"
 	"os"
 	fpath "path/filepath"

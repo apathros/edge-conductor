@@ -98,7 +98,7 @@ test-build-dependency:
 	go generate ./...
 
 test-unittest: test-build-dependency
-	go test -gcflags=-l `go list ep/pkg/... ep/cmd/... | grep -v "/mock" | grep -v "/test/" | grep -v "/pkg/api"` -v -coverprofile cover.out
+	go test -gcflags=-l `go list github.com/intel/edge-conductor/pkg/... github.com/intel/edge-conductor/cmd/... | grep -v "/mock" | grep -v "/test/" | grep -v "/pkg/api"` -v -coverprofile cover.out
 	go tool cover -html=cover.out -o cover.html
 	go tool cover -func cover.out -o cover.function-coverage.log
 

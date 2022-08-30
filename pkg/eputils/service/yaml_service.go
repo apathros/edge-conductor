@@ -9,8 +9,8 @@ package service
 
 import (
 	"bytes"
-	eputils "ep/pkg/eputils"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"

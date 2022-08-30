@@ -10,8 +10,8 @@
 package serviceinjector
 
 import (
-	docker "ep/pkg/eputils/docker"
-	dockermock "ep/pkg/eputils/docker/mock"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	dockermock "github.com/intel/edge-conductor/pkg/eputils/docker/mock"
 	"testing"
 
 	gomock "github.com/golang/mock/gomock"

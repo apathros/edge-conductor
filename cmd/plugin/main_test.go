@@ -7,11 +7,11 @@
 package main
 
 import (
-	epapp "ep/cmd/ep/app"
-	epapiplugins "ep/pkg/api/plugins"
-	plugin "ep/pkg/plugin"
 	"flag"
 	"fmt"
+	epapp "github.com/intel/edge-conductor/cmd/ep/app"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
 	"os"
 	"reflect"
 	"testing"

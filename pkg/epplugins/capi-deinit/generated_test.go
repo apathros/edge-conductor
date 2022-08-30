@@ -10,7 +10,7 @@
 package capideinit
 
 import (
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 //nolint:deadcode,unused,unparam

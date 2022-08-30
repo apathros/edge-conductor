@@ -8,8 +8,8 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
 	"fmt"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
 	"net"
 	"os"
 	"path/filepath"

@@ -10,12 +10,12 @@
 package capiproviderlaunch
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	repoutils "ep/pkg/eputils/repoutils"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
 	"os"
 	"os/exec"
 	"strings"

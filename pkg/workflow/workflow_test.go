@@ -20,14 +20,14 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 
-	epapiplugins "ep/pkg/api/plugins"
-	pluginapi "ep/pkg/api/plugins"
-	wfapi "ep/pkg/api/workflow"
-	epplugins "ep/pkg/epplugins"
-	_ "ep/pkg/epplugins/file-exporter"
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	plugin "ep/pkg/plugin"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	epplugins "github.com/intel/edge-conductor/pkg/epplugins"
+	_ "github.com/intel/edge-conductor/pkg/epplugins/file-exporter"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
 
 	mpatch "github.com/undefinedlabs/go-mpatch"
 )

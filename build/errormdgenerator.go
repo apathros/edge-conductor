@@ -8,8 +8,8 @@
 package main
 
 import (
-	eputils "ep/pkg/eputils"
 	"errors"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"

@@ -10,10 +10,10 @@
 package filedownloader
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
-	"ep/pkg/eputils/repoutils"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils/repoutils"
 	"os"
 	"path/filepath"
 	"runtime"

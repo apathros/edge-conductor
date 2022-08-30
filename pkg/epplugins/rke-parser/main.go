@@ -10,9 +10,9 @@ package rkeparser
 
 import (
 	"bytes"
-	papi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	cutils "ep/pkg/eputils/conductorutils"
+	papi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	cutils "github.com/intel/edge-conductor/pkg/eputils/conductorutils"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"

@@ -7,11 +7,11 @@
 package main
 
 import (
-	epapp "ep/cmd/ep/app"
-	epapiplugins "ep/pkg/api/plugins"
-	"ep/pkg/epplugins"
-	plugin "ep/pkg/plugin"
 	"flag"
+	epapp "github.com/intel/edge-conductor/cmd/ep/app"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/epplugins"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"time"

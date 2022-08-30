@@ -10,8 +10,8 @@ package certmgr
 import (
 	"crypto/tls"
 	"crypto/x509"
-	cmapi "ep/pkg/api/certmgr"
-	"ep/pkg/eputils"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"os"
 

@@ -10,9 +10,9 @@
 package preservicedeploy
 
 import (
-	epplugins "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	"ep/pkg/executor"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/executor"
 
 	log "github.com/sirupsen/logrus"
 )

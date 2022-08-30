@@ -14,12 +14,12 @@ import (
 	"runtime"
 	"testing"
 
-	mock_orasutils "ep/pkg/eputils/orasutils/mock"
+	mock_orasutils "github.com/intel/edge-conductor/pkg/eputils/orasutils/mock"
 
-	"ep/pkg/eputils"
 	oras "github.com/deislabs/oras/pkg/oras"
 	types "github.com/docker/docker/api/types"
 	gomock "github.com/golang/mock/gomock"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	log "github.com/sirupsen/logrus"
 	mpatch "github.com/undefinedlabs/go-mpatch"

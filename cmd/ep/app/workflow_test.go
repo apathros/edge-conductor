@@ -8,14 +8,14 @@
 package app
 
 import (
-	"ep/pkg/api/plugins"
-	epapiplugins "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	"ep/pkg/eputils/orasutils"
-	wf "ep/pkg/workflow"
 	"errors"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/api/plugins"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	"github.com/intel/edge-conductor/pkg/eputils/orasutils"
+	wf "github.com/intel/edge-conductor/pkg/workflow"
 	"os"
 	"path/filepath"
 	"runtime"

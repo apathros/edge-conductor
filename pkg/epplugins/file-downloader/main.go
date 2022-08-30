@@ -16,8 +16,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	eputils "ep/pkg/eputils"
-	repoutils "ep/pkg/eputils/repoutils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
 )
 
 func PluginMain(in eputils.SchemaMapData, outp *eputils.SchemaMapData) error {

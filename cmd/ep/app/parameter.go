@@ -8,9 +8,9 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
-	wfapi "ep/pkg/api/workflow"
-	"ep/pkg/eputils"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"os"
 	"os/user"

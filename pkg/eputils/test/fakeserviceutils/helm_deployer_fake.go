@@ -7,7 +7,7 @@
 package fakeserviceutils
 
 import (
-	serviceutil "ep/pkg/eputils/service"
+	serviceutil "github.com/intel/edge-conductor/pkg/eputils/service"
 )
 
 type FakeHelmDeployer struct {

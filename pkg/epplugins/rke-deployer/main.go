@@ -9,9 +9,9 @@
 package rkedeployer
 
 import (
-	eputils "ep/pkg/eputils"
-	repoutils "ep/pkg/eputils/repoutils"
-	"ep/pkg/executor"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	"github.com/intel/edge-conductor/pkg/executor"
 	"os"
 	"os/exec"
 	"path/filepath"
