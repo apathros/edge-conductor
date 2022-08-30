@@ -8,10 +8,10 @@ package executor
 
 import (
 	"context"
-	"ep/pkg/api/ep"
-	pluginapi "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/api/ep"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"io"
 	"io/ioutil"
 	"os/user"

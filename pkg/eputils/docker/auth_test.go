@@ -7,9 +7,9 @@
 package docker
 
 import (
-	eputils "ep/pkg/eputils"
 	"errors"
 	"github.com/docker/docker/api/types"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	mpatch "github.com/undefinedlabs/go-mpatch"
 	"io/ioutil"
 	"testing"

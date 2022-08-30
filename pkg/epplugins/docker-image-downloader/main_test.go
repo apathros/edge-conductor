@@ -11,13 +11,13 @@
 package dockerimagedownloader
 
 import (
-	"ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	dockermock "ep/pkg/eputils/docker/mock"
-	restfulcli "ep/pkg/eputils/restfulcli"
-	restfulmock "ep/pkg/eputils/restfulcli/mock"
 	"errors"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	dockermock "github.com/intel/edge-conductor/pkg/eputils/docker/mock"
+	restfulcli "github.com/intel/edge-conductor/pkg/eputils/restfulcli"
+	restfulmock "github.com/intel/edge-conductor/pkg/eputils/restfulcli/mock"
 	"testing"
 
 	"github.com/docker/docker/api/types"

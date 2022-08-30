@@ -9,12 +9,12 @@ package executor
 
 import (
 	"context"
-	"ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	"ep/pkg/eputils/orasutils"
-	repoutils "ep/pkg/eputils/repoutils"
-	restfulcli "ep/pkg/eputils/restfulcli"
 	"fmt"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	"github.com/intel/edge-conductor/pkg/eputils/orasutils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	restfulcli "github.com/intel/edge-conductor/pkg/eputils/restfulcli"
 	"io"
 	"os"
 	"path"

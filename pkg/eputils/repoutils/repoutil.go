@@ -5,13 +5,13 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/repoutils_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/repoutils RepoUtilsInterface
+//go:generate mockgen -destination=./mock/repoutils_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/repoutils RepoUtilsInterface
 
 package repoutils
 
 import (
-	"ep/pkg/eputils"
-	orasutils "ep/pkg/eputils/orasutils"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	orasutils "github.com/intel/edge-conductor/pkg/eputils/orasutils"
 	"net/url"
 
 	log "github.com/sirupsen/logrus"

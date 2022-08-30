@@ -5,12 +5,12 @@
 *
  */
 
-//go:generate mockgen -destination=./mock/service_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt ep/pkg/eputils/service ServiceDeployer,HelmDeployerWrapper,YamlDeployerWrapper,ServiceTLSExtensionWrapper
+//go:generate mockgen -destination=./mock/service_mock.go -package=mock -copyright_file=../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/service ServiceDeployer,HelmDeployerWrapper,YamlDeployerWrapper,ServiceTLSExtensionWrapper
 
 package service
 
 import (
-	epplugins "ep/pkg/api/plugins"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
 )
 
 type ServiceDeployer interface {

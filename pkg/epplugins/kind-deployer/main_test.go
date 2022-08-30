@@ -9,9 +9,9 @@ package kinddeployer
 
 import (
 	"encoding/json"
-	"ep/pkg/eputils"
-	"ep/pkg/eputils/repoutils"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils/repoutils"
 	"io/fs"
 	"io/ioutil"
 	"os"

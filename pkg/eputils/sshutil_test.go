@@ -9,10 +9,10 @@
 package eputils
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	fakesftp_mock "ep/pkg/eputils/test/fakesftp/mock"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	fakesftp_mock "github.com/intel/edge-conductor/pkg/eputils/test/fakesftp/mock"
 	"io"
 	"io/fs"
 	"io/ioutil"

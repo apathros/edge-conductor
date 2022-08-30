@@ -7,13 +7,13 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
-	orasutils "ep/pkg/eputils/orasutils"
-	plugin "ep/pkg/plugin"
-	wf "ep/pkg/workflow"
 	"fmt"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
+	orasutils "github.com/intel/edge-conductor/pkg/eputils/orasutils"
+	plugin "github.com/intel/edge-conductor/pkg/plugin"
+	wf "github.com/intel/edge-conductor/pkg/workflow"
 	"os"
 	"os/exec"
 

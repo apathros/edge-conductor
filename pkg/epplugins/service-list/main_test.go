@@ -11,10 +11,10 @@
 package servicelist
 
 import (
-	repoutils "ep/pkg/eputils/repoutils"
-	repomock "ep/pkg/eputils/repoutils/mock"
 	"errors"
 	"fmt"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	repomock "github.com/intel/edge-conductor/pkg/eputils/repoutils/mock"
 	"os/exec"
 	"path/filepath"
 	"reflect"

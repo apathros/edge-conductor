@@ -10,8 +10,8 @@
 package capiproviderlaunch
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 //nolint:deadcode,unused

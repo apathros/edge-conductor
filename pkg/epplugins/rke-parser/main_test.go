@@ -9,8 +9,8 @@
 package rkeparser
 
 import (
-	eputils "ep/pkg/eputils"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"os"
 	"testing"
 

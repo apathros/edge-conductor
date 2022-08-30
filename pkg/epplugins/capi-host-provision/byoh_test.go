@@ -8,13 +8,13 @@
 package capihostprovision
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
-	"ep/pkg/eputils/capiutils"
-	"ep/pkg/eputils/kubeutils"
-	"ep/pkg/executor"
 	"errors"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	"github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	"github.com/intel/edge-conductor/pkg/executor"
 	"os/exec"
 	"testing"
 	"time"

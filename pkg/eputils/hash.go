@@ -10,7 +10,7 @@
 package eputils
 
 import (
-	papi "ep/pkg/api/plugins"
+	papi "github.com/intel/edge-conductor/pkg/api/plugins"
 	"os"
 	"path/filepath"
 	"strings"

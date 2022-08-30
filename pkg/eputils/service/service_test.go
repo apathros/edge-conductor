@@ -9,14 +9,14 @@
 package service
 
 import (
-	cmapi "ep/pkg/api/certmgr"
-	epplugins "ep/pkg/api/plugins"
-	certmgr "ep/pkg/certmgr"
-	eputils "ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	fakekubeutils "ep/pkg/eputils/test/fakekubeutils"
 	"errors"
 	"fmt"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	fakekubeutils "github.com/intel/edge-conductor/pkg/eputils/test/fakekubeutils"
 	"io"
 	"io/ioutil"
 	"net/http"

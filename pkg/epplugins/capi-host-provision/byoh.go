@@ -7,11 +7,11 @@
 package capihostprovision
 
 import (
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	capiutils "ep/pkg/eputils/capiutils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	"ep/pkg/executor"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	capiutils "github.com/intel/edge-conductor/pkg/eputils/capiutils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	"github.com/intel/edge-conductor/pkg/executor"
 	"os/exec"
 	"strings"
 	"time"

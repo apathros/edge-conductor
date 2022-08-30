@@ -9,7 +9,7 @@ package docker
 
 import (
 	"context"
-	api "ep/pkg/api/plugins"
+	api "github.com/intel/edge-conductor/pkg/api/plugins"
 	"io"
 	"time"
 

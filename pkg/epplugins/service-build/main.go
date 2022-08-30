@@ -10,9 +10,9 @@
 package servicebuild
 
 import (
-	eputils "ep/pkg/eputils"
-	svcutils "ep/pkg/eputils/service"
-	"ep/pkg/executor"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	svcutils "github.com/intel/edge-conductor/pkg/eputils/service"
+	"github.com/intel/edge-conductor/pkg/executor"
 	log "github.com/sirupsen/logrus"
 )
 

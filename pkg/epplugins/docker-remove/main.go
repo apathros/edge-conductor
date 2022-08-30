@@ -11,8 +11,8 @@ package dockerremove
 import (
 	log "github.com/sirupsen/logrus"
 
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
 )
 
 func PluginMain(in eputils.SchemaMapData, outp *eputils.SchemaMapData) error {

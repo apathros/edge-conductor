@@ -12,12 +12,12 @@ package nodejoinprepare
 import (
 	// TODO: Add Plugin Imports Here
 	"encoding/base64"
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	nodeutils "ep/pkg/eputils/nodeutils"
-	"ep/pkg/executor"
 	"fmt"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	nodeutils "github.com/intel/edge-conductor/pkg/eputils/nodeutils"
+	"github.com/intel/edge-conductor/pkg/executor"
 	log "github.com/sirupsen/logrus"
 	"path"
 	"strings"

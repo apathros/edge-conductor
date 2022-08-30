@@ -17,7 +17,7 @@ import (
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/repo"
 
-	eputils "ep/pkg/eputils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"

@@ -8,10 +8,10 @@ package workflow
 
 import (
 	"context"
-	wfapi "ep/pkg/api/workflow"
-	certmgr "ep/pkg/certmgr"
-	"ep/pkg/eputils"
 	"fmt"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"net"
 
 	log "github.com/sirupsen/logrus"

@@ -8,9 +8,9 @@ package plugin
 
 import (
 	"context"
-	wfapi "ep/pkg/api/workflow"
-	certmgr "ep/pkg/certmgr"
-	eputils "ep/pkg/eputils"
+	wfapi "github.com/intel/edge-conductor/pkg/api/workflow"
+	certmgr "github.com/intel/edge-conductor/pkg/certmgr"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"time"
 
 	"google.golang.org/grpc"

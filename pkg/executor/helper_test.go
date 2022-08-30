@@ -9,12 +9,12 @@ package executor
 
 import (
 	"context"
-	"ep/pkg/api/ep"
-	pluginapi "ep/pkg/api/plugins"
-	"ep/pkg/eputils/docker"
-	repoutils "ep/pkg/eputils/repoutils"
-	"ep/pkg/eputils/restfulcli"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/api/ep"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils/docker"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	"github.com/intel/edge-conductor/pkg/eputils/restfulcli"
 	"io"
 	"reflect"
 	"testing"

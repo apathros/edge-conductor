@@ -8,9 +8,9 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
 	"fmt"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"os"
 	"regexp"
 	"strings"

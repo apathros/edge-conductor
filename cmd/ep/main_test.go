@@ -8,9 +8,9 @@
 package main
 
 import (
-	"ep/cmd/ep/app"
-	"ep/pkg/eputils"
 	"errors"
+	"github.com/intel/edge-conductor/cmd/ep/app"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"testing"
 
 	"github.com/undefinedlabs/go-mpatch"

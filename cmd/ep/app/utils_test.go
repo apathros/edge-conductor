@@ -8,9 +8,9 @@
 package app
 
 import (
-	epapiplugins "ep/pkg/api/plugins"
 	"errors"
 	"fmt"
+	epapiplugins "github.com/intel/edge-conductor/pkg/api/plugins"
 	"io/fs"
 	"os"
 	"path/filepath"

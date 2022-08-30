@@ -19,9 +19,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"sigs.k8s.io/yaml"
 
-	api "ep/pkg/api/ep"
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
+	api "github.com/intel/edge-conductor/pkg/api/ep"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 )
 
 type client interface {

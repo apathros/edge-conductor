@@ -10,8 +10,8 @@
 package kindremover
 
 import (
-	eputils "ep/pkg/eputils"
-	repoutils "ep/pkg/eputils/repoutils"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
 	"os"
 	"os/exec"
 	"path/filepath"

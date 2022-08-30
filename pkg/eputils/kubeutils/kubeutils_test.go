@@ -9,14 +9,14 @@ package kubeutils
 
 import (
 	"context"
-	pluginapi "ep/pkg/api/plugins"
 	"errors"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 	"io/ioutil"
 	"reflect"
 	"strings"
 	"testing"
 
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"github.com/undefinedlabs/go-mpatch"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

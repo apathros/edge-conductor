@@ -8,7 +8,7 @@
 package eputils
 
 import (
-	pluginapi "ep/pkg/api/plugins"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
 
 	"os"
 	"testing"

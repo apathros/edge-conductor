@@ -6,7 +6,7 @@
  */
 package certmgr
 
-//go:generate mockgen -destination=./mock/certificate_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt ep/pkg/certmgr CertificateWrapper
+//go:generate mockgen -destination=./mock/certificate_mock.go -package=mock -copyright_file=../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/certmgr CertificateWrapper
 
 import (
 	"crypto/ecdsa"
@@ -15,8 +15,8 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	cmapi "ep/pkg/api/certmgr"
-	eputils "ep/pkg/eputils"
+	cmapi "github.com/intel/edge-conductor/pkg/api/certmgr"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"math/big"
 	"net"

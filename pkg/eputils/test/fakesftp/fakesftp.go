@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-//go:generate mockgen -destination=./mock/fakesftp_mock.go -package=mock -copyright_file=../../../../api/schemas/license-header.txt ep/pkg/eputils/test/fakesftp SftpClientInterface
+//go:generate mockgen -destination=./mock/fakesftp_mock.go -package=mock -copyright_file=../../../../api/schemas/license-header.txt github.com/intel/edge-conductor/pkg/eputils/test/fakesftp SftpClientInterface
 
 type (
 	SftpClientInterface interface {

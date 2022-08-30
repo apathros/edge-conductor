@@ -1,4 +1,4 @@
-module ep
+module github.com/intel/edge-conductor
 
 go 1.17
 

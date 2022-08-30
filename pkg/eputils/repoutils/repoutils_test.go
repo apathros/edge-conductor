@@ -8,9 +8,9 @@
 package repoutils
 
 import (
-	"ep/pkg/eputils"
-	"ep/pkg/eputils/orasutils"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils/orasutils"
 	"path/filepath"
 	"reflect"
 	"strings"

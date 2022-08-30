@@ -9,11 +9,11 @@
 package rkeinjector
 
 import (
-	eputils "ep/pkg/eputils"
-	mock_utils "ep/pkg/eputils/mock"
-	repoutils "ep/pkg/eputils/repoutils"
-	mock_repoutils "ep/pkg/eputils/repoutils/mock"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	mock_utils "github.com/intel/edge-conductor/pkg/eputils/mock"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	mock_repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils/mock"
 	"os"
 	"path/filepath"
 	"testing"

@@ -10,8 +10,8 @@
 package capideinit
 
 import (
-	eputils "ep/pkg/eputils"
-	docker "ep/pkg/eputils/docker"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	docker "github.com/intel/edge-conductor/pkg/eputils/docker"
 	log "github.com/sirupsen/logrus"
 )
 

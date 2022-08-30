@@ -8,8 +8,8 @@
 package kindparser
 
 import (
-	"ep/pkg/eputils"
 	"errors"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"strings"
 	"testing"
 )

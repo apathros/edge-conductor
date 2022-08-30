@@ -11,17 +11,17 @@
 package servicedeployer
 
 import (
-	epplugins "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
-	kubeutils "ep/pkg/eputils/kubeutils"
-	kubemock "ep/pkg/eputils/kubeutils/mock"
-	repoutils "ep/pkg/eputils/repoutils"
-	repomock "ep/pkg/eputils/repoutils/mock"
-	serviceutil "ep/pkg/eputils/service"
-	servicemock "ep/pkg/eputils/service/mock"
-	fakekubeutils "ep/pkg/eputils/test/fakekubeutils"
 	"errors"
 	"fmt"
+	epplugins "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	kubeutils "github.com/intel/edge-conductor/pkg/eputils/kubeutils"
+	kubemock "github.com/intel/edge-conductor/pkg/eputils/kubeutils/mock"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	repomock "github.com/intel/edge-conductor/pkg/eputils/repoutils/mock"
+	serviceutil "github.com/intel/edge-conductor/pkg/eputils/service"
+	servicemock "github.com/intel/edge-conductor/pkg/eputils/service/mock"
+	fakekubeutils "github.com/intel/edge-conductor/pkg/eputils/test/fakekubeutils"
 	"reflect"
 	"testing"
 

@@ -9,9 +9,9 @@ package capiutils
 
 import (
 	"encoding/base64"
-	pluginapi "ep/pkg/api/plugins"
-	eputils "ep/pkg/eputils"
 	"errors"
+	pluginapi "github.com/intel/edge-conductor/pkg/api/plugins"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
 	"io/ioutil"
 	"os"
 	"path/filepath"

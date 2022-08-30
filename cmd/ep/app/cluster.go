@@ -8,7 +8,7 @@
 package app
 
 import (
-	"ep/pkg/eputils"
+	"github.com/intel/edge-conductor/pkg/eputils"
 	"os"
 
 	log "github.com/sirupsen/logrus"

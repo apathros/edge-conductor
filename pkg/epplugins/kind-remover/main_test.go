@@ -11,11 +11,11 @@
 package kindremover
 
 import (
-	eputils "ep/pkg/eputils"
-	repoutils "ep/pkg/eputils/repoutils"
-	repomock "ep/pkg/eputils/repoutils/mock"
 	"errors"
 	"fmt"
+	eputils "github.com/intel/edge-conductor/pkg/eputils"
+	repoutils "github.com/intel/edge-conductor/pkg/eputils/repoutils"
+	repomock "github.com/intel/edge-conductor/pkg/eputils/repoutils/mock"
 	"io/fs"
 	"os"
 	"os/exec"

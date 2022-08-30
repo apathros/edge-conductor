@@ -8,8 +8,8 @@
 package conductorutils
 
 import (
-	papi "ep/pkg/api/plugins"
-	"ep/pkg/eputils"
+	papi "github.com/intel/edge-conductor/pkg/api/plugins"
+	"github.com/intel/edge-conductor/pkg/eputils"
 
 	log "github.com/sirupsen/logrus"
 )
