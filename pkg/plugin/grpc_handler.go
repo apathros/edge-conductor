@@ -67,7 +67,6 @@ func (p *Plugin) Connect(address string) error {
 	if r.Result.Return == wfapi.ConnectResult_Connected {
 		if p.plugin_data != nil && r.WorkflowData.PluginData != nil {
 			if err := p.plugin_data.UnmarshalBinary(r.WorkflowData.PluginData); err != nil {
-				log.Warningf("Unmarshal plugin data error: %v", err)
 				return eputils.GetError("errUnmarshalPlugin")
 			}
 		}
@@ -79,7 +78,6 @@ func (p *Plugin) Connect(address string) error {
 		}
 		return nil
 	}
-	log.Warningf("Unknown return %v", r.Result.Return)
 	return eputils.GetError("errUnknown")
 
 }
@@ -96,7 +94,6 @@ func (p *Plugin) Complete(err error) error {
 	} else {
 		if p.plugin_data != nil {
 			if req.WorkflowData.PluginData, err = p.plugin_data.MarshalBinary(); err != nil {
-				log.Errorf("Marshal plugin data error: %v", err)
 				return eputils.GetError("errUnmarshalPlugin")
 			}
 		}
