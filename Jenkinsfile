@@ -23,7 +23,7 @@ pipeline {
     stages {
         stage ('Check license headers') {
             steps {
-                    sh 'git clone https://${GITHUB_CREDS}@github.com/intel-innersource/applications.analyzers.infrastructure.license-header-checker.git header_scan'
+                    sh 'git clone https://${GITHUB_CREDS}@github.com/intel-sandbox/applications.analyzers.infrastructure.license-header-checker.git header_scan'
                     sh '''
                     cd header_scan 
                     echo -e "Copyright (c) {dates} Intel Corporation.\n\nSPDX-License-Identifier: Apache-2.0" > license_header_template.txt
