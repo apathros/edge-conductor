@@ -13,7 +13,7 @@ import (
 func TestErrorcode(t *testing.T) {
 	var (
 		code        = "E001.999"
-		errormes    = "Test error code funtion"
+		errormes    = "Test error code function"
 		linkaddress = ""
 	)
 	ecerror := &EC_errors{code, errormes, linkaddress}
