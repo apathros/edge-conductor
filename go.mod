@@ -337,7 +337,7 @@ replace (
 	go.uber.org/atomic => go.uber.org/atomic v1.7.0
 	go.uber.org/multierr => go.uber.org/multierr v1.6.0
 	go.uber.org/zap => go.uber.org/zap v1.19.1
-	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/net => golang.org/x/net v0.0.0-20220107192237-5cfca573fb4d
 	golang.org/x/oauth2 => golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
