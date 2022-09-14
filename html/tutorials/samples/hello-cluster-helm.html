@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello Cluster! Helm Version &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Hello Cluster! Helm Version</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment">Prepare an Edge Conductor Kit for a Helm Chart Package Deployment</a><ul>
+<li><a class="reference internal" href="#edge-conductor-kit-config-file">Edge Conductor Kit Config File</a></li>
+<li><a class="reference internal" href="#component-manifest">Component Manifest</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deploy-hello-cluster-application-by-helm-chart-on-edge-conductor">Deploy Hello Cluster Application by Helm Chart on Edge Conductor</a><ul>
+<li><a class="reference internal" href="#init-edge-conductor-environment">Init Edge Conductor Environment</a></li>
+<li><a class="reference internal" href="#build-and-deploy-kind-cluster">Build and Deploy KIND Cluster</a></li>
+<li><a class="reference internal" href="#check-the-kind-cluster">Check the KIND Cluster</a></li>
+<li><a class="reference internal" href="#build-and-deploy-hello-cluster-service">Build and Deploy hello-cluster Service</a></li>
+<li><a class="reference internal" href="#access-the-service">Access the Service</a></li>
+<li><a class="reference internal" href="#clean-up">Clean Up</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-s-next">What’s Next</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Hello Cluster! Helm Version</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/samples/hello-cluster-helm.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> / <a class="reference internal" href="../index.html"><span class="doc std std-doc">Tutorials</span></a> / <a class="reference internal" href="index.html"><span class="doc std std-doc">Sample Applications</span></a> / <a class="reference internal" href="#"><span class="doc std std-doc">Hello Cluster! Helm</span></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="hello-cluster-helm-version">
+<h1>Hello Cluster! Helm Version<a class="headerlink" href="#hello-cluster-helm-version" title="Permalink to this heading"></a></h1>
+<p>This tutorial describes how to prepare an Edge Conductor Kit to deploy a Helm chart package. This tutorial uses Hello Cluster! application to demonstrate how to deploy the Hello Cluster! Helm package on Kind cluster</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference external" href="#prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment">Prepare an Edge Conductor Kit for a Helm Chart Package Deployment</a></p></li>
+<li><p><a class="reference external" href="#deploy-hello-cluster-application-by-helm-chart-on-edge-conductor">Deploy Hello Cluster Application by the Helm Chart on Edge Conductor</a></p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<p>This tutorial provides a Helm Chart packaged with the Hello Cluster! application as a sample. Please find the sample <strong>Helm Chart package</strong> <span class="xref myst">HERE</span>.  The following description, command, configuration, and output will be based on this sample Helm package. The reader can change the Helm chart package as their own just make sure the corresponding part uses the customized package name and configure files as well.</p>
+<p>Follow <a class="reference external" href="../../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0
+Host</a> and <a class="reference external" href="../../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and
+System Requirements for Edge Conductor Day-0
+Host</a>
+to prepare the Day-0 host hardware and software.</p>
+<blockquote>
+<div><p><em>NOTE:</em>  For each KIND node, 2 CPU cores and 2 gigabytes (GB) of memory are
+needed at least.</p>
+</div></blockquote>
+<p>Follow
+<a class="reference external" href="../../../README.md#download-and-build-edge-conductor-code--internal-users-only-">Download and Build Edge Conductor Code (Internal users only)</a>
+to build and install the Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run the Edge Conductor tool.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor$ <span class="nb">cd</span> _workspace
+edge-conductor/_workspace$
+</pre></div>
+</div>
+<p>Follow the <a class="reference external" href="https://helm.sh/docs/intro/install/">Installing Helm</a> steps to
+install the Helm CLI.</p>
+</section>
+<section id="prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment">
+<h2>Prepare an Edge Conductor Kit for a Helm Chart Package Deployment<a class="headerlink" href="#prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment" title="Permalink to this heading"></a></h2>
+<p>This document guides the user to prepare an Edge Conductor Kit that deploys a Helm Chart Package on a KIND cluster.</p>
+<p>This document uses three kinds of files:</p>
+<ul class="simple">
+<li><p>Edge Conductor Kit configure file <span class="xref myst">kit.yml</span>: the file passed to the conductor tool directly</p></li>
+<li><p>Component Manifest file <span class="xref myst">manifest.yml</span>: define the component’s attribute</p></li>
+<li><p>Helm Chart Package:  <span class="xref myst">hello-cluster-helm.tgz </span>: The Helm Chart packaged with the Hello Cluster! application to be deployed.  (*Note: This package will be generated after EC build).</p></li>
+</ul>
+<p>The following sections explain how the 3 files co-work as an Edge Conductor Kit to install Helm Chart Package on the KIND cluster.</p>
+<section id="edge-conductor-kit-config-file">
+<h3>Edge Conductor Kit Config File<a class="headerlink" href="#edge-conductor-kit-config-file" title="Permalink to this heading"></a></h3>
+<p>This file is the top-level file of Edge Conductor Kit which will be passed to the conductor tool as the configuration of the target cluster and software component. Refer to <span class="xref myst">kit.yml</span> for the detail.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Use</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kit/kind.yml</span><span class="w"></span>
+
+<span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">customconfig</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;123456&quot;</span><span class="w"></span>
+
+<span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/sample_hello_cluster_helm/manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello-cluster-helm</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In this example:</p>
+<ul class="simple">
+<li><p>It imports kind.yml, which is the official Kit for KIND cluster.</p></li>
+<li><p>It imports config/sample_hello_cluster_helm/manifest.yml as the supplemented manifest of the component manifest file to provide the configuration of the helm chart package. The below section <a class="reference external" href="#component-manifest">Component Manifest</a> gives the detailed information of this supplemented manifest YAML file.</p></li>
+<li><p>It selects the hello-cluster-helm component (defined in the  <span class="xref myst">manifest.yml</span>)  to be deployed on the Kind cluster.</p></li>
+</ul>
+</section>
+<section id="component-manifest">
+<h3>Component Manifest<a class="headerlink" href="#component-manifest" title="Permalink to this heading"></a></h3>
+<p>EC has a <span class="xref myst">default component manifest file</span>, which contains all default components supported by EC. Customers can write a supplement component manifest file. This example provides the supplement manifest in <span class="xref myst">manifest.yml</span>.
+Detailed definition of <strong>components</strong> refer to <a class="reference internal" href="../../guides/ec-configurations.html"><span class="doc std std-doc">EC Configuration</span></a> components section.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello-cluster-helm</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file://{{ .Workspace }}/config/sample_hello_cluster_helm/hello-cluster-helm-0.1.0.tgz</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
+<span class="w">    </span><span class="nt">images</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/google-samples/node-hello:1.0</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kind</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In this sample:</p>
+<ul class="simple">
+<li><p>It defines the component’s name as “hello-cluster-helm”, which will be used as the identifier to be selected by kit.yml selector section.</p></li>
+<li><p>It uses the hello-cluster-helm-0.1.0.tgz package to install the helm chart.</p></li>
+<li><p>It selects ‘helm’ type of the component. Refer to <a class="reference internal" href="../../guides/components.html"><span class="doc std std-doc">EC Component</span></a> for supported component type.</p></li>
+<li><p>It provides offline deployment capability with the list of image URLs under the “images” section.</p></li>
+<li><p>It requests the service to be deployed based on KIND cluster.</p></li>
+</ul>
+</section>
+</section>
+<section id="deploy-hello-cluster-application-by-helm-chart-on-edge-conductor">
+<h2>Deploy Hello Cluster Application by Helm Chart on Edge Conductor<a class="headerlink" href="#deploy-hello-cluster-application-by-helm-chart-on-edge-conductor" title="Permalink to this heading"></a></h2>
+<p>After all the above steps are accomplished, we can go to deploy the service based on the created hello-cluster-helm Edge Conductor Kit. Following steps, deploy the Hello Cluster Application by Helm Chart based on the Edge Conductor Kit created above.</p>
+<section id="init-edge-conductor-environment">
+<h3>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h3>
+<p>Run the “init” command with hello-cluster-helm Kit config file to initialize the Edge Conductor environment.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor init -c ./config/sample_hello_cluster_helm/kit.yml
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-kind-cluster">
+<h3>Build and Deploy KIND Cluster<a class="headerlink" href="#build-and-deploy-kind-cluster" title="Permalink to this heading"></a></h3>
+<p>Run the following commands to build and deploy KIND cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor cluster build
+edge-conductor/_workspace$ ./conductor cluster deploy
+</pre></div>
+</div>
+</section>
+<section id="check-the-kind-cluster">
+<h3>Check the KIND Cluster<a class="headerlink" href="#check-the-kind-cluster" title="Permalink to this heading"></a></h3>
+<p>Install the <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl tool (v1.20.0 or above)</a> to
+interact with the target cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get nodes
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-hello-cluster-service">
+<h3>Build and Deploy hello-cluster Service<a class="headerlink" href="#build-and-deploy-hello-cluster-service" title="Permalink to this heading"></a></h3>
+<p>To build and deploy the services, enter the commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor service build
+edge-conductor/_workspace$ ./conductor service deploy
+</pre></div>
+</div>
+<p>Run the following commands to list the pods that are running the Hello Cluster application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ kubectl get pods --output<span class="o">=</span>wide
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NAME                              READY   STATUS    RESTARTS   AGE    IP           NODE          NOMINATED NODE   READINESS GATES
+hello-cluster-helm-f86d6448f-2c98c   <span class="m">1</span>/1     Running   <span class="m">0</span>          114m   <span class="m">10</span>.244.1.4   kind-worker   &lt;none&gt;           &lt;none&gt;
+hello-cluster-helm-f86d6448f-r2dqc   <span class="m">1</span>/1     Running   <span class="m">0</span>          114m   <span class="m">10</span>.244.1.3   kind-worker   &lt;none&gt;           &lt;none&gt;
+</pre></div>
+</div>
+</section>
+<section id="access-the-service">
+<h3>Access the Service<a class="headerlink" href="#access-the-service" title="Permalink to this heading"></a></h3>
+<p>Use port-forward to access the hello cluster application
+Run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n default service/hello-cluster-helm <span class="m">5999</span>:8080
+</pre></div>
+</div>
+<p>It should be output like below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Forwarding from <span class="m">127</span>.0.0.1:5999 -&gt; <span class="m">8080</span>
+Forwarding from <span class="o">[</span>::1<span class="o">]</span>:5999 -&gt; <span class="m">8080</span>
+</pre></div>
+</div>
+<p>In a new terminal, run the following command to access the service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl http://127.0.0.1:5999
+</pre></div>
+</div>
+<p>The response to a successful request is a hello message:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Hello, world!
+Version: <span class="m">1</span>.0.0
+Hostname: hello-cluster-helm-f86d6448f-2c98c
+</pre></div>
+</div>
+</section>
+<section id="clean-up">
+<h3>Clean Up<a class="headerlink" href="#clean-up" title="Permalink to this heading"></a></h3>
+<p>To remove the whole KIND cluster and deinit EC by running the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor cluster remove
+edge-conductor/_workspace$ ./conductor deinit
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-s-next">
+<h2>What’s Next<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<p>Congratulations! You have deployed an application using a Helm chart.
+Next, you can try to deploy a web indexing service on the Kubernetes cluster.</p>
+<p>—–<br />
+Previous Tutorial: <a class="reference internal" href="hello-cluster.html"><span class="doc std std-doc">Hello Cluster!</span></a><br />
+Next Tutorial: <a class="reference internal" href="web-indexing.html"><span class="doc std std-doc">Web Indexing Application</span></a><br />
+<br />
+Back to: <span class="xref myst">Tutorials</span></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

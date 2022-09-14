@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Indexing Application &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Web Indexing Application</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster">Prepare an Edge Conductor Kit to Deploy web indexing service based on kind Cluster</a><ul>
+<li><a class="reference internal" href="#edge-conductor-kit-config-file">Edge Conductor Kit Config File</a></li>
+<li><a class="reference internal" href="#component-manifest">Component Manifest</a></li>
+<li><a class="reference internal" href="#deployment-file">Deployment File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deploy-web-indexing-service-based-on-the-edge-conductor-kit">Deploy web-indexing Service based on the Edge Conductor Kit</a><ul>
+<li><a class="reference internal" href="#init-edge-conductor-environment">Init Edge Conductor Environment</a></li>
+<li><a class="reference internal" href="#build-and-deploy-kind-cluster">Build and Deploy kind Cluster</a></li>
+<li><a class="reference internal" href="#check-the-kind-cluster">Check the kind Cluster</a></li>
+<li><a class="reference internal" href="#build-and-deploy-web-indexing-service">Build and Deploy web-indexing Service</a></li>
+<li><a class="reference internal" href="#access-the-application">Access the Application</a><ul>
+<li><a class="reference internal" href="#for-kind-use-port-forward-to-access-the-apache-solr-application">(For Kind) Use port-forward to access the Apache Solr application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-s-next">What’s Next</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Web Indexing Application</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/samples/web-indexing.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> / <a class="reference internal" href="../index.html"><span class="doc std std-doc">Tutorials</span></a> / <a class="reference internal" href="index.html"><span class="doc std std-doc">Sample Applications</span></a> / <a class="reference internal" href="#"><span class="doc std std-doc">Web Indexing Application</span></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="web-indexing-application">
+<h1>Web Indexing Application<a class="headerlink" href="#web-indexing-application" title="Permalink to this heading"></a></h1>
+<p>In this tutorial we will create a web indexing backend and deploy the service using edge conductor experience kit.</p>
+<p>This example contains how to deploy Apache SolrCloud with Edge Conductor.
+Apache Solr is an open enterprise search engine based on
+Apache Lucene <a class="reference external" href="https://solr.apache.org/">Learn more at solr.apache.org</a>. Apache Solr
+also relies on Zookeeper to manage the overall structure so that both indexing and
+search requests can be routed properly.</p>
+<p>Apache ZooKeeper is a centralized service for maintaining configuration information,
+naming, providing distributed synchronization, and providing group services.</p>
+<p><a class="reference external" href="https://zookeeper.apache.org/">Learn more at zookeeper.apache.org</a></p>
+<p>This sample app requires a cluster with network
+access. Storage also must be configured for the index created. Users can try
+this out on the kind cluster Edge Conductor provisioned.</p>
+<p>In this tutorial, we deploy one replica of Solr and one ZooKeeper instance and
+use a local-path storage class which is the default for kind.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference external" href="#prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster">Prepare an Edge Conductor Kit to Deploy a Service based on kind cluster</a></p></li>
+<li><p><a class="reference external" href="#deploy-web-indexing-service-based-on-the-edge-conductor-kit">Deploy web indexing service based on the Edge Conductor Kit</a></p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Make sure your host meets the requirements in
+<a class="reference external" href="../basics/how_to_install_tools.md#before-you-begin">Before You Begin</a>.</p></li>
+<li><p>Follow the steps in
+<a class="reference external" href="../basics/how_to_install_tools.md#build-and-install-the-tool">Build and Install the Tool</a>.</p></li>
+<li><p>Follow the steps in
+<a class="reference external" href="../basics/deploy_a_kind_cluster.md#build-and-deploy-kind-cluster">Build and Deploy Kind Cluster</a>
+to deploy a kind cluster and configure the kubectl command-line tool to
+communicate with your cluster.</p></li>
+</ol>
+<p>Follow <a class="reference external" href="../../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0
+Host</a> and <a class="reference external" href="../../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and
+System Requirements for Edge Conductor Day-0
+Host</a>
+to prepare the Day-0 host hardware and software.</p>
+<blockquote>
+<div><p><em>NOTE:</em>  For each kind node, 2 CPU cores and 2 gigabytes (GB) memory are
+the minimum required.</p>
+</div></blockquote>
+<p>Follow
+<a class="reference external" href="../../../README.md#download-and-build-edge-conductor-code--internal-users-only-">Download and Build Edge Conductor Code (Internal users
+only)</a>
+to build and install Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor$ <span class="nb">cd</span> _workspace
+edge-conductor/_workspace$
+</pre></div>
+</div>
+</section>
+<section id="prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster">
+<h2>Prepare an Edge Conductor Kit to Deploy web indexing service based on kind Cluster<a class="headerlink" href="#prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>This document guides to the user to prepare an Edge Conductor Kit that deploys a service on a kind cluster.</p>
+<p>This document uses three kinds of YAML files:</p>
+<ul class="simple">
+<li><p>Edge Conductor Kit configure file <span class="xref myst">kit.yml</span>:
+the file passed to the conductor tool directly</p></li>
+<li><p>Component Manifest file <span class="xref myst">manifest.yml</span>:
+define the component’s attribute</p></li>
+<li><p>Service Deployment files:
+define the way to deploy the service to the kind cluster</p></li>
+</ul>
+<p>The following sections explains how the three files co-work as an Edge Conductor Kit to provide a
+“web-indexing” service on the kind cluster.</p>
+<section id="edge-conductor-kit-config-file">
+<h3>Edge Conductor Kit Config File<a class="headerlink" href="#edge-conductor-kit-config-file" title="Permalink to this heading"></a></h3>
+<p>This file is the top level file of Edge Conductor Kit which will be passed to the conductor tool as configuration of target cluster and software component. Refer to <span class="xref myst">kit.yml</span> for the detail.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Use</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kit/kind.yml</span><span class="w"></span>
+
+<span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">customconfig</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;123456&quot;</span><span class="w"></span>
+
+<span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/sample_web_indexing/manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-indexing</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In this example:</p>
+<ul class="simple">
+<li><p>It imports <code class="docutils literal notranslate"><span class="pre">kind.yml</span></code>, which is the official Kit for kind cluster.</p></li>
+<li><p>It imports <code class="docutils literal notranslate"><span class="pre">config/sample_web_indexing/manifest.yml</span></code> as the supplemented manifest of the component manifest file to provide the configuration of the sample_web_indexing service. The below section <a class="reference external" href="#component-manifest">Component Manifest</a> gives the detailed information for this supplemented manifest YAML file.</p></li>
+<li><p>It selects the <code class="docutils literal notranslate"><span class="pre">sample_web_indexing</span></code> as the component to be deployed on the kind cluster.</p></li>
+</ul>
+</section>
+<section id="component-manifest">
+<h3>Component Manifest<a class="headerlink" href="#component-manifest" title="Permalink to this heading"></a></h3>
+<p>Edge Conductor has a <span class="xref myst">default component manifest file</span>, which contains all default components supported by Edge Conductor. Customers can write a supplement component manifest file. This example provides the supplement manifest in <span class="xref myst">manifest.yml</span>.
+Detailed definition of <strong>components</strong> refer to <a class="reference internal" href="../../guides/ec-configurations.html"><span class="doc std std-doc">Edge Conductor Configuration</span></a> components section.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-indexing</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file://{{ .Workspace }}/config/sample_web_indexing/web-indexing.yml</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml</span><span class="w"></span>
+<span class="w">    </span><span class="nt">images</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/google_samples/k8szk:v1</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">solr:8.1.1</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">busybox</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kind</span><span class="w"></span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hello-cluster</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In this sample:</p>
+<ul class="simple">
+<li><p>It defines the component’s name as “web-indexing”.</p></li>
+<li><p>It uses the <code class="docutils literal notranslate"><span class="pre">web-indexing.yml</span></code> file as the deployment YAML file. Refer to section <a class="reference external" href="#deployment-file">Deployment File</a>.</p></li>
+<li><p>It provides offline deployment capability with the list of image URLs under the “images” section.</p></li>
+<li><p>It requests the service to be deployed based on kind cluster.</p></li>
+</ul>
+</section>
+<section id="deployment-file">
+<h3>Deployment File<a class="headerlink" href="#deployment-file" title="Permalink to this heading"></a></h3>
+<p>The <span class="xref myst">deployment file</span> in this Kit example describes a desired status in a Deployment by the kubectl command. The format of this YAML file should follow the definition of the Kubernetes deployment file.</p>
+</section>
+</section>
+<section id="deploy-web-indexing-service-based-on-the-edge-conductor-kit">
+<h2>Deploy web-indexing Service based on the Edge Conductor Kit<a class="headerlink" href="#deploy-web-indexing-service-based-on-the-edge-conductor-kit" title="Permalink to this heading"></a></h2>
+<p>After all the above steps are completed, we can deploy the service based on the created web-indexing Edge Conductor Kit. The following steps deploy a web-indexing service based on the Edge Conductor Kit created above.</p>
+<section id="init-edge-conductor-environment">
+<h3>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h3>
+<p>Run the “init” command with the web-indexing kit config file to initialize the Edge Conductor environment.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor init -c ./config/sample_web_indexing/kit.yml
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-kind-cluster">
+<h3>Build and Deploy kind Cluster<a class="headerlink" href="#build-and-deploy-kind-cluster" title="Permalink to this heading"></a></h3>
+<p>Run the following commands to build and deploy kind cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor cluster build
+edge-conductor/_workspace$ ./conductor cluster deploy
+</pre></div>
+</div>
+</section>
+<section id="check-the-kind-cluster">
+<h3>Check the kind Cluster<a class="headerlink" href="#check-the-kind-cluster" title="Permalink to this heading"></a></h3>
+<p>Install the <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl tool (v1.20.0 or above)</a> to
+interact with the target cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get nodes
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NAME                 STATUS   ROLES                  AGE   VERSION
+kind-control-plane   Ready    control-plane,master   19h   v1.23.4
+kind-worker          Ready    &lt;none&gt;                 19h   v1.23.4
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-web-indexing-service">
+<h3>Build and Deploy web-indexing Service<a class="headerlink" href="#build-and-deploy-web-indexing-service" title="Permalink to this heading"></a></h3>
+<p>To build and deploy the services, enter the commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ ./conductor service build
+edge-conductor/_workspace$ ./conductor service deploy
+</pre></div>
+</div>
+<p>Run the following commands to list the pods that are running the web-indexing application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor/_workspace$ kubectl get pods -n web-indexing --output<span class="o">=</span>wide
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NAME                       READY   STATUS    RESTARTS   AGE    IP            NODE          NOMINATED NODE   READINESS GATES
+web-indexing-solr-0        <span class="m">1</span>/1     Running   <span class="m">0</span>          4m7s   <span class="m">10</span>.244.1.70   kind-worker   &lt;none&gt;           &lt;none&gt;
+web-indexing-zookeeper-0   <span class="m">1</span>/1     Running   <span class="m">0</span>          4m7s   <span class="m">10</span>.244.1.69   kind-worker   &lt;none&gt;           &lt;none&gt;
+</pre></div>
+</div>
+</section>
+<section id="access-the-application">
+<h3>Access the Application<a class="headerlink" href="#access-the-application" title="Permalink to this heading"></a></h3>
+<section id="for-kind-use-port-forward-to-access-the-apache-solr-application">
+<h4>(For Kind) Use port-forward to access the Apache Solr application<a class="headerlink" href="#for-kind-use-port-forward-to-access-the-apache-solr-application" title="Permalink to this heading"></a></h4>
+<p>Run the following command:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n web-indexing svc/solr-service  <span class="m">8983</span>:8983
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>Forwarding from <span class="m">127</span>.0.0.1:8983 -&gt; <span class="m">8983</span>
+Forwarding from <span class="o">[</span>::1<span class="o">]</span>:8983 -&gt; <span class="m">8983</span>
+</pre></div>
+</div>
+<p>Access <code class="docutils literal notranslate"><span class="pre">http://localhost:8983</span></code> in your web browser now.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>wget http://localhost:8983
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="what-s-next">
+<h2>What’s Next<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<p>Congratulations! You have deployed Apache Solr. Now you can try to
+use this search engine.</p>
+<p>First, Go to to the Solr Cloud Administration UI at <code class="docutils literal notranslate"><span class="pre">http://localhost:8983</span></code>:</p>
+<p><img alt="Solr Panel Admin" src="../../_images/solr_admin_panel_0.JPG" /></p>
+<p>From the left sidebar, select <code class="docutils literal notranslate"><span class="pre">Collections</span></code>, you can see the <code class="docutils literal notranslate"><span class="pre">Collections</span></code> panel.
+Now create a collection by clicking on <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Collection</span></code>.</p>
+<p><img alt="Solr Panel Add Collection" src="tutorials/samples/.../img/solr_admin_panel_add_collection.JPG" /></p>
+<p>Modify the name of the new collection, for example, in this tutorial we name it <code class="docutils literal notranslate"><span class="pre">test_collection</span></code>.
+And then choose the <code class="docutils literal notranslate"><span class="pre">_default</span></code> config set.
+Then click <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Collection</span></code>.</p>
+<p><img alt="Use Default Config Set" src="../../_images/solr_admin_panel_default_config_set.JPG" /></p>
+<p>After <code class="docutils literal notranslate"><span class="pre">test_conllection</span></code> is created, select the <code class="docutils literal notranslate"><span class="pre">test_collection</span></code> from the <code class="docutils literal notranslate"><span class="pre">Collection</span> <span class="pre">Selector</span></code> dropdown in the left sidebar. We can now do more configuration.</p>
+<p><img alt="Select Test Collection From Dropdown" src="../../_images/solr_admin_panel_add_data.JPG" /></p>
+<p>In the left sidebar under <code class="docutils literal notranslate"><span class="pre">test_collection</span></code>, click on <code class="docutils literal notranslate"><span class="pre">Documents</span></code> and choose the Document Type <code class="docutils literal notranslate"><span class="pre">Solr</span> <span class="pre">Command</span> <span class="pre">(raw</span> <span class="pre">XML</span> <span class="pre">or</span> <span class="pre">JSON)</span></code>, we can see the detailed Solr Command content in the <code class="docutils literal notranslate"><span class="pre">Document(s)</span></code>.</p>
+<p><img alt="Submit Document In Collection" src="../../_images/solr_admin_panel_submit_document.JPG" /></p>
+<p>Delete the original content of Solr Command, copy the following JSON code and paste into the <code class="docutils literal notranslate"><span class="pre">Document(s)</span></code>.</p>
+<p>Then click <code class="docutils literal notranslate"><span class="pre">Submit</span> <span class="pre">Document</span></code>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;978-0641723445&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;cat&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;book&quot;</span><span class="p">,</span><span class="s2">&quot;hardcover&quot;</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The Lightning Thief&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rick Riordan&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;series_t&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Percy Jackson and the Olympians&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;sequence_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;genre_s&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fantasy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;inStock&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;price&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">12.50</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;pages_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">384</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;978-1423103349&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;cat&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;book&quot;</span><span class="p">,</span><span class="s2">&quot;paperback&quot;</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The Sea of Monsters&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rick Riordan&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;series_t&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Percy Jackson and the Olympians&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;sequence_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;genre_s&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fantasy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;inStock&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;price&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">6.49</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;pages_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">304</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;978-1857995879&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;cat&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;book&quot;</span><span class="p">,</span><span class="s2">&quot;paperback&quot;</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sophie&#39;s World : The Greek Philosophers&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jostein Gaarder&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;sequence_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;genre_s&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fantasy&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;inStock&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;price&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">3.07</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;pages_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;978-1933988177&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;cat&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;book&quot;</span><span class="p">,</span><span class="s2">&quot;paperback&quot;</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lucene in Action, Second Edition&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Michael McCandless&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;sequence_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;genre_s&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IT&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;inStock&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;price&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.50</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;pages_i&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">475</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>If the data is successfully submitted, you will see output similar to the following:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;responseHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;rf&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;QTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">610</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Now you can go to the <code class="docutils literal notranslate"><span class="pre">Query</span></code> tab (select from the left sidebar under <code class="docutils literal notranslate"><span class="pre">test_collection</span></code>) and search for <code class="docutils literal notranslate"><span class="pre">hardcover</span></code> books. Copy the query
+<code class="docutils literal notranslate"><span class="pre">cat:</span> <span class="pre">&quot;hardcover&quot;</span></code> into the input box <code class="docutils literal notranslate"><span class="pre">q</span></code> and select <code class="docutils literal notranslate"><span class="pre">json</span></code> from dropbox <code class="docutils literal notranslate"><span class="pre">wt</span></code>, then
+click on <code class="docutils literal notranslate"><span class="pre">Execute</span> <span class="pre">Query</span></code>. Upon success, you will see output similar to the following:</p>
+<p><img alt="Query Document" src="../../_images/solr_admin_panel_query_document.JPG" /></p>
+<p>To learn more, please go to the <a class="reference external" href="http://lucene.apache.org/solr/">Apache Solr documentation</a>
+and <a class="reference external" href="https://lucene.apache.org/solr/guide/query-syntax-and-parsing.html">Solr Query Syntax</a>.</p>
+<p>—–<br />
+Previous Tutorial: <a class="reference internal" href="hello-cluster-helm.html"><span class="doc std std-doc">Hello Cluster! Helm</span></a><br />
+<br />
+Back to: <a class="reference internal" href="index.html"><span class="doc std std-doc">Sample Applications</span></a></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to enable SR-IOV network with Edge conductor &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">How to enable SR-IOV network with Edge conductor</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#supported-sr-iov-nics">Supported SR-IOV NICs</a></li>
+<li><a class="reference internal" href="#preparation">Preparation</a></li>
+<li><a class="reference internal" href="#basic-configuration-for-sr-iov-nic">Basic configuration for SR-IOV NIC</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>How to enable SR-IOV network with Edge conductor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/how-to-enable-sriov.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="how-to-enable-sr-iov-network-with-edge-conductor">
+<h1>How to enable SR-IOV network with Edge conductor<a class="headerlink" href="#how-to-enable-sr-iov-network-with-edge-conductor" title="Permalink to this heading"></a></h1>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#supported-sr-iov-nics">Supported SR-IOV NICs</a></p></li>
+<li><p><a class="reference external" href="#preparation">Preparation</a></p></li>
+<li><p><a class="reference external" href="#basic-configuration-for-sr-iov-nic">Basic configuration for SR-IOV NIC</a></p></li>
+</ul>
+</section>
+<section id="supported-sr-iov-nics">
+<h2>Supported SR-IOV NICs<a class="headerlink" href="#supported-sr-iov-nics" title="Permalink to this heading"></a></h2>
+<p>The following NICs are supported with this implementation</p>
+<ul class="simple">
+<li><p>Intel E800 Series</p></li>
+<li><p>Intel X700 Series</p></li>
+<li><p>Intel 82599ES</p></li>
+</ul>
+<p>The follow NICs have been verified</p>
+<ul class="simple">
+<li><p>X722 NIC - deviceid: 0x37d2 0x37d0</p></li>
+<li><p>I350 NIC - deviceid: 0x1521</p></li>
+<li><p>X550 NIC - deviceid: 0x1563</p></li>
+</ul>
+</section>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <a class="reference external" href="../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0 Host</a> and <a class="reference external" href="../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and System Requirements for Edge Conductor Day-0 Host</a> to prepare the Day-0 host hardware and software.</p>
+<p>Follow <a class="reference external" href="../../README.md#build-and-install-edge-conductor-tool">Build and Install Edge Conductor Tool</a> to build and install Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<p>Before SR-IOV network deployment, users need to setup the following:</p>
+<ul class="simple">
+<li><p>Hardware</p>
+<ol class="arabic simple">
+<li><p>Prepare one or more bare metal servers as worker nodes which have two NICs, one SR-IOV NIC and one provisioning NIC in every SR-IOV worker node.</p></li>
+<li><p>Make sure VT-d and SR-IOV options in BIOS are enabled in SR-IOV worker nodes.</p></li>
+<li><p>Set correct time zone and system time in BIOS to avoid time mismatch between the Edge Conductor Day-0 machine and these bare metal servers.</p></li>
+</ol>
+</li>
+<li><p>Operating System</p>
+<ol class="arabic simple">
+<li><p>Ubuntu 20.04 is prefered.
+ </p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="basic-configuration-for-sr-iov-nic">
+<h2>Basic configuration for SR-IOV NIC<a class="headerlink" href="#basic-configuration-for-sr-iov-nic" title="Permalink to this heading"></a></h2>
+<p>We use Edge Conductor Kit to deploy the cluster with SR-IOV feature enabled in this document.</p>
+<p>SR-IOV feature will be enabled by modifying below part in <span class="xref myst">Example of RKE Kit.yml</span>.</p>
+<p>Note: SR-IOV related CNI, device plugin and multus services will be deployed when add “intel-sriov-network” in selector section.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;intel-sriov-network&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>SR-IOV extension configuration can be customized through modifying default one in <span class="xref myst">sriov.yml</span>.</p>
+<p>Note: User needs to set the option “sriov_enabled” to “true” to enable SR-IOV Virtual Funtion creation automatically. If SRIOV PF device ID of worker nodes should be included in the “pfdevices”, VF created device ID should be included in the “vfdevices”. The “pfNames” can be used to specify which PF will be used to create VF. User needs to make sure the specified PF interface status is down.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">extension</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sriov</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sriov_enabled</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The SRIOV PF vendors ID</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vendors</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0x8086&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The SRIOV PF devices ID</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pfdevices</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0x37d0</span><span class="nv"> </span><span class="s">0x37d2</span><span class="nv"> </span><span class="s">0x15e4&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The total VFs number that will be created for containers and VMs</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">num_vfs</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The VFs number that will be created for VMs</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">num_vfio_vfs</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nicselector</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The SRIOV VF devices ID that is created</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vfdevices</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[&quot;1520&quot;,</span><span class="nv"> </span><span class="s">&quot;1565&quot;,</span><span class="nv"> </span><span class="s">&quot;37cd&quot;,</span><span class="nv"> </span><span class="s">&quot;154c&quot;,</span><span class="nv"> </span><span class="s">&quot;1889&quot;,</span><span class="nv"> </span><span class="s">&quot;15c5&quot;]&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># The PF interface name</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pfNames</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sriov-network-1</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;host-local&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;subnet&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.217.0/24&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rangeStart&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.217.171&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rangeEnd&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.217.181&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;routes&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[{&quot;dst&quot;:</span><span class="nv"> </span><span class="s">&quot;0.0.0.0/0&quot;}]&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gateway&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.217.1&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sriov-net-vm</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;host-local&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;subnet&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.218.0/24&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rangeStart&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.218.171&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rangeEnd&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.218.181&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;routes&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[{&quot;dst&quot;:</span><span class="nv"> </span><span class="s">&quot;0.0.0.0/0&quot;}]&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gateway&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;10.56.218.1&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>After finishing above configurations, we can start deployment of RKE cluster with SR-IOV feature enabled following <a class="reference internal" href="cluster-deploy-RKE.html"><span class="doc std std-doc">Deploy an RKE Cluster</span></a>.</p>
+<p>Copyright (C) 2021 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

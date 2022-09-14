@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Tool: How to Deploy a Cluster with ClusterAPI &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Tool: How to Deploy a Cluster with ClusterAPI</a><ul>
+<li><a class="reference internal" href="#preparation">Preparation</a><ul>
+<li><a class="reference internal" href="#hardware-configuration">Hardware Configuration</a></li>
+<li><a class="reference internal" href="#network-setup">Network Setup</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#edge-conductor-kit-for-capi">Edge Conductor Kit for CAPI</a></li>
+<li><a class="reference internal" href="#custom-config">Custom Config</a></li>
+<li><a class="reference internal" href="#init-edge-conductor-environment">Init Edge Conductor Environment</a></li>
+<li><a class="reference internal" href="#build-and-deploy-clusterapi-cluster">Build and Deploy ClusterAPI Cluster</a><ul>
+<li><a class="reference internal" href="#preparation-optional">Preparation (Optional)</a></li>
+<li><a class="reference internal" href="#run-the-following-commands-to-build-and-deploy-clusterapi-cluster">Run the following commands to build and deploy ClusterAPI cluster.</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#check-the-clusterapi-cluster">Check the ClusterAPI Cluster</a><ul>
+<li><a class="reference internal" href="#service-deployment">Service deployment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-configuaration">Advanced Configuaration</a><ul>
+<li><a class="reference internal" href="#config-cri-of-workload-cluster">Config CRI of workload cluster</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Tool: How to Deploy a Cluster with ClusterAPI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/cluster-deploy-ClusterAPI.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-tool-how-to-deploy-a-cluster-with-clusterapi">
+<h1>Edge Conductor Tool: How to Deploy a Cluster with ClusterAPI<a class="headerlink" href="#edge-conductor-tool-how-to-deploy-a-cluster-with-clusterapi" title="Permalink to this heading"></a></h1>
+<p>This document is about how to config and run Edge Conductor tool to deploy a cluster with <a class="reference external" href="https://cluster-api.sigs.k8s.io/">ClusterAPI</a>.</p>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <a class="reference external" href="../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0 Host</a> and <a class="reference external" href="../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and System Requirements for Edge Conductor Day-0 Host</a> to <strong>prepare the Day-0 host</strong> hardware and software.</p>
+<p>Follow <a class="reference external" href="../../README.md#build-and-install-edge-conductor-tool">Build and Install Edge Conductor Tool</a> to <strong>build and install Edge Conductor tool</strong>. Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<p>Follow <a class="reference external" href="#hardware-configuration">Hardware Configuration</a> and <a class="reference external" href="#network-setup">Network Setup</a> to <strong>prepare the hardware and network connection of the bare matal machines</strong> on which the workload cluster is going to be deployed.</p>
+<section id="hardware-configuration">
+<h3>Hardware Configuration<a class="headerlink" href="#hardware-configuration" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Prepare bare metal servers <strong>with BMC (Baseboard Management Controller) support</strong> on which a workload cluster is going to be deployed. It is a hard requirement for current stage. Make necessary configurations to <strong>enable BMC on these bare metal servers</strong>, like IP address, username, password, etc.</p></li>
+<li><p><strong>Set correct time zone and system time in BIOS</strong> to avoid time mismatch between the Edge Conductor Day-0 machine and these bare metal servers.</p></li>
+</ol>
+</section>
+<section id="network-setup">
+<h3>Network Setup<a class="headerlink" href="#network-setup" title="Permalink to this heading"></a></h3>
+<p>The servers must be connected to two networks: the BMC network and the provisioning network. The bare metal servers should be able to access the Internet through the provisioning network. The Edge Conductor Day-0 machine must be able to access both the BMC network and the provisioning network also.</p>
+<p>Below figure demonstrates the topology for the Edge Conductor Day-0 machine and bare metal servers. The management cluster is deployed on the Edge Conductor Day-0 machine. It can be deployed elsewhere as long as the Edge Conductor Day-0 machine can access it.</p>
+<p><img alt="ClusterAPI Hardware Setup" src="../_images/clusterapi_hw_setup.png" /></p>
+<p>Make necessary configurations on the Edge Conductor Day-0 machine to forward traffic from the workload cluster to the external network. That means the Edge Conductor Day-0 machine will act as the gateway for the workload cluster. Below is an example of using <code class="docutils literal notranslate"><span class="pre">iptables</span></code> to configure the Edge Conductor Day-0 machine as the gateway. Such setting will not be presisted after reboot, please configure again.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># assume the IP addresses used by the workload cluster is 172.22.0.0/24, which is the Provision Network illustrated in above image.
+# enable ip forwarding for ipv4
+sudo sysctl -w net.ipv4.ip_forward=1
+# add an iptables rule for SNAT
+sudo ip addr add 172.22.0.1/24 dev eth1
+sudo iptables -t nat -A POSTROUTING -s 172.22.0.0/24 ! -d 172.22.0.0/24 -j MASQUERADE
+sudo iptables -t filter -A FORWARD  -s 172.22.0.0/24 -j ACCEPT
+sudo iptables -t filter -A FORWARD  -d 172.22.0.0/24 -j ACCEPT
+</pre></div>
+</div>
+</section>
+</section>
+<section id="edge-conductor-kit-for-capi">
+<h2>Edge Conductor Kit for CAPI<a class="headerlink" href="#edge-conductor-kit-for-capi" title="Permalink to this heading"></a></h2>
+<p>Edge Conductor Kit for CAPI provide two examples, according to the infrastructure provider planning to be used, are under:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kit/
+└── capi_metal3.yml
+└── capi_byoh.yml
+</pre></div>
+</div>
+<p>For more details of the Edge Conductor Kit, check the <span class="xref myst">Example of CAPI Kit_Metal3.yml</span> or <span class="xref myst">Example of CAPI Kit_byoh_and_ESP.yml</span></p>
+<p>In this Edge Conductor Kit for CAPI, a kind cluster will be launched automatically as the management cluster of Cluster API. The kubeconfig file of management cluster located in <code class="docutils literal notranslate"><span class="pre">&lt;edge</span> <span class="pre">conductor</span> <span class="pre">folder&gt;/_workspace/runtime/m_kubeconf</span></code>. The workload cluster will be deployed as one control plane node plus one worker node cluster.</p>
+</section>
+<section id="custom-config">
+<h2>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h2>
+<p>Modify the Edge Conductor Kit config file(kit/capi_metal3.yml) following <a class="reference external" href="ec-configurations.md#edge-conductor-kit-introduction">Edge Conductor Configurations | Edge Conductor Kit Introduction</a>, which is a mandatory parameter for “conductor init”.</p>
+<p>For more custom config, see <a class="reference external" href="#advanced-configuaration">Advanced Configuaration</a></p>
+</section>
+<section id="init-edge-conductor-environment">
+<h2>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to initialize the Edge Conductor environment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">conductor</span> <span class="n">init</span> <span class="o">-</span><span class="n">c</span> <span class="n">kit</span><span class="o">/</span><span class="n">capi_metal3</span><span class="o">.</span><span class="n">yml</span>
+<span class="ow">or</span>
+<span class="o">./</span><span class="n">conductor</span> <span class="n">init</span> <span class="o">-</span><span class="n">c</span> <span class="n">kit</span><span class="o">/</span><span class="n">capi_byoh</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-clusterapi-cluster">
+<h2>Build and Deploy ClusterAPI Cluster<a class="headerlink" href="#build-and-deploy-clusterapi-cluster" title="Permalink to this heading"></a></h2>
+<section id="preparation-optional">
+<h3>Preparation (Optional)<a class="headerlink" href="#preparation-optional" title="Permalink to this heading"></a></h3>
+<p>Depending on the infrastructure provider plan to be used, some additional prerequisites should be satisfied before getting started.</p>
+<ul class="simple">
+<li><p>Metal3</p>
+<ol class="arabic simple">
+<li><p>Metal3 enables user to deploy workload cluster on bare matal infrastructure. So OS image for servers was required to prepare well before cluster build and deploy.</p></li>
+</ol>
+</li>
+</ul>
+<p>Note: Get UBUNTU 20.04 image from official source and build out UBUNTU_20.04_NODE_IMAGE_K8S.qcow2 image based on it. For more details, refer to <a class="reference external" href="https://github.com/metal3-io/cluster-api-provider-metal3/blob/main/docs/getting-started.md">ClusterAPI official website</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qemu-img convert -O raw  UBUNTU_20.04_NODE_IMAGE_K8S.qcow2 UBUNTU_20.04_NODE_IMAGE_K8S-raw.img
+cp UBUNTU_20.04_NODE_IMAGE_K8S-raw.img &lt;edge conductor folder&gt;/_workspace/
+</pre></div>
+</div>
+</section>
+<section id="run-the-following-commands-to-build-and-deploy-clusterapi-cluster">
+<h3>Run the following commands to build and deploy ClusterAPI cluster.<a class="headerlink" href="#run-the-following-commands-to-build-and-deploy-clusterapi-cluster" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor cluster build
+./conductor cluster deploy
+</pre></div>
+</div>
+</section>
+</section>
+<section id="check-the-clusterapi-cluster">
+<h2>Check the ClusterAPI Cluster<a class="headerlink" href="#check-the-clusterapi-cluster" title="Permalink to this heading"></a></h2>
+<p>Install the <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl tool (v1.20.0)</a> to interact with the target cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get nodes --kubeconfig kubeconfig
+</pre></div>
+</div>
+<section id="service-deployment">
+<h3>Service deployment<a class="headerlink" href="#service-deployment" title="Permalink to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">conductor</span> <span class="n">service</span> <span class="n">build</span>
+<span class="o">./</span><span class="n">conductor</span> <span class="n">service</span> <span class="n">deploy</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>Use <code class="docutils literal notranslate"><span class="pre">--kubeconfig</span></code> to specify the kubeconfig if you don’t want to use the default config file from <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+</div></blockquote>
+<p>To deploy service rook-ceph and rook-ceph-cluster, please ensure these is at least one additional disk with more than 1GB capacity left for ceph osd deployment on any one worker node.</p>
+</section>
+</section>
+<section id="advanced-configuaration">
+<h2>Advanced Configuaration<a class="headerlink" href="#advanced-configuaration" title="Permalink to this heading"></a></h2>
+<section id="config-cri-of-workload-cluster">
+<h3>Config CRI of workload cluster<a class="headerlink" href="#config-cri-of-workload-cluster" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Containerd</span></code> is the default CRI used by the workload cluster in Edge Conductor Kit for CAPI. There is also an alternative container runtime <code class="docutils literal notranslate"><span class="pre">CRI-O</span></code> supported. To enable <code class="docutils literal notranslate"><span class="pre">CRI-O</span></code> as the container runtime of workload cluster, it requires modifying manifest configuration file <code class="docutils literal notranslate"><span class="pre">&lt;edge</span> <span class="pre">conductor</span> <span class="pre">folder&gt;/_workspace/config/manifests/cluster_provider_manifest.yml</span></code> as follows before cluster build.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">clusterapi</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">runtime</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;crio&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Copyright (C) 2021 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

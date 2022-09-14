@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to use Cert-manager &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">How to use Cert-manager</a><ul>
+<li><a class="reference internal" href="#preparation">Preparation</a></li>
+<li><a class="reference internal" href="#installation-and-uninstallation">Installation and Uninstallation</a></li>
+<li><a class="reference internal" href="#certificate-creation-using-the-cert-manager">Certificate creation using the Cert-Manager</a></li>
+<li><a class="reference internal" href="#integration-with-kubernetes-services">Integration with Kubernetes services</a><ul>
+<li><a class="reference internal" href="#prometheus">Prometheus</a><ul>
+<li><a class="reference internal" href="#part-1-prometheus-enable-tls">Part 1. Prometheus - Enable TLS</a></li>
+<li><a class="reference internal" href="#part-2-prometheus-testing-and-validation">Part 2. Prometheus - Testing and validation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#node-feature-discovery">Node Feature Discovery.</a><ul>
+<li><a class="reference internal" href="#node-feature-discovery-enable-tls">Node Feature Discovery - Enable TLS</a></li>
+<li><a class="reference internal" href="#node-feature-discovery-testing-and-validation">Node Feature Discovery - Testing and validation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>How to use Cert-manager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/how-to-use-cert-manager.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="how-to-use-cert-manager">
+<h1>How to use Cert-manager<a class="headerlink" href="#how-to-use-cert-manager" title="Permalink to this heading"></a></h1>
+<p>This document is about how we can use cert-manager for managing certificates and enabling TLS connection for services inside the cluster.</p>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <a class="reference external" href="../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0 Host</a> and <a class="reference external" href="../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and System Requirements for Edge Conductor Day-0 Host</a> to <strong>prepare the Day-0 host</strong> hardware and software.</p>
+<p>Follow <a class="reference external" href="../../README.md#download-and-build-edge-conductor-code-internal-users-only">Build and Install Edge Conductor Tool</a> to <strong>download and build Edge Conductor tool</strong>. Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<p>Ensure the verification of installation of Cert-manager component by using the <a class="reference external" href="https://cert-manager.io/docs/installation/verify/">cmctl</a> command as follows</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>           .../_workspace$ cmctl check api
+            The cert-manager API is ready 
+</pre></div>
+</div>
+<p>Once the cert-manager API is verified, we can proceed to further steps.</p>
+</section>
+<section id="installation-and-uninstallation">
+<h2>Installation and Uninstallation<a class="headerlink" href="#installation-and-uninstallation" title="Permalink to this heading"></a></h2>
+<p>Cert-manager is already integrated into the EC through component manifest &amp; common.yml file and thus it will be installed during the EC service build and service deploy commands</p>
+<p>In case of uninstallation, we need to remove the 2 segment of code from common.yml which are</p>
+<ul class="simple">
+<li><p>name: cert-manager</p></li>
+<li><p>name: cert-manager-cluster-issuer</p></li>
+</ul>
+<p>Ensuring this components are removed and service build and deploy commands are reused. We can see that cert-manager will be uninstalled in the EC. This can be further verified using the command “cmctl check api ” and check if the output corresponds to the ” the cert-manager crds are not yet installed on the kubernetes api server”</p>
+</section>
+<section id="certificate-creation-using-the-cert-manager">
+<h2>Certificate creation using the Cert-Manager<a class="headerlink" href="#certificate-creation-using-the-cert-manager" title="Permalink to this heading"></a></h2>
+<p>Cert-manager can be also used to provision certificates using yaml based configuration. For the Edge Conductor, a cluster-wide issuer is used to provision certificates. Following example shows how we can create a Certificate by requesting from cert-manager API.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+name: example-com
+namespace: sandbox
+spec:
+# Secret names are always required.
+secretName: example-com-tls
+
+# secretTemplate is optional. If set, these annotations and labels will be
+# copied to the Secret named example-com-tls. These labels and annotations will
+# be re-reconciled if the Certificate&#39;s secretTemplate changes. secretTemplate
+# is also enforced, so relevant label and annotation changes on the Secret by a
+# third party will be overwriten by cert-manager to match the secretTemplate.
+secretTemplate:
+    annotations:
+    my-secret-annotation-1: &quot;foo&quot;
+    my-secret-annotation-2: &quot;bar&quot;
+    labels:
+    my-secret-label: foo
+
+duration: 2160h # 90d
+renewBefore: 360h # 15d
+subject:
+    organizations:
+    - jetstack
+# The use of the common name field has been deprecated since 2000 and is
+# discouraged from being used.
+commonName: example.com
+isCA: false
+privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+usages:
+    - server auth
+    - client auth
+# At least one of a DNS Name, URI, or IP address is required.
+dnsNames:
+    - example.com
+    - www.example.com
+uris:
+    - spiffe://cluster.local/ns/sandbox/sa/example
+ipAddresses:
+    - 192.168.0.5
+# Issuer references are always required.
+issuerRef:
+    name: ca-issuer
+    # We can reference ClusterIssuers by changing the kind here.
+    # The default value is Issuer (i.e. a locally namespaced Issuer)
+    kind: Issuer
+    # This is optional since cert-manager will default to this value however
+    # if you are using an external issuer, change this to that issuer group.
+    group: cert-manager.io
+</pre></div>
+</div>
+<p>For further information regarding renewal and revocation, kindly follow the documentation. https://cert-manager.io/docs/usage/certificate/#creating-certificate-resources</p>
+</section>
+<section id="integration-with-kubernetes-services">
+<h2>Integration with Kubernetes services<a class="headerlink" href="#integration-with-kubernetes-services" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li></li>
+</ul>
+<section id="prometheus">
+<h3>Prometheus<a class="headerlink" href="#prometheus" title="Permalink to this heading"></a></h3>
+<section id="part-1-prometheus-enable-tls">
+<h4>Part 1. Prometheus - Enable TLS<a class="headerlink" href="#part-1-prometheus-enable-tls" title="Permalink to this heading"></a></h4>
+</section>
+<section id="part-2-prometheus-testing-and-validation">
+<h4>Part 2. Prometheus - Testing and validation<a class="headerlink" href="#part-2-prometheus-testing-and-validation" title="Permalink to this heading"></a></h4>
+</section>
+</section>
+<p>We divide the entire integration of Cert-manager with Prometheus in 2 components. Part 1 describe how to enable TLS support and part 2 describes security verification.</p>
+<ul class="simple">
+<li></li>
+</ul>
+<p>For ensuring TLS communication through the Prometheus service, we need to mount the Kubernetes Secrets to the Pods and also perform addition configuration in helm chart using override file</p>
+<p>Please refer to following URLs for better understanding of the configuration</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://prometheus.io/docs/prometheus/latest/configuration/https/">Understanding usage of WebTLS component</a></p></li>
+<li><p><a class="reference external" href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#webtlsconfig">WebTLS configuration</a></p></li>
+<li><p><a class="reference external" href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">Kube-Prometheus-Stack values</a></p></li>
+<li><p><a class="reference external" href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/webhook.md">Operator Webhooks</a></p></li>
+</ol>
+<p>The following configuration enables Prometheus Operator to use Cert-manager for creating certificates. Note that certificates are created with Intel TLS guidelines and Cert-manager spec. The code will create a secret called “prometheus-kube-prometheus-admission” in Prometheus namespace.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>prometheusOperator:
+  admissionWebhooks:
+    certManager:
+      enabled: true
+      rootCert:
+        duration: &quot;26280h&quot;
+      admissionCert:
+        duration: &quot;26280h&quot;
+      issuerRef:
+        name: &quot;edge-conductor-ca&quot;
+        kind: &quot;ClusterIssuer&quot;
+</pre></div>
+</div>
+<p>Once secret is created, it can be mounted and used in WebTLS configuration to allow HTTPs connection to Prometheus service.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>prometheus:
+  prometheusSpec:
+    externalUrl: &quot;https://prometheus-kube-prometheus-prometheus.prometheus:9090&quot;
+    secrets: [&#39;prometheus-kube-prometheus-admission&#39;]
+    web:
+      tlsConfig:
+        keySecret:
+          name: prometheus-kube-prometheus-admission
+          key: tls.key
+        cert:
+          secret:
+            name: prometheus-kube-prometheus-admission
+            key: tls.crt
+</pre></div>
+</div>
+<ul class="simple">
+<li></li>
+</ul>
+<p>Once, the prometheus HTTPS service has been enabled, it can be easily validated by entering inside kubernetes cluster and and issusing the following command on one of its Pod’s terminal.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>curl -kv https://prometheus-kube-prometheus-prometheus.prometheus:9090
+</pre></div>
+</div>
+<p>The following output shows the TLS handshakes and ensures TLS connection is established for sending HTTPS request to HTTPS server exposed by Prometheus Pods.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>   Trying 10.96.77.70:9090...
+* Connected to prometheus-kube-prometheus-prometheus.prometheus (10.96.77.70) port 9090 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=prometheus-ca-default
+*  start date: Aug 10 13:54:49 2022 GMT
+*  expire date: Aug  9 13:54:49 2025 GMT
+*  issuer: CN=edgecon-ca-default
+*  SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x55a64f8562c0)
+&gt; GET / HTTP/2
+&gt; Host: prometheus-kube-prometheus-prometheus.prometheus:9090
+&gt; user-agent: curl/7.74.0
+&gt; accept: */*
+&gt; 
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* Connection state changed (MAX_CONCURRENT_STREAMS == 250)!
+&lt; HTTP/2 302 
+&lt; content-type: text/html; charset=utf-8
+&lt; location: /graph
+&lt; content-length: 29
+&lt; date: Mon, 22 Aug 2022 10:23:50 GMT
+&lt; 
+&lt;a href=&quot;/graph&quot;&gt;Found&lt;/a&gt;.
+
+* Connection #0 to host prometheus-kube-prometheus-prometheus.prometheus left intact
+</pre></div>
+</div>
+<ul class="simple">
+<li></li>
+<li></li>
+</ul>
+<section id="node-feature-discovery">
+<h3>Node Feature Discovery.<a class="headerlink" href="#node-feature-discovery" title="Permalink to this heading"></a></h3>
+<section id="node-feature-discovery-enable-tls">
+<h4>Node Feature Discovery - Enable TLS<a class="headerlink" href="#node-feature-discovery-enable-tls" title="Permalink to this heading"></a></h4>
+</section>
+<section id="node-feature-discovery-testing-and-validation">
+<h4>Node Feature Discovery - Testing and validation<a class="headerlink" href="#node-feature-discovery-testing-and-validation" title="Permalink to this heading"></a></h4>
+</section>
+</section>
+<p>Please use the <a class="reference external" href="https://kubernetes-sigs.github.io/node-feature-discovery/stable/get-started/index.html">official documentation</a> for understanding the Node Feature Discovery in depth. The cert-manager is enabled using the <a class="reference external" href="https://kubernetes-sigs.github.io/node-feature-discovery/stable/get-started/index.html">doc</a></p>
+<p>The following code in NFD override file enables TLS in the NFD services.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tls:
+  enable: true
+{{- if ( has &quot;cert-manager&quot; .Kitconfig.Components.Selector) }}
+  certManager: true
+{{- else }}
+  certManager: false
+{{- end }}
+</pre></div>
+</div>
+<ul class="simple">
+<li></li>
+</ul>
+<p>Using Kubectl command, we can verify if the ceritificates are being created in the required namespace.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     ../_workspace$ ./kubectl get certificate -n node-feature-discovery                                          
+          NAME              READY   SECRET            AGE
+          nfd-ca-cert       True    nfd-ca-cert       50m
+          nfd-master-cert   True    nfd-master-cert   50m
+          nfd-worker-cert   True    nfd-worker-cert   50m
+</pre></div>
+</div>
+<p>Additionally, the secrets can be also verified using</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     ../_workspace$ ./kubectl get secret -n node-feature-discovery | grep tls                                    
+     nfd-ca-cert                                     kubernetes.io/tls                     3      50m
+     nfd-master-cert                                 kubernetes.io/tls                     3      50m
+     nfd-worker-cert                                 kubernetes.io/tls                     3      50m
+</pre></div>
+</div>
+<p>Furthermore, the certificates are being created by Cert-manager itself can be verified using</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  ../_workspace$ ./kubectl describe certificate  -n node-feature-discovery
+    Name:         nfd-ca-cert
+    Namespace:    node-feature-discovery
+    Labels:       app.kubernetes.io/managed-by=Helm
+    Annotations:  meta.helm.sh/release-name: nfd
+                  meta.helm.sh/release-namespace: node-feature-discovery
+    API Version:  cert-manager.io/v1
+    Kind:         Certificate
+    Metadata:
+      Creation Timestamp:  2022-08-22T10:40:17Z
+      Generation:          1
+      Managed Fields:
+        API Version:  cert-manager.io/v1
+        Fields Type:  FieldsV1
+        fieldsV1:
+          f:metadata:
+            f:annotations:
+              .:
+              f:meta.helm.sh/release-name:
+              f:meta.helm.sh/release-namespace:
+            f:labels:
+              .:
+              f:app.kubernetes.io/managed-by:
+          f:spec:
+            .:
+            f:commonName:
+            f:isCA:
+            f:issuerRef:
+              .:
+              f:group:
+              f:kind:
+              f:name:
+            f:secretName:
+            f:subject:
+              .:
+              f:organizations:
+        Manager:      conductor
+        Operation:    Update
+        Time:         2022-08-22T10:40:17Z
+        API Version:  cert-manager.io/v1
+        Fields Type:  FieldsV1
+        fieldsV1:
+          f:status:
+            f:revision:
+        Manager:      cert-manager-certificates-issuing
+        Operation:    Update
+        Subresource:  status
+        Time:         2022-08-22T10:40:18Z
+        API Version:  cert-manager.io/v1
+        Fields Type:  FieldsV1
+        fieldsV1:
+          f:status:
+            .:
+            f:conditions:
+              .:
+              k:{&quot;type&quot;:&quot;Ready&quot;}:
+                .:
+                f:lastTransitionTime:
+                f:message:
+                f:observedGeneration:
+                f:reason:
+                f:status:
+                f:type:
+            f:notAfter:
+            f:notBefore:
+            f:renewalTime:
+        Manager:         cert-manager-certificates-readiness
+        Operation:       Update
+        Subresource:     status
+        Time:            2022-08-22T10:40:18Z
+      Resource Version:  2733
+      UID:               ca43a9ad-18bb-4c10-b14e-39422e84cca4
+    Spec:
+      Common Name:  nfd-ca-cert
+      Is CA:        true
+      Issuer Ref:
+        Group:      cert-manager.io
+        Kind:       Issuer
+        Name:       nfd-ca-bootstrap
+      Secret Name:  nfd-ca-cert
+      Subject:
+        Organizations:
+          node-feature-discovery
+    Status:
+      Conditions:
+        Last Transition Time:  2022-08-22T10:40:18Z
+        Message:               Certificate is up to date and has not expired
+        Observed Generation:   1
+        Reason:                Ready
+        Status:                True
+        Type:                  Ready
+      Not After:               2022-11-20T10:40:18Z
+      Not Before:              2022-08-22T10:40:18Z
+      Renewal Time:            2022-10-21T10:40:18Z
+      Revision:                1
+    Events:
+      Type    Reason     Age    From                                       Message
+      ----    ------     ----   ----                                       -------
+      Normal  Issuing    3m55s  cert-manager-certificates-trigger          Issuing certificate as Secret does not exist
+      Normal  Generated  3m54s  cert-manager-certificates-key-manager      Stored new private key in temporary Secret resource &quot;nfd-ca-cert-vkk6m&quot;
+      Normal  Requested  3m54s  cert-manager-certificates-request-manager  Created new CertificateRequest resource &quot;nfd-ca-cert-284th&quot;
+      Normal  Issuing    3m54s  cert-manager-certificates-issuing          The certificate has been successfully issued
+</pre></div>
+</div>
+<p>To futher verify if the Pods are using HTTPs, we can check the arguments of the container/pod of NFD and verify that 3 components i.e. CA-cert, TLS key, TLS cert for ensuring TLS are being mounted to pods.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  ../_workspace$ ./kubectl get  po nfd-node-feature-discovery-master-cc47fc58c-r92z9 -n node-feature-discovery -o json | jq &#39;.spec.containers[0].args&#39;
+  [
+    &quot;--extra-label-ns=gpu.intel.com&quot;,
+    &quot;--resource-labels=gpu.intel.com/memory.max,gpu.intel.com/millicores,gpu.intel.com/tiles&quot;,
+    &quot;-featurerules-controller=true&quot;,
+    &quot;--ca-file=/etc/kubernetes/node-feature-discovery/certs/ca.crt&quot;,
+    &quot;--key-file=/etc/kubernetes/node-feature-discovery/certs/tls.key&quot;,
+    &quot;--cert-file=/etc/kubernetes/node-feature-discovery/certs/tls.crt&quot;
+  ]
+</pre></div>
+</div>
+<p>Also, describing pods verifies that HTTPs connection is ensured.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  ../_workspace$ ./kubectl  describe po  nfd-node-feature-discovery-worker-r2t92  -n node-feature-discovery
+  Name:         nfd-node-feature-discovery-worker-r2t92
+  Namespace:    node-feature-discovery
+  Priority:     0
+  Node:         192.114.9.100/192.114.9.100
+  Start Time:   Mon, 22 Aug 2022 11:08:17 +0000
+  Labels:       app.kubernetes.io/instance=nfd
+                app.kubernetes.io/name=node-feature-discovery
+                controller-revision-hash=7ffd9875dd
+                pod-template-generation=1
+                role=worker
+  Annotations:  cni.projectcalico.org/containerID: 76be4e6fe8fbbb8be2b9b9f4f0af425d827572d57925afa4fa87f4e5fdcdddda
+                cni.projectcalico.org/podIP: 10.42.0.19/32
+                cni.projectcalico.org/podIPs: 10.42.0.19/32
+                k8s.v1.cni.cncf.io/network-status:
+                  [{
+                      &quot;name&quot;: &quot;k8s-pod-network&quot;,
+                      &quot;ips&quot;: [
+                          &quot;10.42.0.19&quot;
+                      ],
+                      &quot;default&quot;: true,
+                      &quot;dns&quot;: {}
+                  }]
+                k8s.v1.cni.cncf.io/networks-status:
+                  [{
+                      &quot;name&quot;: &quot;k8s-pod-network&quot;,
+                      &quot;ips&quot;: [
+                          &quot;10.42.0.19&quot;
+                      ],
+                      &quot;default&quot;: true,
+                      &quot;dns&quot;: {}
+                  }]
+  Status:       Running
+  IP:           10.42.0.19
+  IPs:
+    IP:           10.42.0.19
+  Controlled By:  DaemonSet/nfd-node-feature-discovery-worker
+  Containers:
+    worker:
+      Container ID:  docker://744fedfeb6013a7eabfbf9eb611e8323e5709e284570f1dd39a53608f5b07bd9
+      Image:         k8s.gcr.io/nfd/node-feature-discovery:v0.11.0
+      Image ID:      docker-pullable://k8s.gcr.io/nfd/node-feature-discovery@sha256:19e319110e5cf935f191ba5d841a6c40b899a1951dbacf0d098cf83de92d6364
+      Port:          &lt;none&gt;
+      Host Port:     &lt;none&gt;
+      Command:
+        nfd-worker
+      Args:
+        --server=nfd-node-feature-discovery-master:8080
+        --ca-file=/etc/kubernetes/node-feature-discovery/certs/ca.crt
+        --key-file=/etc/kubernetes/node-feature-discovery/certs/tls.key
+        --cert-file=/etc/kubernetes/node-feature-discovery/certs/tls.crt
+      State:          Running
+        Started:      Mon, 22 Aug 2022 11:08:26 +0000
+      Ready:          True
+      Restart Count:  0
+      Environment:
+        NODE_NAME:   (v1:spec.nodeName)
+      Mounts:
+        /etc/kubernetes/node-feature-discovery from nfd-worker-conf (ro)
+        /etc/kubernetes/node-feature-discovery/certs from nfd-worker-cert (ro)
+        /etc/kubernetes/node-feature-discovery/features.d/ from features-d (ro)
+        /etc/kubernetes/node-feature-discovery/source.d/ from source-d (ro)
+        /host-boot from host-boot (ro)
+        /host-etc/os-release from host-os-release (ro)
+        /host-sys from host-sys (ro)
+        /host-usr/lib from host-usr-lib (ro)
+        /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rmsmr (ro)
+  Conditions:
+    Type              Status
+    Initialized       True
+    Ready             True
+    ContainersReady   True
+    PodScheduled      True
+  Volumes:
+    host-boot:
+      Type:          HostPath (bare host directory volume)
+      Path:          /boot
+      HostPathType:
+    host-os-release:
+      Type:          HostPath (bare host directory volume)
+      Path:          /etc/os-release
+      HostPathType:
+    host-sys:
+      Type:          HostPath (bare host directory volume)
+      Path:          /sys
+      HostPathType:
+    host-usr-lib:
+      Type:          HostPath (bare host directory volume)
+      Path:          /usr/lib
+      HostPathType:
+    source-d:
+      Type:          HostPath (bare host directory volume)
+      Path:          /etc/kubernetes/node-feature-discovery/source.d/
+      HostPathType:
+    features-d:
+      Type:          HostPath (bare host directory volume)
+      Path:          /etc/kubernetes/node-feature-discovery/features.d/
+      HostPathType:
+    nfd-worker-conf:
+      Type:      ConfigMap (a volume populated by a ConfigMap)
+      Name:      nfd-node-feature-discovery-worker-conf
+      Optional:  false
+    nfd-worker-cert:
+      Type:        Secret (a volume populated by a Secret)
+      SecretName:  nfd-worker-cert
+      Optional:    false
+    kube-api-access-rmsmr:
+      Type:                    Projected (a volume that contains injected data from multiple sources)
+      TokenExpirationSeconds:  3607
+      ConfigMapName:           kube-root-ca.crt
+      ConfigMapOptional:       &lt;nil&gt;
+      DownwardAPI:             true
+  QoS Class:                   BestEffort
+  Node-Selectors:              &lt;none&gt;
+  Tolerations:                 node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+                               node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                               node.kubernetes.io/not-ready:NoExecute op=Exists
+                               node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+                               node.kubernetes.io/unreachable:NoExecute op=Exists
+                               node.kubernetes.io/unschedulable:NoSchedule op=Exists
+  Events:
+    Type     Reason          Age                  From               Message
+    ----     ------          ----                 ----               -------
+    Normal   Scheduled       3m7s                 default-scheduler  Successfully assigned node-feature-discovery/nfd-node-feature-discovery-worker-r2t92 to 192.114.9.100
+    Warning  FailedMount     3m4s (x4 over 3m7s)  kubelet            MountVolume.SetUp failed for volume &quot;nfd-worker-cert&quot; : secret &quot;nfd-worker-cert&quot; not found
+    Normal   AddedInterface  2m59s                multus             Add eth0 [10.42.0.19/32] from k8s-pod-network
+    Normal   Pulled          2m59s                kubelet            Container image &quot;k8s.gcr.io/nfd/node-feature-discovery:v0.11.0&quot; already present on machine
+    Normal   Created         2m59s                kubelet            Created container worker
+    Normal   Started         2m59s                kubelet            Started container worker
+</pre></div>
+</div>
+<p>Copyright (c) 2022 Intel Corporation
+SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

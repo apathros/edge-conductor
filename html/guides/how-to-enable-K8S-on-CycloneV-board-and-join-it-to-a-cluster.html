@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to enable K8S on CycloneV board and join it to a cluster &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">How to enable K8S on CycloneV board and join it to a cluster</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#configuring-cyclonev-board">Configuring CycloneV Board</a></li>
+<li><a class="reference internal" href="#compiling-linux-kernel">Compiling Linux Kernel</a></li>
+<li><a class="reference internal" href="#building-yocto-image">Building Yocto image</a></li>
+<li><a class="reference internal" href="#creating-sd-card-image">Creating SD card image</a></li>
+<li><a class="reference internal" href="#powering-on-the-board-with-sd-card-and-adjusting-time">Powering on the board with SD card and adjusting time</a></li>
+<li><a class="reference internal" href="#installing-and-configuring-docker-service-on-the-board">Installing and configuring docker service on the board</a></li>
+<li><a class="reference internal" href="#installing-and-configuring-k8s-services-on-the-board">Installing and configuring K8S services on the board</a></li>
+<li><a class="reference internal" href="#joining-the-board-to-a-k8s-cluster-on-the-board">Joining the board to a K8S cluster on the board</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>How to enable K8S on CycloneV board and join it to a cluster</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/how-to-enable-K8S-on-CycloneV-board-and-join-it-to-a-cluster.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="how-to-enable-k8s-on-cyclonev-board-and-join-it-to-a-cluster">
+<h1>How to enable K8S on CycloneV board and join it to a cluster<a class="headerlink" href="#how-to-enable-k8s-on-cyclonev-board-and-join-it-to-a-cluster" title="Permalink to this heading"></a></h1>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#configuring-cycloneV-board">Configuring CycloneV Board</a></p></li>
+<li><p><a class="reference external" href="#compiling-linux-kernel">Compiling Linux Kernel</a></p></li>
+<li><p><a class="reference external" href="#building--yocto-image">Building Yocto image</a></p></li>
+<li><p><a class="reference external" href="#creating-sd-card-image">Creating SD Card image</a></p></li>
+<li><p><a class="reference external" href="#adjusting-time-on-the-board">Adjusting time on the board</a></p></li>
+<li><p><a class="reference external" href="#installing-and-configuring-docker-service-on-the-board">Installing and configuring docker service on the board</a></p></li>
+<li><p><a class="reference external" href="#installing-and-configuring-docker-services-on-the-board">Installing and configuring K8S services on the board</a></p></li>
+<li><p><a class="reference external" href="#joining-the-board-to-a-k8s-cluster-on-the-board">Joining the board to a K8S cluster on the board</a>
+ </p></li>
+</ul>
+</section>
+<section id="configuring-cyclonev-board">
+<h2>Configuring CycloneV Board<a class="headerlink" href="#configuring-cyclonev-board" title="Permalink to this heading"></a></h2>
+<p>This section presents the necessary board settings in order to run the GSRD on the Cyclone V SoC development board.</p>
+<p>First, the board jumpers need to be configured as follows:</p>
+<ul class="simple">
+<li><p>J5: Open</p></li>
+<li><p>J6: Short</p></li>
+<li><p>J7: Short</p></li>
+<li><p>J9: Open</p></li>
+<li><p>J13: Short</p></li>
+<li><p>J16: Open</p></li>
+<li><p>J26: Short pins 1-2</p></li>
+<li><p>J27: Short pins 2-3</p></li>
+<li><p>J28: Short pins 1-2</p></li>
+<li><p>J29: Short pins 2-3</p></li>
+<li><p>J30: Short pins 1-2</p></li>
+<li><p>J31: Open</p></li>
+</ul>
+<p>Then, the board switches need to be configured as follows:</p>
+<ul class="simple">
+<li><p>SW1: All OFF</p></li>
+<li><p>SW2: All OFF</p></li>
+<li><p>SW3: ON-OFF-ON-OFF-ON-ON</p></li>
+<li><p>SW4: OFF-OFF-ON-ON</p></li>
+</ul>
+<p> </p>
+</section>
+<section id="compiling-linux-kernel">
+<h2>Compiling Linux Kernel<a class="headerlink" href="#compiling-linux-kernel" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir cv_gsrd
+<span class="nb">cd</span> cv_gsrd
+<span class="nb">export</span> <span class="nv">TOP_FOLDER</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+<span class="nb">cd</span> <span class="nv">$TOP_FOLDER</span>
+wget https://releases.linaro.org/components/toolchain/binaries/latest-7/arm-eabi/gcc-linaro-7.5.0-2019.12-x86_64_arm-eabi.tar.xz
+tar xf gcc-linaro-7.5.0-2019.12-x86_64_arm-eabi.tar.xz
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/gcc-linaro-7.5.0-2019.12-x86_64_arm-eabi/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>arm
+<span class="nb">export</span> <span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-eabi-
+
+
+<span class="c1"># Get the GSRD Linux Device Tree include file</span>
+wget https://releases.rocketboards.org/release/2020.07/gsrd/cv_gsrd/socfpga_cyclone5_ghrd.dtsi
+
+<span class="c1"># Get Linux source code</span>
+git clone https://github.com/altera-opensource/linux-socfpga
+<span class="nb">cd</span> linux-socfpga
+git checkout -b <span class="nb">test</span> ACDS20.1STD_REL_GSRD_PR
+
+<span class="c1"># Copy the GSRD DTS include file, and include it in the DTS</span>
+cp -f ../socfpga_cyclone5_ghrd.dtsi arch/arm/boot/dts
+<span class="nb">echo</span> <span class="s2">&quot;#include \&quot;socfpga_cyclone5_ghrd.dtsi\&quot;&quot;</span> &gt;&gt; arch/arm/boot/dts/socfpga_cyclone5_socdk.dtsi
+
+<span class="c1"># Build kernel, device trees and modules</span>
+make socfpga_defconfig
+
+<span class="c1">#configuring Linux Kernel at this step</span>
+make menuconfig
+make -j <span class="m">24</span> zImage dtbs modules
+make modules_install <span class="nv">INSTALL_MOD_PATH</span><span class="o">=</span>modules_install
+rm -rf modules_install/lib/modules/*/build
+rm -rf modules_install/lib/modules/*/source
+</pre></div>
+</div>
+<p>The following files will be created:</p>
+<p>File	Description</p>
+<ul class="simple">
+<li><p>Linux kernel image:    $TOP_FOLDER/linux-socfpga/arch/arm/boot/zImage</p></li>
+<li><p>Linux Device Tree Blob:    $TOP_FOLDER/linux-socfpga/arch/arm/boot/dts/socfpga_cyclone5_socdk.dtb</p></li>
+<li><p>Folder with compiled loadable modules:    $TOP_FOLDER/linux-socfpga/modules_install</p></li>
+</ul>
+</section>
+<section id="building-yocto-image">
+<h2>Building Yocto image<a class="headerlink" href="#building-yocto-image" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$TOP_FOLDER</span>
+rm -rf yocto <span class="o">&amp;&amp;</span> mkdir yocto <span class="o">&amp;&amp;</span> <span class="nb">cd</span> yocto
+git clone -b zeus https://git.yoctoproject.org/git/poky.git
+git clone -b zeus https://git.openembedded.org/meta-openembedded
+git clone -b zeus https://git.yoctoproject.org/git/meta-virtualization
+git clone -b master https://github.com/kraj/meta-altera.git
+git clone -b master https://github.com/altera-opensource/meta-altera-refdes.git
+<span class="nb">cd</span> meta-altera-refdes
+git checkout ACDS20.1STD_REL_GSRD_PR
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run script to initialize the build environment for bitbake</p></li>
+<li><p>Note: You will be redirect to “build” folder once you execute the command below</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ..
+<span class="nb">source</span> poky/oe-init-build-env
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Remove default settings imported from template</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i /MACHINE<span class="se">\ \?\?</span><span class="o">=</span><span class="se">\ \&quot;</span>qemux86-64<span class="se">\&quot;</span>/d conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Install K8S and Docker packages</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s1">&#39;DISTRO_FEATURES_append = &quot; systemd&quot;&#39;</span> &gt;&gt; conf/local.conf
+<span class="nb">echo</span> <span class="s1">&#39;VIRTUAL-RUNTIME_init_manager = &quot;systemd&quot;&#39;</span> &gt;&gt; conf/local.conf
+<span class="nb">echo</span> <span class="s1">&#39;CORE_IMAGE_EXTRA_INSTALL += &quot; conntrack-tools ebtables socat util-linux iproute2 openvswitch&quot;&#39;</span> &gt;&gt; conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Use the LTS kernel and set version</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s1">&#39;PREFERRED_PROVIDER_virtual/kernel = &quot;linux-altera-lts&quot;&#39;</span> &gt;&gt; conf/local.conf
+<span class="nb">echo</span> <span class="s1">&#39;PREFERRED_VERSION_linux-altera-lts = &quot;5.4.23%&quot;&#39;</span> &gt;&gt; conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Build additional rootfs type</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s1">&#39;IMAGE_FSTYPES += &quot;tar.gz&quot;&#39;</span> &gt;&gt; conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Settings for bblayers.conf</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-altera &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-altera-refdes &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-openembedded/meta-oe &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-openembedded/meta-networking &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-openembedded/meta-python &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-openembedded/meta-filesystems &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+<span class="nb">echo</span> <span class="s1">&#39;BBLAYERS += &quot; ${TOPDIR}/../meta-virtualization &quot;&#39;</span> &gt;&gt; conf/bblayers.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Set the MACHINE, only at a time to avoid build conflict</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;MACHINE = \&quot;cyclone5\&quot;&quot;</span> &gt;&gt; conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Ensure we build in all kernel-modules</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += \&quot;kernel-modules\&quot;&quot;</span> &gt;&gt; conf/local.conf
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Build rootfs image</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bitbake  gsrd-console-image
+</pre></div>
+</div>
+<p>The following files will be created</p>
+<p>File	Description</p>
+<p>Compressed root filesystem archive:    $TOP_FOLDER/yocto/build/tmp/deploy/images/cyclone5/gsrd-console-image-cyclone5.tar.gz</p>
+</section>
+<section id="creating-sd-card-image">
+<h2>Creating SD card image<a class="headerlink" href="#creating-sd-card-image" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Create folder to keep the SD card binaries</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$TOP_FOLDER</span>
+mkdir sd_card <span class="o">&amp;&amp;</span> <span class="nb">cd</span> sd_card
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Get SD card creation script</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://releases.rocketboards.org/release/2020.05/gsrd/tools/make_sdimage_p3.py
+chmod +x make_sdimage_p3.py
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Get SPL image, refer to https://rocketboards.org/foswiki/Documentation/CycloneVSoCGSRD#Configuring_Serial_Connection</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp <span class="nv">$TOP_FOLDER</span>/cv_soc_devkit_ghrd/software/bootloader/u-boot-socfpga/u-boot-with-spl.sfp .
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Prepare FAT partition contents, refer to https://rocketboards.org/foswiki/Documentation/CycloneVSoCGSRD#Configuring_Serial_Connection</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir fat <span class="o">&amp;&amp;</span> <span class="nb">cd</span> fat
+cp <span class="nv">$TOP_FOLDER</span>/linux-socfpga/arch/arm/boot/zImage .
+cp <span class="nv">$TOP_FOLDER</span>/linux-socfpga/arch/arm/boot/dts/socfpga_cyclone5_socdk.dtb .
+cp <span class="nv">$TOP_FOLDER</span>/cv_soc_devkit_ghrd/output_files/*.rbf .
+cp <span class="nv">$TOP_FOLDER</span>/u-boot.scr .
+mkdir extlinux <span class="o">&amp;&amp;</span> <span class="nb">cd</span> extlinux
+wget https://releases.rocketboards.org/release/2020.07/gsrd/cv_gsrd/extlinux.conf
+<span class="nb">cd</span> ../..
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Prepare Rootfs partition contents</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir rootfs <span class="o">&amp;&amp;</span> <span class="nb">cd</span> rootfs
+sudo tar xf <span class="nv">$TOP_FOLDER</span>/yocto/build/tmp/deploy/images/cyclone5/gsrd-console-image-cyclone5.tar.gz
+sudo rm -rf lib/modules/*
+sudo cp -r <span class="nv">$TOP_FOLDER</span>/linux-socfpga/modules_install/lib/modules/* lib/modules/
+<span class="nb">cd</span> ..
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Build SD card image</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo python3 make_sdimage_p3.py -f <span class="se">\</span>
+-P u-boot-with-spl.sfp,num<span class="o">=</span><span class="m">3</span>,format<span class="o">=</span>raw,size<span class="o">=</span>10M,type<span class="o">=</span>A2 <span class="se">\</span>
+-P rootfs/*,num<span class="o">=</span><span class="m">2</span>,format<span class="o">=</span>ext2,size<span class="o">=</span>6000M <span class="se">\</span>
+-P fat/*,num<span class="o">=</span><span class="m">1</span>,format<span class="o">=</span>fat32,size<span class="o">=</span>500M -s 8G <span class="se">\</span>
+-n sdcard.img 
+</pre></div>
+</div>
+</section>
+<section id="powering-on-the-board-with-sd-card-and-adjusting-time">
+<h2>Powering on the board with SD card and adjusting time<a class="headerlink" href="#powering-on-the-board-with-sd-card-and-adjusting-time" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>date -s &lt;time&gt;
+</pre></div>
+</div>
+</section>
+<section id="installing-and-configuring-docker-service-on-the-board">
+<h2>Installing and configuring docker service on the board<a class="headerlink" href="#installing-and-configuring-docker-service-on-the-board" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#There is a problem of wget command in the board&#39;s OS, you can download the package on a host first, then copy the package from the host to the board</span>
+wget https://download.docker.com/linux/static/stable/armhf/docker-18.09.0.tgz
+tar zxvf docker-18.09.0.tgz -C /usr/bin
+chmod a+x /usr/bin/docker/*
+
+touch /lib/systemd/system/docker.service
+<span class="c1"># docker.service contents as following</span>
+cat &gt; /lib/systemd/system/docker.service <span class="s">&lt;&lt; EOF</span>
+<span class="s">[Unit]</span>
+<span class="s">Description=Docker Application Container Engine</span>
+<span class="s">Documentation=https://docs.docker.com</span>
+<span class="s">#BindsTo=containerd.service</span>
+<span class="s">After=network-online.target firewalld.service</span>
+<span class="s">Wants=network-online.target</span>
+<span class="s">#Requires=docker.socket</span>
+
+<span class="s">[Service]</span>
+<span class="s">Type=notify</span>
+<span class="s"># the default is not to use systemd for cgroups because the delegate issues still</span>
+<span class="s"># exists and systemd currently does not support the cgroup feature set required</span>
+<span class="s"># for containers run by docker</span>
+<span class="s">ExecStart=/usr/bin/docker/dockerd</span>
+<span class="s">ExecReload=/bin/kill -s HUP \$MAINPID</span>
+<span class="s">TimeoutSec=0</span>
+<span class="s">RestartSec=2</span>
+<span class="s">Restart=always</span>
+
+<span class="s"># Note that StartLimit* options were moved from &quot;Service&quot; to &quot;Unit&quot; in systemd 229.</span>
+<span class="s"># Both the old, and new location are accepted by systemd 229 and up, so using the old location</span>
+<span class="s"># to make them work for either version of systemd.</span>
+<span class="s">StartLimitBurst=3</span>
+
+<span class="s"># Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.</span>
+<span class="s"># Both the old, and new name are accepted by systemd 230 and up, so using the old name to make</span>
+<span class="s"># this option work for either version of systemd.</span>
+<span class="s">StartLimitInterval=60s</span>
+
+<span class="s"># Having non-zero Limit*s causes performance problems due to accounting overhead</span>
+<span class="s"># in the kernel. We recommend using cgroups to do container-local accounting.</span>
+<span class="s">LimitNOFILE=infinity</span>
+<span class="s">LimitNPROC=infinity</span>
+<span class="s">LimitCORE=infinity</span>
+
+<span class="s"># Comment TasksMax if your systemd version does not support it.</span>
+<span class="s"># Only systemd 226 and above support this option.</span>
+<span class="s">TasksMax=infinity</span>
+
+<span class="s"># set delegate yes so that systemd does not reset the cgroups of docker containers</span>
+<span class="s">Delegate=yes</span>
+
+<span class="s"># kill only the docker process, not all processes in the cgroup</span>
+<span class="s">KillMode=process</span>
+
+<span class="s">[Install]</span>
+<span class="s">WantedBy=multi-user.target</span>
+<span class="s">EOF</span>
+
+<span class="c1"># enable docker service</span>
+systemctl <span class="nb">enable</span> docker.service
+systemctl daemon-reload <span class="o">&amp;&amp;</span> systemctl restart docker
+</pre></div>
+</div>
+</section>
+<section id="installing-and-configuring-k8s-services-on-the-board">
+<h2>Installing and configuring K8S services on the board<a class="headerlink" href="#installing-and-configuring-k8s-services-on-the-board" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#There is a problem of wget command in the board&#39;s OS, you can download the packages on a host first, then copy the packages from the host to the board</span>
+wget https://dl.k8s.io/v1.18.1/bin/linux/arm/kubelet
+wget https://dl.k8s.io/v1.18.1/bin/linux/arm/kube-proxy
+wget https://dl.k8s.io/v1.18.1/bin/linux/arm/kubeadm
+
+cp kube* /usr/bin/
+chmod a+x /usr/bin/kube*
+
+<span class="c1"># configure kubelet service</span>
+mkdir /etc/systemd/system/kubelet.service.d
+cat &gt; /etc/systemd/system/kubelet.service.d/10-kubeadm.conf <span class="s">&lt;&lt; EOF</span>
+<span class="s"># contents of 10-kubeadm.conf</span>
+<span class="s"># Note: This dropin only works with kubeadm and kubelet v1.11+</span>
+<span class="s">[Service]</span>
+<span class="s">Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf&quot;</span>
+<span class="s">Environment=&quot;KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml&quot;</span>
+<span class="s"># This is a file that &quot;kubeadm init&quot; and &quot;kubeadm join&quot; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically</span>
+<span class="s">EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env</span>
+<span class="s"># This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use</span>
+<span class="s"># the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.</span>
+<span class="s">EnvironmentFile=-/etc/default/kubelet</span>
+<span class="s">ExecStart=</span>
+<span class="s">ExecStart=/usr/bin/kubelet \$KUBELET_KUBECONFIG_ARGS \$KUBELET_CONFIG_ARGS \$KUBELET_KUBEADM_ARGS \$KUBELET_EXTRA_ARGS</span>
+<span class="s">EOF</span>
+
+cat &gt; /lib/systemd/system/kubelet.service <span class="s">&lt;&lt; EOF</span>
+<span class="s"># contents of kubelet.service</span>
+<span class="s">[Unit]</span>
+<span class="s">Description=kubelet: The Kubernetes Node Agent</span>
+<span class="s">Documentation=https://kubernetes.io/docs/home/</span>
+<span class="s">Wants=network-online.target</span>
+<span class="s">After=network-online.target</span>
+
+<span class="s">[Service]</span>
+<span class="s">ExecStart=/usr/bin/kubelet</span>
+<span class="s">Restart=always</span>
+<span class="s">StartLimitInterval=0</span>
+<span class="s">RestartSec=10</span>
+
+<span class="s">[Install]</span>
+<span class="s">WantedBy=multi-user.target</span>
+<span class="s">EOF</span>
+
+cat &gt; /lib/systemd/system/kube-proxy.service <span class="s">&lt;&lt; EOF</span>
+<span class="s"># contents of kube-proxy.service</span>
+<span class="s">[Unit]</span>
+<span class="s">Description=Kubernetes Kube-Proxy Server</span>
+<span class="s">Documentation=https://kubernetes.io/docs/concepts/overview/components/#kube-proxy https://kubernetes.io/docs/reference/generated/kube-proxy/</span>
+<span class="s">After=network.target</span>
+
+<span class="s">[Service]</span>
+<span class="s">EnvironmentFile=-/etc/kubernetes/config</span>
+<span class="s">EnvironmentFile=-/etc/kubernetes/proxy</span>
+<span class="s">ExecStart=/usr/bin/kube-proxy \</span>
+<span class="s">            \$KUBE_LOGTOSTDERR \</span>
+<span class="s">            \$KUBE_LOG_LEVEL \</span>
+<span class="s">            \$KUBE_MASTER \</span>
+<span class="s">            \$KUBE_PROXY_ARGS</span>
+<span class="s">Restart=on-failure</span>
+<span class="s">LimitNOFILE=65536</span>
+
+<span class="s">[Install]</span>
+<span class="s">WantedBy=multi-user.target</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</section>
+<section id="joining-the-board-to-a-k8s-cluster-on-the-board">
+<h2>Joining the board to a K8S cluster on the board<a class="headerlink" href="#joining-the-board-to-a-k8s-cluster-on-the-board" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>join the cluster example:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubeadm join &lt;apiserver IP address&gt;:6443 --token &lt;token value&gt;     --discovery-token-ca-cert-hash sha256:&lt;CA cert <span class="nb">hash</span> value&gt;
+</pre></div>
+</div>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

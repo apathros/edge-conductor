@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Configurations &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Configurations</a><ul>
+<li><a class="reference internal" href="#edge-conductor-kit-introduction">Edge Conductor Kit Introduction</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Configurations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/ec-configurations.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-configurations">
+<h1>Edge Conductor Configurations<a class="headerlink" href="#edge-conductor-configurations" title="Permalink to this heading"></a></h1>
+<p>This document describes the Edge Conductor top config and custom config files.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="#edge-conductor-kit-introduction">Edge Conductor Kit Introduction</a></p></li>
+</ul>
+<p> </p>
+<section id="edge-conductor-kit-introduction">
+<h2>Edge Conductor Kit Introduction<a class="headerlink" href="#edge-conductor-kit-introduction" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">conductor</span></code> tool will configure the target cluster and software components using an Edge Conductor Kit config file. The config file includes different sections, which will be used in different stages of the deployment. The configuration of each section will be described in detail in the deployment stages.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Use</span></code> Config Section: A “common” config file is provided in the <code class="docutils literal notranslate"><span class="pre">Use</span></code> section, the default configuration of an Edge Conductor Kit is defined in this “common” config. The Edge Conductor Kit will use the default configuration and then override with other configurations defined below. If a user specified config file is provided, the user need to make sure there is no conflict between the configs, otherwise the tool will report error and stop execution. The tool will not try to merge the conflicts, in order to avoid an unexpected result.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="nt">Use</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kit/common.yml</span><span class="w"></span>
+<span class="w">        </span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> Config Section:’Parameters’ Config section includes customconfig, global_setting, nodes, etc.</p>
+<ul>
+<li><p>Custom Config
+The section <code class="docutils literal notranslate"><span class="pre">customconfig</span></code> in <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> config section describes custom settings like local registry authorization, ironic (CAPI only), etc. <code class="docutils literal notranslate"><span class="pre">customconfig</span></code> includes information for:</p>
+<ul>
+<li><p>Local registry authorization (Mandatory)</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">customconfig</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># user/password are required for local registry.</span><span class="w"></span>
+<span class="w">      </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; For local registry, use default user name &#39;admin&#39; or specify a new user &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Password to login to the local registry &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><em>NOTE:</em>  The permission of the Edge Conductor Kit config file should be set to 0600 so that only the user who owns it has read/write permission. To do this run the command “chmod 600 your_experiece_kit.yml”.</p>
+</div></blockquote>
+</li>
+<li><p>Ironic configurations (Only mandatory when the cluster type is set to <strong>clusterapi</strong>)</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">customconfig</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ironic</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">kubeconfigpath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; point to the kubeconfig file for accessing the Kubernetes cluster provided by Edge Conductor users &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">provisioninginterface</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; the interface name of the NIC connected to the provisioning network &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">provisioningip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; the IP address configured on the provisioning NIC &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">dhcprange</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; IP allocation range for the provisioning network &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">httpport</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; the port of Ironic service &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ironicuser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; username for Ironic service &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ironicpassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; password for ironicuser &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ironicinspectoruser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; username for Ironic inspector service &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ironicinspectorpassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; password for ironicinspectoruser &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mariadbpassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; password for mariadb &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Global Settings</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">global_settings</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">registry_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Service port of the local registry &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">provider_ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Service IP for the Providers &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><em>NOTE:</em>  Some environments require network proxies for Docker operations (e.g. docker pull, docker push, docker run, and so on). You must ensure these proxies are set correctly prior to using the tool. Note that the Host.server need to be added to no_proxy/NO_PROXY list for the docker proxies.</p>
+</div></blockquote>
+</li>
+<li><p>nodes</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">nodes</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; the role of node;controlplane, worker, etcd are supported &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">critype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; certification type. ACPI only &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bmc_user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; BMC setting of user name. Metal3(CAPI) only &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bmc_password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; BMC setting of pass word. Metal3(CAPI) only &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bmc_protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; BMC setting of porotocl. Metal3(CAPI) only &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bmc_endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; BMC setting of endpoint. Metal3(CAPI) only &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="c1"># The following are for all remote nodes.</span><span class="w"></span>
+<span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; user name &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; node&#39;s ip address &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">mac</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; node&#39;s mac address &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ssh_key_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; node&#39;s ssh private key path &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ssh_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; instead of setting the path, alternative way to specify the node&#39;s ssh key &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ssh_passwd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; node&#39;s ssh password &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ssh_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; node&#39;s ssh port &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OS</span></code> Config Section:
+This section specifies OS provider and profiles for bare metal OS deployment.
+The supported OS provider is Edge Software Provisioner (<a class="reference external" href="https://github.com/intel/edge-software-provisioner">ESP</a>).</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">OS</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; A list of manifest files describing binary files, docker images and other resources needed by the OS providers. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; OS provider type, currently &quot;esp&quot; is supported. Default setting is &quot;none&quot;. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Config file for the specified OS provider. &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Cluster</span></code> Config Section:
+This section specifies a sub-config file to describe the customer cluster. Sample config files are pre-installed and located in the <code class="docutils literal notranslate"><span class="pre">examples/cluster</span></code> folder.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Cluster</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; A list of manifest files describing binary files, docker images and other resources needed by the Cluster providers. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Type of the cluster provider, can be &quot;kind&quot;, or &quot;rke&quot;, or &quot;tanzu&quot;, or other supported cluster types. Default value is &#39;kind&#39;. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Detailed config file for the specified cluster type. &gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Components</span></code> Config Section:
+This section specifies a list of components to be deployed on the customer cluster. The tool will filter the component list with a selector to determine which components are deployed to the target cluster.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; A list of manifest files describing yaml/helm files, binary files, docker images and other resources needed by the components. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; A list of selected configurations, operators and services to be deployed on the cluster. &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Selected service name &gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">override</span><span class="p">:</span><span class="w"> </span><span class="nt">&lt; Optional</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">it is used to override the predefined configurations (in the manifest file) of this service. &gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will override default selected service url&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will override default selected service type, one of &quot;helm, yaml,repo or dce&quot;&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">images</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will override default images selected service used &gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">- &lt;image 1&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">- &lt;image ...&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">- &lt;image n&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">supported-clusters</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will override default images selected service supported cluster&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- &lt;cluster name should be same as Kit cluster config&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will override default selected service namespace&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">chartoverride</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;this will replace default selected service override file&gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Following is a complete example of the Edge Conductor Kit config: <span class="xref myst">Edge Conductor Kit Example for KIND</span></p>
+<p> </p>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
