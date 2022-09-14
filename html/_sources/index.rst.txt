@@ -6,12 +6,11 @@
 Welcome to Edge Conductor's documentation!
 ==========================================
 
-.. mdinclude:: ./edgeconductor.md
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+   README
 
 Indices and tables
 ==================

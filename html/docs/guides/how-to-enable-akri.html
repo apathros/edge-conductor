@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to enable Akri with Edge conductor &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>How to enable Akri with Edge conductor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/guides/how-to-enable-akri.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="how-to-enable-akri-with-edge-conductor">
+<h1>How to enable Akri with Edge conductor<a class="headerlink" href="#how-to-enable-akri-with-edge-conductor" title="Permalink to this heading"></a></h1>
+<p>Akri is a Kubernetes Resource Interface that lets you easily expose heterogeneous leaf devices (such as IP cameras and USB devices) as resources in a Kubernetes cluster, while also supporting the exposure of embedded hardware resources such as GPUs and FPGAs. Akri continually detects nodes that have access to these devices and schedules workloads based on them.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><span class="xref myst">Preparation</span></p></li>
+<li><p><span class="xref myst">Basic configuration for Akri</span></p></li>
+<li><p><span class="xref myst">Testing</span></p></li>
+<li><p><span class="xref myst">Limitations</span></p></li>
+</ul>
+</section>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0 Host</span> and <span class="xref myst">OS and System Requirements for Edge Conductor Day-0 Host</span> to prepare the Day-0 host hardware and software.</p>
+<p>Follow <span class="xref myst">Build and Install Edge Conductor Tool</span> to build and install Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+</section>
+<section id="basic-configuration-for-akri">
+<h2>Basic configuration for Akri<a class="headerlink" href="#basic-configuration-for-akri" title="Permalink to this heading"></a></h2>
+<p>Akri service is supported in RKE and CAPI clusters currently.
+We use Edge Conductor Kit to deploy them with Akri enabled in this document.</p>
+<p>Akri will be enabled by modifying below part in <span class="xref myst">common.yml</span>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">akri</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The discovery configuration is in <span class="xref myst">akri-override.yml</span>.</p>
+<p>If you want to discover udev camera with name “video0”, using the following configuration in udevRules.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">udev</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">configuration</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">akri-udev</span><span class="w"></span>
+<span class="w">    </span><span class="nt">discoveryDetails</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">udevRules</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w">  </span><span class="s">&#39;KERNEL==&quot;video0&quot;&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>If you want to discover any ONVIF IP camera with IP address exclude “10.0.0.1”,”10.0.0.2”, using the following configuration in ipAddresses.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">onvif</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">configuration</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">akri-onvif</span><span class="w"></span>
+<span class="w">    </span><span class="nt">discoveryDetails</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ipAddresses</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Exclude</span><span class="w"></span>
+<span class="w">        </span><span class="nt">items</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;10.0.0.1&quot;</span><span class="p p-Indicator">,</span><span class="s">&quot;10.0.0.2&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Both of these configurations can take effect together.</p>
+<p>After finishing the above configuration, we can start deployment of cluster following <span class="xref myst">Deploy a Target Cluster</span>.</p>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading"></a></h2>
+<p>Using Akri to discover mock USB cameras attached to nodes in a Kubernetes cluster.
+Here using RKE deployment as an example.</p>
+<p>Precondition:</p>
+<ol class="arabic simple">
+<li><p>Make sure that, the worker node in the cluster is virtual machine or physical machine with security boot disabled.</p></li>
+<li><p>Make sure that, the cpu core number of the worker node is at least 4.</p></li>
+</ol>
+<p>Testing steps:</p>
+<ul>
+<li><p>Install v4l2loopback kernel module and its prerequisites in worker node.</p>
+<p>Option 1: by deb package</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo apt update
+sudo apt -y install linux-modules-extra-azure
+sudo apt update
+sudo apt -y install linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+sudo apt -y install linux-modules-extra-<span class="k">$(</span>uname -r<span class="k">)</span>
+sudo apt -y install dkms
+curl http://deb.debian.org/debian/pool/main/v/v4l2loopback/v4l2loopback-dkms_0.12.5-1_all.deb -o   v4l2loopback-dkms_0.12.5-1_all.deb
+sudo dpkg -i v4l2loopback-dkms_0.12.5-1_all.deb
+</pre></div>
+</div>
+<p>Option 2: by git repo
+If error happened during install v4l2loopback-dkms_0.12.5-1_all.deb with dpkg, we can clone the repo, build the module, and setup the module dependencies like so:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/umlaeute/v4l2loopback.git
+<span class="nb">cd</span> v4l2loopback
+make <span class="p">&amp;</span> sudo make install
+sudo make install-utils
+sudo depmod -a
+</pre></div>
+</div>
+</li>
+<li><p>Setting up mock udev video devices in worker node.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo modprobe v4l2loopback <span class="nv">exclusive_caps</span><span class="o">=</span><span class="m">1</span> <span class="nv">video_nr</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+</li>
+<li><p>Confirm the video device (video0) has been created.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls /dev/video*
+/dev/video0
+</pre></div>
+</div>
+</li>
+<li><p>Pass fake video streams through Gstreamer.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo apt-get install -y <span class="se">\</span>
+     libgstreamer1.0-0 gstreamer1.0-tools gstreamer1.0-plugins-base <span class="se">\</span>
+     gstreamer1.0-plugins-good gstreamer1.0-libav
+mkdir camera-logs
+sudo gst-launch-1.0 -v videotestsrc <span class="nv">pattern</span><span class="o">=</span>ball ! <span class="s2">&quot;video/x-raw,width=640,height=480,framerate=10/1&quot;</span> ! avenc_mjpeg ! v4l2sink <span class="nv">device</span><span class="o">=</span>/dev/video0 &gt; camera-logs/ball.log <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Build and Deploy the RKE cluster.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./conductor cluster build
+./conductor cluster deploy
+</pre></div>
+</div>
+</li>
+<li><p>Build and deploy the services using following commands.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./conductor service build
+./conductor service deploy
+</pre></div>
+</div>
+</li>
+<li><p>Once the services are deployed, display the pods using the following command and make sure that akri agent, controller and relevant discovery pod are running.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>~$ kubectl get po -n akri-component
+NAME                                        READY   STATUS    RESTARTS  AGE
+akri-agent-daemonset-jrtfh                  <span class="m">1</span>/1     Running   <span class="m">0</span>         12m
+akri-controller-deployment-54584d9474-2nghj <span class="m">1</span>/1     Running   <span class="m">0</span>         12m
+akri-onvif-discovery-daemonset-dsvjm        <span class="m">1</span>/1     Running   <span class="m">0</span>         12m
+akri-udev-discovery-daemonset-nb4hl         <span class="m">1</span>/1     Running   <span class="m">0</span>         12m
+akri-udev-290b9e-pod                        <span class="m">1</span>/1     Running   <span class="m">0</span>         12m
+</pre></div>
+</div>
+</li>
+</ul>
+<p>For other details, please refer to <a class="reference external" href="https://docs.akri.sh/user-guide/getting-started">Akri user guide</a>.</p>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading"></a></h2>
+<p>Currently, ONVIF camera that requires authentication is not supported in Akri upstream now.
+<a class="reference external" href="https://github.com/project-akri/akri/issues/250">Support ONVIF cameras that require authentication</a></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

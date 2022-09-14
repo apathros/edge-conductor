@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy a KIND cluster &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Deploy a KIND cluster</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/docs/tutorials/basics/deploy_a_kind_cluster.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> / <a class="reference internal" href="../index.html"><span class="doc std std-doc">Tutorials</span></a> / <a class="reference internal" href="#"><span class="doc std std-doc">Deploy a KIND cluster</span></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="deploy-a-kind-cluster">
+<h1>Deploy a KIND cluster<a class="headerlink" href="#deploy-a-kind-cluster" title="Permalink to this heading"></a></h1>
+<p><a class="reference external" href="https://github.com/kubernetes-sigs/kind">KIND</a> is a tool for testing kubernetes, it runs a local kubernetes cluster using Docker itself.</p>
+<p>Follow these steps below to deploy a Kubernetes in Docker (KIND) deployment with Edge Conductor tool.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><span class="xref myst">Prerequisites</span></p></li>
+<li><p><span class="xref myst">Configure KIND deployment</span></p></li>
+<li><p><span class="xref myst">Initialize Edge Conductor</span></p></li>
+<li><p><span class="xref myst">Build and Deploy KIND Cluster</span></p></li>
+<li><p><span class="xref myst">Check the KIND Cluster</span></p></li>
+<li><p><span class="xref myst">What’s Next</span></p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<p>First, make sure your host meets the following requirements to run this tutorial:</p>
+<ol class="arabic simple">
+<li><p><span class="xref myst">Hardware requirements for the Edge Conductor Day-0 Host</span>. This tutorial will deploy a 2-node KIND cluster (1 control plane and 1 worker). For each KIND node, you need to add 2 CPU cores and 2 gigabytes (GB) memory.</p></li>
+<li><p>Follow <span class="xref myst">Build and Install the Tool</span> to build and install Edge Conductor tool.</p></li>
+<li><p>Enter the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run the Edge Conductor tool.</p></li>
+</ol>
+</section>
+<section id="edge-conductor-kit-for-kind">
+<h2>Edge Conductor kit for KIND<a class="headerlink" href="#edge-conductor-kit-for-kind" title="Permalink to this heading"></a></h2>
+<p>An example of Edge Conductor kit for KIND is under:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>kit/
+└── kind.yml
+</pre></div>
+</div>
+<p>We will use <span class="xref myst">this Edge Conductor kit</span> to deploy the KIND cluster in this document.</p>
+</section>
+<section id="custom-config">
+<h2>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h2>
+<p>Open the Edge Conductor kit config file (kit/kind.yml) and modify the password of the local registry. Edge Conductor tool will launch a local registry as the storage of binary files, container images and configuration files. This registry password will be used to create user authentication.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Parameters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">customconfig</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;passWord_nnnn&gt;&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><em>Note:</em> The password must be surrounded by double quotes (<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>). We recommend that it contains at least 8 characters with 1 lowercase letter, 1 uppercase letter and 1 numeric character.</p>
+</div></blockquote>
+<p>Check more details of the <a class="reference internal" href="../../guides/ec-configurations.html"><span class="doc std std-doc">Edge Conductor kit configuration</span></a> here.</p>
+</section>
+<section id="init-edge-conductor-environment">
+<h2>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to initialize the Edge Conductor environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor init -c kit/kind.yml
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> Init Edge Conductor
+INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> <span class="o">==</span>
+INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> Current workflow: init
+...
+INFO<span class="o">[</span><span class="m">0005</span><span class="o">]</span> workflow finished
+INFO<span class="o">[</span><span class="m">0005</span><span class="o">]</span> <span class="o">==</span>
+INFO<span class="o">[</span><span class="m">0005</span><span class="o">]</span> Done
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-kind-cluster">
+<h2>Build and Deploy KIND Cluster<a class="headerlink" href="#build-and-deploy-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>Run the following command to build KIND Cluster:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor cluster build
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> Init Edge Conductor
+INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> <span class="o">==</span>
+INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> Top Config File: kit/kind.yml
+...
+INFO<span class="o">[</span><span class="m">0008</span><span class="o">]</span> workflow finished
+INFO<span class="o">[</span><span class="m">0008</span><span class="o">]</span> Connecting Plugin docker-run
+INFO<span class="o">[</span><span class="m">0008</span><span class="o">]</span> <span class="o">==</span>
+INFO<span class="o">[</span><span class="m">0008</span><span class="o">]</span> Done
+</pre></div>
+</div>
+<p>Run the following command to deploy KIND Cluster:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor cluster deploy
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> Edge Conductor - Deploy Cluster
+INFO<span class="o">[</span><span class="m">0000</span><span class="o">]</span> <span class="o">==</span>
+...
+Creating cluster <span class="s2">&quot;kind&quot;</span> ...
+ ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.21.1<span class="o">)</span> 🖼
+ ✓ Preparing nodes 📦 📦 📦 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Joining worker nodes 🚜
+Set kubectl context to <span class="s2">&quot;kind-kind&quot;</span>
+...
+INFO<span class="o">[</span><span class="m">0094</span><span class="o">]</span> workflow finished
+INFO<span class="o">[</span><span class="m">0094</span><span class="o">]</span> <span class="o">==</span>
+INFO<span class="o">[</span><span class="m">0094</span><span class="o">]</span> Done
+</pre></div>
+</div>
+<p>The kubeconfig will be copied to the default path <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+<blockquote>
+<div><p><em>NOTE:</em>  If you export KUBECONFIG, you need to unset the KUBECONFIG or copy
+<code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code> to your KUBECONFIG directory.</p>
+</div></blockquote>
+</section>
+<section id="check-the-kind-cluster">
+<h2>Check the KIND Cluster<a class="headerlink" href="#check-the-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to check the nodes that are available and the
+services deployed to the KIND cluster:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get pods,svc,nodes -A
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>NAMESPACE            NAME                                             READY   STATUS    RESTARTS   AGE
+kube-system          pod/coredns-558bd4d5db-4qjmq                     <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/coredns-558bd4d5db-fckgb                     <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/etcd-kind-control-plane                      <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kindnet-djzbj                                <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kindnet-l5x8b                                <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kube-apiserver-kind-control-plane            <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kube-controller-manager-kind-control-plane   <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kube-proxy-7vrf8                             <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kube-proxy-dvgw9                             <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+kube-system          pod/kube-scheduler-kind-control-plane            <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+local-path-storage   pod/local-path-provisioner-547f784dff-28jlh      <span class="m">1</span>/1     Running   <span class="m">0</span>          11m
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                  AGE
+default       service/kubernetes   ClusterIP   <span class="m">10</span>.96.0.1    &lt;none&gt;        <span class="m">443</span>/TCP                  12m
+kube-system   service/kube-dns     ClusterIP   <span class="m">10</span>.96.0.10   &lt;none&gt;        <span class="m">53</span>/UDP,53/TCP,9153/TCP   12m
+
+NAMESPACE   NAME                      STATUS   ROLES                  AGE   VERSION
+            node/kind-control-plane   Ready    control-plane,master   12m   v1.21.1
+            node/kind-worker          Ready    &lt;none&gt;                 11m   v1.21.1
+</pre></div>
+</div>
+<p>Be sure the status for all pods is <code class="docutils literal notranslate"><span class="pre">Running</span></code>.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s Next<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<p>Congratulations! You have deployed a KIND cluster with Edge Conductor tool!</p>
+<p>Next Tutorial: <a class="reference internal" href="../samples/hello-cluster.html"><span class="doc std std-doc">Example: Hello Cluster!</span></a></p>
+<p>Back to: <a class="reference internal" href="index.html"><span class="doc std std-doc">Edge Conductor Basics</span></a></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

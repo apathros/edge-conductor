@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glossary &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Glossary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/guides/glossary.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading"></a></h1>
+<p>This glossary lists common terms and acronyms used in Edge Conductor guides and
+specifications.</p>
+<section id="general-terms">
+<h2>General Terms<a class="headerlink" href="#general-terms" title="Permalink to this heading"></a></h2>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Term</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Bare Metal</p></td>
+<td><p>A node running without hypervisors. In a bare metal scenario, application workloads run on the operating system which runs on the hardware.</p></td>
+</tr>
+<tr class="row-odd"><td><p>IoT</p></td>
+<td><p>Internet Of Things. The interconnection via the internet of computing devices embedded in everyday objects, enabling them to send and receive data.</p></td>
+</tr>
+<tr class="row-even"><td><p>VM</p></td>
+<td><p>Virtual Machine. A compute resource that uses software instead of physical hardware to run a program. Multiple VMs can run independently on the same physical machine, and with their own OS. A hypervisor uses direct access to the underlying machine to create the software environment for sharing and managing hardware resources.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cloud-terms">
+<h2>Cloud Terms<a class="headerlink" href="#cloud-terms" title="Permalink to this heading"></a></h2>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Term</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Control Plane Node</p></td>
+<td><p>A Node that is running the Kubernetes API server. Systems can have 1 or multiple control plane nodes.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Day-0</p></td>
+<td><p>A lifecycle term used in network automation and cloud deployment, where the high-level task on Day-0 is installation, Day-1 is configuration, and Day-2 is optimization.<br> The Edge Conductor deployment methods rely on a “Day-0” host machine to run the tools that download, build and provision the required software.</p></td>
+</tr>
+<tr class="row-even"><td><p>EC</p></td>
+<td><p>Edge Conductor. A framework to create, manage and operate Kubernetes clusters for IOT workloads.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP</p></td>
+<td><p>Edge Software Provisioner. A “just-in-time” open source provisioning tool described at: https://github.com/intel/edge-software-provisioner</p></td>
+</tr>
+<tr class="row-even"><td><p>FDO</p></td>
+<td><p>FIDO Device Onboard. Open source software that is developing an implementation of the <a class="reference external" href="https://fidoalliance.org/fido2/">FIDO Device Onboard Specification</a>. You can build and deploy the services that come with FDO using the Edge Conductor tool.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Harbor</p></td>
+<td><p>An open source container registry that secures artifacts and signs images as trusted. <br>When the Edge Conductor tool is initialized, it creates a local Harbor registry for images that you build.</p></td>
+</tr>
+<tr class="row-even"><td><p>K8s</p></td>
+<td><p><a class="reference external" href="https://kubernetes.io/">Kubernetes</a>. An open-source system for automating deployment, scaling, and management of containerized applications.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kind</p></td>
+<td><p>Kubernetes in Docker. A tool for running local Kubernetes clusters where each “node” is a Docker container. <a class="reference external" href="https://kind.sigs.k8s.io/">(Learn more about Kind…)</a></p></td>
+</tr>
+<tr class="row-even"><td><p>kubectl</p></td>
+<td><p><a class="reference external" href="https://kubernetes.io/docs/reference/kubectl/">Kubernetes command-line tool</a>, which allows you to run commands against Kubernetes clusters.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Node</p></td>
+<td><p>A machine that can be a Kubernetes Control Plane Node or a Worker Node. A pod runs on a Node and a Node can have multiple pods. Depending on the cluster, a Node may be either a virtual or a physical machine. Each Node is managed by the control plane. The Kubernetes control plane automatically handles scheduling pods across the nodes in the cluster. <a class="reference external" href="https://kubernetes.io/docs/tutorials/kubernetes-basics/explore/explore-intro/">(Learn more about Kubernetes…)</a></p></td>
+</tr>
+<tr class="row-even"><td><p>On-premise cluster</p></td>
+<td><p>A mode of operation where all nodes in the cluster are physical (or virtual) machines. The Day-0 and management console functions are performed on machine(s) outside the cluster.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pod</p></td>
+<td><p>Pods are the atomic unit on the Kubernetes platform. A Pod can group one or more application containers (such as Docker) that includes shared storage, IP address and information about how to run them. A Pod can contain different application containers which are relatively tightly coupled. <a class="reference external" href="https://kubernetes.io/docs/tutorials/kubernetes-basics/explore/explore-intro/">(Learn more about Kubernetes…)</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Virtual cluster</p></td>
+<td><p>A mode of operation where all nodes in the cluster are virtualized as container images and Kubernetes is deployed on the user’s local machine. The Day-0 host and management console are also the user’s local machine.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Worker Node</p></td>
+<td><p>A Node that is available to run application workloads and services. Nodes can be both Control Plane and Worker nodes at the same time (for example, a single node Kubernetes cluster).</p></td>
+</tr>
+<tr class="row-even"><td><p>Copyright (C) 2022 Intel Corporation</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
