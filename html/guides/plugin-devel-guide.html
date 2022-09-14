@@ -86,18 +86,18 @@
 <h1>Plugin Development Guide<a class="headerlink" href="#plugin-development-guide" title="Permalink to this heading"></a></h1>
 <p>This guide describes how to develop Edge Conductor plugins, including an overview and some simple examples that help you use plugins and workflows.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="#development-process-overview">Development Process Overview</a></p>
+<li><p><a class="reference internal" href="#development-process-overview"><span class="std std-doc">Development Process Overview</span></a></p>
 <ul>
-<li><p><a class="reference external" href="#flow-diagram">Flow Diagram</a></p></li>
+<li><p><a class="reference internal" href="#flow-diagram"><span class="std std-doc">Flow Diagram</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="#coding-language-and-standard">Coding Language and Standard</a></p></li>
-<li><p><a class="reference external" href="#edge-conductor-commands-vs-workflows">Edge Conductor Commands vs. Workflows</a></p></li>
-<li><p><a class="reference external" href="#development-examples">Development Examples</a></p>
+<li><p><a class="reference internal" href="#coding-language-and-standard"><span class="std std-doc">Coding Language and Standard</span></a></p></li>
+<li><p><a class="reference internal" href="#edge-conductor-commands-vs-workflows"><span class="std std-doc">Edge Conductor Commands vs. Workflows</span></a></p></li>
+<li><p><a class="reference internal" href="#development-examples"><span class="std std-doc">Development Examples</span></a></p>
 <ul>
-<li><p><a class="reference external" href="#example-1-generate-a-simple-hello-world-plugin">Example 1: Generate a Simple Hello-World Plugin</a></p></li>
-<li><p><a class="reference external" href="#example-2-generate-plugins-with-input-and-output-schemas">Example 2: Generate Plugins with Input and Output Schemas</a></p></li>
-<li><p><a class="reference external" href="#example-3-connect-plugins-into-an-existing-workflow">Example 3: Connect Plugins into an Existing Workflow</a></p></li>
+<li><p><a class="reference internal" href="#example-1-generate-a-simple-hello-world-plugin"><span class="std std-doc">Example 1: Generate a Simple Hello-World Plugin</span></a></p></li>
+<li><p><a class="reference internal" href="#example-2-generate-plugins-with-input-and-output-schemas"><span class="std std-doc">Example 2: Generate Plugins with Input and Output Schemas</span></a></p></li>
+<li><p><a class="reference internal" href="#example-3-connect-plugins-into-an-existing-workflow"><span class="std std-doc">Example 3: Connect Plugins into an Existing Workflow</span></a></p></li>
 </ul>
 </li>
 </ul>
@@ -121,7 +121,7 @@
 </li>
 <li><p>Modify <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/plugins.yml</span></code> with input/output details described with data schemas.</p>
 <ul>
-<li><p>Follow <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">schema</span> <span class="pre">standard</span></code> in <a class="reference external" href="#coding-language-and-standard">Coding Language and Standard</a> to write data schema files under <code class="docutils literal notranslate"><span class="pre">api/schemas</span></code> folder.</p></li>
+<li><p>Follow <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">schema</span> <span class="pre">standard</span></code> in <a class="reference internal" href="#coding-language-and-standard"><span class="std std-doc">Coding Language and Standard</span></a> to write data schema files under <code class="docutils literal notranslate"><span class="pre">api/schemas</span></code> folder.</p></li>
 </ul>
 </li>
 <li><p>Modify the file of a specific WF under <code class="docutils literal notranslate"><span class="pre">configs/workflow/</span></code> directory to insert the new plugins and connect the plugins in WFs. <code class="docutils literal notranslate"><span class="pre">configs/workflow/common/init.yml</span></code> will be used as an example in this guide.</p></li>
@@ -402,7 +402,7 @@ below, then run <code class="docutils literal notranslate"><span class="pre">mak
 </div>
 </li>
 <li><p>Edit <code class="docutils literal notranslate"><span class="pre">_workspace/kit/kind.yml</span></code></p>
-<p><em>NOTE:</em> the Edge Conductor Kit config file(kit/kind.yml) is a mandatory parameter for <code class="docutils literal notranslate"><span class="pre">conductor</span> <span class="pre">init</span></code>. For more details of Kit config, please follow the instruction of <a class="reference external" href="cluster-deploy-KIND.md#L38">Custom Config</a> as reference.</p>
+<p><em>NOTE:</em> the Edge Conductor Kit config file(kit/kind.yml) is a mandatory parameter for <code class="docutils literal notranslate"><span class="pre">conductor</span> <span class="pre">init</span></code>. For more details of Kit config, please follow the instruction of <span class="xref myst">Custom Config</span> as reference.</p>
 </li>
 <li><p>Enter the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder and run <code class="docutils literal notranslate"><span class="pre">./conductor</span> <span class="pre">init</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">edge</span><span class="o">-</span><span class="n">conductor</span><span class="o">/</span><span class="n">_workspace</span>

@@ -94,25 +94,25 @@
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="#prerequisites">Prerequisites</a></p></li>
-<li><p><a class="reference external" href="#prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment">Prepare an Edge Conductor Kit for a Helm Chart Package Deployment</a></p></li>
-<li><p><a class="reference external" href="#deploy-hello-cluster-application-by-helm-chart-on-edge-conductor">Deploy Hello Cluster Application by the Helm Chart on Edge Conductor</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites"><span class="std std-doc">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#prepare-an-edge-conductor-kit-for-a-helm-chart-package-deployment"><span class="std std-doc">Prepare an Edge Conductor Kit for a Helm Chart Package Deployment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-hello-cluster-application-by-helm-chart-on-edge-conductor"><span class="std std-doc">Deploy Hello Cluster Application by the Helm Chart on Edge Conductor</span></a></p></li>
 </ul>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <p>This tutorial provides a Helm Chart packaged with the Hello Cluster! application as a sample. Please find the sample <strong>Helm Chart package</strong> <span class="xref myst">HERE</span>.  The following description, command, configuration, and output will be based on this sample Helm package. The reader can change the Helm chart package as their own just make sure the corresponding part uses the customized package name and configure files as well.</p>
-<p>Follow <a class="reference external" href="../../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0
-Host</a> and <a class="reference external" href="../../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0
+Host</span> and <span class="xref myst">OS and
 System Requirements for Edge Conductor Day-0
-Host</a>
+Host</span>
 to prepare the Day-0 host hardware and software.</p>
 <blockquote>
 <div><p><em>NOTE:</em>  For each KIND node, 2 CPU cores and 2 gigabytes (GB) of memory are
 needed at least.</p>
 </div></blockquote>
 <p>Follow
-<a class="reference external" href="../../../README.md#download-and-build-edge-conductor-code--internal-users-only-">Download and Build Edge Conductor Code (Internal users only)</a>
+<span class="xref myst">Download and Build Edge Conductor Code (Internal users only)</span>
 to build and install the Edge Conductor tool.
 Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run the Edge Conductor tool.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor$ <span class="nb">cd</span> _workspace
@@ -154,7 +154,7 @@ install the Helm CLI.</p>
 <p>In this example:</p>
 <ul class="simple">
 <li><p>It imports kind.yml, which is the official Kit for KIND cluster.</p></li>
-<li><p>It imports config/sample_hello_cluster_helm/manifest.yml as the supplemented manifest of the component manifest file to provide the configuration of the helm chart package. The below section <a class="reference external" href="#component-manifest">Component Manifest</a> gives the detailed information of this supplemented manifest YAML file.</p></li>
+<li><p>It imports config/sample_hello_cluster_helm/manifest.yml as the supplemented manifest of the component manifest file to provide the configuration of the helm chart package. The below section <a class="reference internal" href="#component-manifest"><span class="std std-doc">Component Manifest</span></a> gives the detailed information of this supplemented manifest YAML file.</p></li>
 <li><p>It selects the hello-cluster-helm component (defined in the  <span class="xref myst">manifest.yml</span>)  to be deployed on the Kind cluster.</p></li>
 </ul>
 </section>

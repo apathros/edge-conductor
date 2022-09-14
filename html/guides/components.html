@@ -80,7 +80,7 @@
 <p>This guide describes how to select components and deploy on clusters with <a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> tool.</p>
 <section id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
-<p>Follow any of the <a class="reference external" href="./index.md#cluster-deployment">Cluster Deployment Guides</a> to deploy a cluster.</p>
+<p>Follow any of the <a class="reference internal" href="index.html#cluster-deployment"><span class="std std-doc">Cluster Deployment Guides</span></a> to deploy a cluster.</p>
 <p>Once a cluster has been created (or re-used as per the existing cluster deployment model), the Edge Conductor tool can be used to deploy components by performing the following 3 steps:</p>
 <ul class="simple">
 <li><p>Download Helm charts, yaml and other files and upload to a local HTTP server</p></li>
@@ -102,7 +102,7 @@
 <p>Edge Conductor tool also defined a list of default components selected for each type of clusters. This list is defined as a Component Selector list, which can be found in the Edge Conductor kit file. It is made up by</p>
 <ul class="simple">
 <li><p>A list of common components in <span class="xref myst">kit/common.yml</span></p></li>
-<li><p>And a list of components specific for the cluster in cluster kit configs. Take KIND cluster as an example, you can find the list here in <a class="reference external" href="../../kit/kind.yml#L40">kit/kind.yml</a>.</p></li>
+<li><p>And a list of components specific for the cluster in cluster kit configs. Take KIND cluster as an example, you can find the list here in <span class="xref myst">kit/kind.yml</span>.</p></li>
 </ul>
 <p>To build and deploy the default components defined for the cluster, enter the commands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service build

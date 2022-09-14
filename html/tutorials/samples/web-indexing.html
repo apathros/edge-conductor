@@ -110,35 +110,35 @@ use a local-path storage class which is the default for kind.</p>
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="#prerequisites">Prerequisites</a></p></li>
-<li><p><a class="reference external" href="#prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster">Prepare an Edge Conductor Kit to Deploy a Service based on kind cluster</a></p></li>
-<li><p><a class="reference external" href="#deploy-web-indexing-service-based-on-the-edge-conductor-kit">Deploy web indexing service based on the Edge Conductor Kit</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites"><span class="std std-doc">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#prepare-an-edge-conductor-kit-to-deploy-web-indexing-service-based-on-kind-cluster"><span class="std std-doc">Prepare an Edge Conductor Kit to Deploy a Service based on kind cluster</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-web-indexing-service-based-on-the-edge-conductor-kit"><span class="std std-doc">Deploy web indexing service based on the Edge Conductor Kit</span></a></p></li>
 </ul>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Make sure your host meets the requirements in
-<a class="reference external" href="../basics/how_to_install_tools.md#before-you-begin">Before You Begin</a>.</p></li>
+<a class="reference internal" href="../basics/how_to_install_tools.html#before-you-begin"><span class="std std-doc">Before You Begin</span></a>.</p></li>
 <li><p>Follow the steps in
-<a class="reference external" href="../basics/how_to_install_tools.md#build-and-install-the-tool">Build and Install the Tool</a>.</p></li>
+<a class="reference internal" href="../basics/how_to_install_tools.html#build-and-install-the-tool"><span class="std std-doc">Build and Install the Tool</span></a>.</p></li>
 <li><p>Follow the steps in
-<a class="reference external" href="../basics/deploy_a_kind_cluster.md#build-and-deploy-kind-cluster">Build and Deploy Kind Cluster</a>
+<a class="reference internal" href="../basics/deploy_a_kind_cluster.html#build-and-deploy-kind-cluster"><span class="std std-doc">Build and Deploy Kind Cluster</span></a>
 to deploy a kind cluster and configure the kubectl command-line tool to
 communicate with your cluster.</p></li>
 </ol>
-<p>Follow <a class="reference external" href="../../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0
-Host</a> and <a class="reference external" href="../../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0
+Host</span> and <span class="xref myst">OS and
 System Requirements for Edge Conductor Day-0
-Host</a>
+Host</span>
 to prepare the Day-0 host hardware and software.</p>
 <blockquote>
 <div><p><em>NOTE:</em>  For each kind node, 2 CPU cores and 2 gigabytes (GB) memory are
 the minimum required.</p>
 </div></blockquote>
 <p>Follow
-<a class="reference external" href="../../../README.md#download-and-build-edge-conductor-code--internal-users-only-">Download and Build Edge Conductor Code (Internal users
-only)</a>
+<span class="xref myst">Download and Build Edge Conductor Code (Internal users
+only)</span>
 to build and install Edge Conductor tool.
 Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edge-conductor$ <span class="nb">cd</span> _workspace
@@ -182,7 +182,7 @@ define the way to deploy the service to the kind cluster</p></li>
 <p>In this example:</p>
 <ul class="simple">
 <li><p>It imports <code class="docutils literal notranslate"><span class="pre">kind.yml</span></code>, which is the official Kit for kind cluster.</p></li>
-<li><p>It imports <code class="docutils literal notranslate"><span class="pre">config/sample_web_indexing/manifest.yml</span></code> as the supplemented manifest of the component manifest file to provide the configuration of the sample_web_indexing service. The below section <a class="reference external" href="#component-manifest">Component Manifest</a> gives the detailed information for this supplemented manifest YAML file.</p></li>
+<li><p>It imports <code class="docutils literal notranslate"><span class="pre">config/sample_web_indexing/manifest.yml</span></code> as the supplemented manifest of the component manifest file to provide the configuration of the sample_web_indexing service. The below section <a class="reference internal" href="#component-manifest"><span class="std std-doc">Component Manifest</span></a> gives the detailed information for this supplemented manifest YAML file.</p></li>
 <li><p>It selects the <code class="docutils literal notranslate"><span class="pre">sample_web_indexing</span></code> as the component to be deployed on the kind cluster.</p></li>
 </ul>
 </section>
@@ -206,7 +206,7 @@ Detailed definition of <strong>components</strong> refer to <a class="reference 
 <p>In this sample:</p>
 <ul class="simple">
 <li><p>It defines the component’s name as “web-indexing”.</p></li>
-<li><p>It uses the <code class="docutils literal notranslate"><span class="pre">web-indexing.yml</span></code> file as the deployment YAML file. Refer to section <a class="reference external" href="#deployment-file">Deployment File</a>.</p></li>
+<li><p>It uses the <code class="docutils literal notranslate"><span class="pre">web-indexing.yml</span></code> file as the deployment YAML file. Refer to section <a class="reference internal" href="#deployment-file"><span class="std std-doc">Deployment File</span></a>.</p></li>
 <li><p>It provides offline deployment capability with the list of image URLs under the “images” section.</p></li>
 <li><p>It requests the service to be deployed based on kind cluster.</p></li>
 </ul>

@@ -98,13 +98,13 @@
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="#prerequisites">Prerequisites</a></p></li>
-<li><p><a class="reference external" href="#edge-conductor-kit-for-RKE">Edge Conductor kit for RKE</a></p></li>
-<li><p><a class="reference external" href="#initialize-edge-conductor-environment">Initialize Edge Conductor Environment</a></p></li>
-<li><p><a class="reference external" href="#use-esp-as-os-provider">Use ESP as OS provider</a></p></li>
-<li><p><a class="reference external" href="#build-and-deploy-RKE-cluster">Build and Deploy RKE cluster</a></p></li>
-<li><p><a class="reference external" href="#check-the-RKE-cluster">Check the RKE cluster</a></p></li>
-<li><p><a class="reference external" href="#whats-next">What’s Next</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites"><span class="std std-doc">Prerequisites</span></a></p></li>
+<li><p><span class="xref myst">Edge Conductor kit for RKE</span></p></li>
+<li><p><a class="reference internal" href="#initialize-edge-conductor-environment"><span class="std std-doc">Initialize Edge Conductor Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#use-esp-as-os-provider"><span class="std std-doc">Use ESP as OS provider</span></a></p></li>
+<li><p><span class="xref myst">Build and Deploy RKE cluster</span></p></li>
+<li><p><span class="xref myst">Check the RKE cluster</span></p></li>
+<li><p><a class="reference internal" href="#what-s-next"><span class="std std-doc">What’s Next</span></a></p></li>
 </ul>
 </section>
 <section id="prerequisites">
@@ -113,7 +113,7 @@
 <h3>Requirements for the Edge Conductor Day-0 Host<a class="headerlink" href="#requirements-for-the-edge-conductor-day-0-host" title="Permalink to this heading"></a></h3>
 <p>This tutorial will deploy a two-node cluster (one control plane and one worker) with Edge Software Provisioner (ESP) as an OS provider.</p>
 <ul class="simple">
-<li><p>For each RKE node, you must add two CPU cores and two gigabytes (GB) of memory.  Follow <a class="reference external" href="#create-vms-for-nodes">Create VMs for Nodes</a> to set up the nodes.</p></li>
+<li><p>For each RKE node, you must add two CPU cores and two gigabytes (GB) of memory.  Follow <span class="xref myst">Create VMs for Nodes</span> to set up the nodes.</p></li>
 <li><p>A clean network environment is needed to enable ESP as an OS provider.  Especially ensure the 53 port is not in use.</p></li>
 <li><p>The path length of Edge conductor is limited to 75 characters as a limitation of ESP.
 For more details on ESP, please refer to <a class="reference internal" href="../../guides/os-provider-esp.html"><span class="doc std std-doc">ESP guide</span></a>.</p></li>
@@ -127,7 +127,7 @@ For more details on ESP, please refer to <a class="reference internal" href="../
 <li><p>Internet connection of both: Internet connectivity is required to download and use certain features.</p></li>
 </ul>
 <ol class="arabic simple">
-<li><p>Follow <a class="reference external" href="./how_to_install_tools.md#build-and-install-the-tool">Build and Install the Tool</a> to build and install the Edge Conductor tool.</p></li>
+<li><p>Follow <a class="reference internal" href="how_to_install_tools.html#build-and-install-the-tool"><span class="std std-doc">Build and Install the Tool</span></a> to build and install the Edge Conductor tool.</p></li>
 <li><p>If there is no public RSA key pair on the host, run the following command and press Enter three times to generate one on the default path.</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen
@@ -180,7 +180,7 @@ two VMs RKE1 and rke2. Each of them will have two CPU cores, two gigabytes (GB) 
 </section>
 <section id="edge-conductor-kit-for-rke">
 <h2>Edge Conductor kit for RKE<a class="headerlink" href="#edge-conductor-kit-for-rke" title="Permalink to this heading"></a></h2>
-<p>We use <span class="xref myst">this example kit</span> to deploy the RKE cluster in this document. Before going to <a class="reference external" href="#initialize-edge-conductor-environment">Initialize Edge Conductor Environment</a>, a user must modify the rke_ubuntu_20.04.yml file according to the test environment by following the below steps.</p>
+<p>We use <span class="xref myst">this example kit</span> to deploy the RKE cluster in this document. Before going to <a class="reference internal" href="#initialize-edge-conductor-environment"><span class="std std-doc">Initialize Edge Conductor Environment</span></a>, a user must modify the rke_ubuntu_20.04.yml file according to the test environment by following the below steps.</p>
 <section id="custom-config">
 <h3>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h3>
 <ul class="simple">

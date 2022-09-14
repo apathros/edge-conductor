@@ -96,9 +96,9 @@
 <p>This document is about how to config and run Edge Conductor tool to deploy a cluster with <a class="reference external" href="https://cluster-api.sigs.k8s.io/">ClusterAPI</a>.</p>
 <section id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
-<p>Follow <a class="reference external" href="../../README.md#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0 Host</a> and <a class="reference external" href="../../README.md#os-and-system-requirements-for-edge-conductor-day-0-host">OS and System Requirements for Edge Conductor Day-0 Host</a> to <strong>prepare the Day-0 host</strong> hardware and software.</p>
-<p>Follow <a class="reference external" href="../../README.md#build-and-install-edge-conductor-tool">Build and Install Edge Conductor Tool</a> to <strong>build and install Edge Conductor tool</strong>. Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
-<p>Follow <a class="reference external" href="#hardware-configuration">Hardware Configuration</a> and <a class="reference external" href="#network-setup">Network Setup</a> to <strong>prepare the hardware and network connection of the bare matal machines</strong> on which the workload cluster is going to be deployed.</p>
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0 Host</span> and <span class="xref myst">OS and System Requirements for Edge Conductor Day-0 Host</span> to <strong>prepare the Day-0 host</strong> hardware and software.</p>
+<p>Follow <span class="xref myst">Build and Install Edge Conductor Tool</span> to <strong>build and install Edge Conductor tool</strong>. Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<p>Follow <a class="reference internal" href="#hardware-configuration"><span class="std std-doc">Hardware Configuration</span></a> and <a class="reference internal" href="#network-setup"><span class="std std-doc">Network Setup</span></a> to <strong>prepare the hardware and network connection of the bare matal machines</strong> on which the workload cluster is going to be deployed.</p>
 <section id="hardware-configuration">
 <h3>Hardware Configuration<a class="headerlink" href="#hardware-configuration" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
@@ -137,8 +137,8 @@ sudo iptables -t filter -A FORWARD  -d 172.22.0.0/24 -j ACCEPT
 </section>
 <section id="custom-config">
 <h2>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h2>
-<p>Modify the Edge Conductor Kit config file(kit/capi_metal3.yml) following <a class="reference external" href="ec-configurations.md#edge-conductor-kit-introduction">Edge Conductor Configurations | Edge Conductor Kit Introduction</a>, which is a mandatory parameter for “conductor init”.</p>
-<p>For more custom config, see <a class="reference external" href="#advanced-configuaration">Advanced Configuaration</a></p>
+<p>Modify the Edge Conductor Kit config file(kit/capi_metal3.yml) following <a class="reference internal" href="ec-configurations.html#edge-conductor-kit-introduction"><span class="std std-doc">Edge Conductor Configurations | Edge Conductor Kit Introduction</span></a>, which is a mandatory parameter for “conductor init”.</p>
+<p>For more custom config, see <a class="reference internal" href="#advanced-configuaration"><span class="std std-doc">Advanced Configuaration</span></a></p>
 </section>
 <section id="init-edge-conductor-environment">
 <h2>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h2>
