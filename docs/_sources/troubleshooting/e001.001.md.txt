@@ -1,0 +1,14 @@
+[Edge Conductor]: https://github.com/intel/edge-conductor
+[Troubleshooting]: ./e001.001.md
+
+[Edge Conductor] / [Troubleshooting]
+
+#  E001.001
+**Edge Conductor Kit kitconfig is not found**
+
+*Description*
+This error occurs when the kitconfig section is absent in ep-params runtime file. 
+
+*Suggestion*
+open the ./workspace/runtime/data/ep-params file and check if "kitconfig" section is existed. Re-conduct the "conductor init" command to repair the ep-params file.
+

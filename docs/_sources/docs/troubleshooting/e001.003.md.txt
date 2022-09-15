@@ -1,0 +1,13 @@
+[Edge Conductor]: https://github.com/intel/edge-conductor
+[Troubleshooting]: ./e001.003.md
+
+[Edge Conductor] / [Troubleshooting]
+
+#  E001.003
+**Edge Conductor kit runtime file is not found**
+
+*Description*
+This error occurs when the Edge Conductor runtime file ep-params does not exist.
+
+*Suggestion*
+Check if the ./workspace/runtime/data/ep-params file is existed. Conduct the "conductor init" command if the file is missing.
