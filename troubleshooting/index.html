@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Troubleshooting &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Troubleshooting</a><ul>
+<li><a class="reference internal" href="#e000-unknown-error">E000: Unknown error</a></li>
+<li><a class="reference internal" href="#e001-ec-tools-errors">E001: EC tools errors</a></li>
+<li><a class="reference internal" href="#e002-network-errors">E002: Network errors</a></li>
+<li><a class="reference internal" href="#e003-kubernetes">E003: Kubernetes</a></li>
+<li><a class="reference internal" href="#e004-security-errors">E004: Security errors</a></li>
+<li><a class="reference internal" href="#e005-utility-errors">E005: Utility errors</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/troubleshooting/index.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> / <a class="reference internal" href="#"><span class="doc std std-doc">Troubleshooting</span></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-troubleshooting">
+<h1>Edge Conductor Troubleshooting<a class="headerlink" href="#edge-conductor-troubleshooting" title="Permalink to this heading"></a></h1>
+<p>This document provides more detailed information about the error code you have encountered during the build/deploy cluster or service on Edge Conductor.</p>
+<section id="e000-unknown-error">
+<h2>E000: Unknown error<a class="headerlink" href="#e000-unknown-error" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>E000.099: Unknown error</p></li>
+<li><p>E000.100: test error</p></li>
+</ul>
+</section>
+<section id="e001-ec-tools-errors">
+<h2>E001: EC tools errors<a class="headerlink" href="#e001-ec-tools-errors" title="Permalink to this heading"></a></h2>
+<p>// E001.0**: common config errors</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="e001.001.html"><span class="doc std std-doc">E001.001</span></a>: kitconfig section is not found in runtime file</p></li>
+<li><p><a class="reference internal" href="e001.002.html"><span class="doc std std-doc">E001.002</span></a>: kitconfigpath section is not found in runtime file</p></li>
+<li><p><a class="reference internal" href="e001.003.html"><span class="doc std std-doc">E001.003</span></a>: Edge Conductor kit runtime file is not found</p></li>
+<li><p>E001.004: Edge Conductor kit customconfig is not found</p></li>
+<li><p>E001.005: Harbor Register password is not set</p></li>
+<li><p>E001.006: Cert manager config is missing in manifest</p></li>
+<li><p>E001.007: Malformat Yaml file</p></li>
+<li><p>E001.008: Can not find docker config folder</p></li>
+<li><p>E001.009: the ‘name’ section under components. selector is missing</p></li>
+<li><p>E001.010: component.selector section has error</p></li>
+<li><p>E001.011: component.selector.override section has error</p></li>
+<li><p>E001.012: ‘unmarshal’ operation failed of the component.selector.override section</p></li>
+<li><p>E001.013: The length of Args exceeds the MAX COUNT(100)</p></li>
+<li><p>E001.014: Edge Conductor Kit Config’s parameter is not correct</p></li>
+<li><p>E001.015: Edge Conductor Kit Config’s parameter missing</p></li>
+<li><p>E001.016: Invalid parameter</p></li>
+<li><p>E001.017: CopyFromDay0: must end with “/”</p></li>
+<li><p>E001.018: CopyToDay0: must end with “/”</p></li>
+<li><p>E001.019: cluster manifest is not found</p></li>
+<li><p>E001.020: StringOverrideWithNode</p></li>
+<li><p>E001.021: resource is not specified in cluster manifest</p></li>
+<li><p>E001.022: grpc connect error</p></li>
+<li><p>E001.023: workflow is not found</p></li>
+<li><p>E001.024: Plugin Complete error</p></li>
+<li><p>E001.025: Failed to get ep-params in init data</p></li>
+<li><p>E001.026: This command is not supported for current config</p></li>
+<li><p>E001.027: Unmarshal data error</p></li>
+<li><p>E001.028: Unmarshal plugin data error</p></li>
+<li><p>E001.029: Unknown return value</p></li>
+<li><p>E001.030: Failed to get schema in output</p></li>
+<li><p>E001.031: Cannot find plugin</p></li>
+<li><p>E001.032: Failed to find input schema</p></li>
+<li><p>E001.033: Cannot find input schema</p></li>
+<li><p>E001.034: Get log stream error</p></li>
+<li><p>E001.035: Plugin connection error</p></li>
+<li><p>E001.036: Failed to convert struct to map</p></li>
+<li><p>E001.037: Failed to convert map to service</p></li>
+<li><p>E001.038: Unmarshal override error</p></li>
+<li><p>E001.039: failed to load ep-params data from init data</p></li>
+<li><p>E001.040: failed to load plugin data from init data</p></li>
+<li><p>E001.041: marshal schemaMap data error</p></li>
+<li><p>E001.042: Failed to get schema in previous step’s init or output data</p></li>
+<li><p>E001.043: convert containers data error</p></li>
+<li><p>E001.044: marshal initdata failed</p></li>
+<li><p>E001.045: Node login username missing</p></li>
+<li><p>E001.046: image is not specified in cluster manifest</p></li>
+<li><p>E001.047: Node login password and ssh key missing</p></li>
+<li><p>E001.048: Ignore override error</p></li>
+<li><p>E001.049: Ignore format error</p></li>
+<li><p>E001.050: Unknown command type</p></li>
+<li><p>E001.051: binary is not specified in cluster manifest</p></li>
+</ul>
+<p>// E001.1**: kind cluster errors</p>
+<ul class="simple">
+<li><p>E001.101: Failed to create KIND cluster</p></li>
+<li><p>E001.102: Kind image info missing in manifest.</p></li>
+<li><p>E001.103: Failed to delete KIND cluster</p></li>
+<li><p>E001.104: Kind info missing, pls check manifest</p></li>
+</ul>
+<p>// E001.2**: rke cluster errors</p>
+<ul class="simple">
+<li><p>E001.202: Failed to run rke command</p></li>
+<li><p>E001.203: Could not config viper.</p></li>
+</ul>
+<p>// E001.3**: CAPI Error</p>
+<ul class="simple">
+<li><p>E001.301: Cert manager config is missing in manifest</p></li>
+<li><p>E001.302: CAPI provider parameter missing in manifest</p></li>
+<li><p>E001.303: require one infra provider, pls select one infra provider at kit config</p></li>
+<li><p>E001.304: CAPI providers missing in manifest, four providers are required</p></li>
+<li><p>E001.305: invalid worker node number pls check kit config</p></li>
+<li><p>E001.306: CAPI manifest missing</p></li>
+<li><p>E001.307: validated CAPI infra provider missing in manifest</p></li>
+<li><p>E001.308: kind config missing in manifest</p></li>
+<li><p>E001.309: capi download error</p></li>
+<li><p>E001.310: error in getting clients</p></li>
+<li><p>E001.311: internal server error</p></li>
+<li><p>E001.312: Failed to find binary of kind in capi binary list</p></li>
+<li><p>E001.320: failed to generate capi binary list</p></li>
+<li><p>E001.321: failed to get capi clusterctl configuration</p></li>
+<li><p>E001.322: failed to generate local provider repo for clusterctl</p></li>
+<li><p>E001.323: failed to generate config files for clusterctl</p></li>
+<li><p>E001.324: failed to launch management cluster</p></li>
+<li><p>E001.325: failed to init clusterapi for define target cluster</p></li>
+<li><p>E001.326: failed to start/restart management cluster of CAPI</p></li>
+<li><p>E001.327: Failed to run clusterctl cmd</p></li>
+<li><p>E001.328: Failed to launch byoh controller manager</p></li>
+<li><p>E001.329: BYOH host not ready</p></li>
+<li><p>E001.330: no controller plane node ready</p></li>
+<li><p>E001.331: Failed to get management cluster binary list</p></li>
+</ul>
+<p>// E001.4**: Service errors</p>
+<ul class="simple">
+<li><p>E001.401: service’s tls extension of  is not found</p></li>
+<li><p>E001.402: pullFile: invalid command</p></li>
+<li><p>E001.403: service’s tls config is not found</p></li>
+<li><p>E001.404: Service TLS error: CSR filename not found</p></li>
+<li><p>E001.405: pullFile: only supported on day-0</p></li>
+<li><p>E001.406: pushFile: invalid command</p></li>
+<li><p>E001.407: pullFile: only supported on day-0</p></li>
+<li><p>E001.408: Helm repo or chart name is empty</p></li>
+<li><p>E001.409: Helm service is in a wrong status</p></li>
+<li><p>E001.410: Helm service status is unknown</p></li>
+<li><p>E001.411: failed to return schemaMap data</p></li>
+<li><p>E001.412: File not found in download list.</p></li>
+<li><p>E001.413: Server address or port is missing in kitconfig</p></li>
+</ul>
+</section>
+<section id="e002-network-errors">
+<h2>E002: Network errors<a class="headerlink" href="#e002-network-errors" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>E002.002:  provide_ip under global setings is not set</p></li>
+<li><p>E002.003: SSH path for provision is not found.</p></li>
+<li><p>E002.004: remote copy failed with invalid file path</p></li>
+</ul>
+</section>
+<section id="e003-kubernetes">
+<h2>E003: Kubernetes<a class="headerlink" href="#e003-kubernetes" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>E003.001: No k8s node</p></li>
+</ul>
+</section>
+<section id="e004-security-errors">
+<h2>E004: Security errors<a class="headerlink" href="#e004-security-errors" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>E004.001: unsupported certificate type</p></li>
+<li><p>E004.002: failed to decode Cert</p></li>
+<li><p>E004.003: certbundle.Ca.Cert is a directory</p></li>
+<li><p>E004.004: certbundle.Ca.Key is a directory</p></li>
+<li><p>E004.005: certbundle.Server.Cert is a directory</p></li>
+<li><p>E004.006: certbundle.Server.Key is a directory</p></li>
+<li><p>E004.007: certcertbundle.Client.Cert is a directory</p></li>
+<li><p>E004.008: certbundle.Client.Key is a directory</p></li>
+<li><p>E004.009: cert path or Key path is nil</p></li>
+<li><p>E004.010: unsupported key algo</p></li>
+<li><p>E004.011: failed to parse root certificate</p></li>
+</ul>
+</section>
+<section id="e005-utility-errors">
+<h2>E005: Utility errors<a class="headerlink" href="#e005-utility-errors" title="Permalink to this heading"></a></h2>
+<p>// E005.0**: Docker errors</p>
+<ul class="simple">
+<li><p>E005.001: no auth in docker client configuration file</p></li>
+<li><p>E005.002: registry server or port is not found</p></li>
+<li><p>E005.003: invalid docker config path，check the DOCKER</p></li>
+<li><p>E005.004: failed to open docker client config file</p></li>
+<li><p>E005.005: container name is not found</p></li>
+<li><p>E005.006: pushImage only supported on day-0</p></li>
+<li><p>E005.007: Pulling file failure.</p></li>
+<li><p>E005.008: docker start failed</p></li>
+<li><p>E005.009: host ip as “0.0.0.0”  in docker config  is not accepted</p></li>
+<li><p>E005.010: failed to parse docker config file</p></li>
+<li><p>E005.011: failed to decode authentication information in config file</p></li>
+<li><p>E005.012: auth string in docker config file is invalid</p></li>
+<li><p>E005.013: docker config file is not existed</p></li>
+<li><p>E005.014: File path should not be empty</p></li>
+<li><p>E005.015: Oras default resolver not found</p></li>
+<li><p>E005.016: Oras resolver not found</p></li>
+<li><p>E005.017: It’s an oras error</p></li>
+</ul>
+<p>// E005.1**: Harbor errors</p>
+<ul class="simple">
+<li><p>E005.101: input harbor IP is empty</p></li>
+<li><p>E005.102: input harbor user is empty</p></li>
+<li><p>E005.103: input harbor password is empty</p></li>
+<li><p>E005.104: input auth server address is empty</p></li>
+<li><p>E005.105: input harbor port is empty</p></li>
+<li><p>E005.106: input harbor url is empty</p></li>
+<li><p>E005.107: error in harbor response</p></li>
+<li><p>E005.108: Abnormal harbor response received</p></li>
+<li><p>E005.109: Cert file is null</p></li>
+<li><p>E005.110: Harbor project name is empty</p></li>
+<li><p>E005.111: Harbor auth string is empty</p></li>
+</ul>
+<p>// E005.2**: File utility errors</p>
+<ul class="simple">
+<li><p>E005.201: file is not valid</p></li>
+<li><p>E005.202: file is not valid tgz</p></li>
+<li><p>E005.203: unmarshal operation failed</p></li>
+<li><p>E005.204: marshal operation failed</p></li>
+<li><p>E005.205: tar operation failed with invalid tar file path</p></li>
+<li><p>E005.206: uncompress tgz failed with invalid file header</p></li>
+<li><p>E005.207: create file failed, the file is existed</p></li>
+<li><p>E005.208: Failed to load json file</p></li>
+<li><p>E005.209: Files for cluster deployment are not found. Please run “cluster build” first</p></li>
+<li><p>E005.210: URL Schema Not Supported</p></li>
+<li><p>E005.211: no such file or directory</p></li>
+</ul>
+<p>// E005.3**: Hash errors</p>
+<ul class="simple">
+<li><p>E005.301: SHA256 check failed</p></li>
+<li><p>E005.302: Hash check failed</p></li>
+</ul>
+<p>// E005.4**: Repo utility errors</p>
+<ul class="simple">
+<li><p>E005.401: push to repo failed</p></li>
+<li><p>E005.402: pull from repo failed</p></li>
+</ul>
+<p>// E005.5**: ESP errors</p>
+<ul class="simple">
+<li><p>E005.501: Cannot find OS session in top config</p></li>
+<li><p>E005.502: ESP manifest missing</p></li>
+<li><p>E005.503: Cannot find ESP codebase</p></li>
+<li><p>E005.504: Cannot find ESP build.sh script</p></li>
+<li><p>E005.505: Cannot find ESP run.sh script</p></li>
+<li><p>E005.506: OS provider is wrong</p></li>
+</ul>
+<p>Copyright (C) 2022 Intel Corporation
+SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

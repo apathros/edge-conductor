@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Config and Deploy Components &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Config and Deploy Components</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/guides/components.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="config-and-deploy-components">
+<h1>Config and Deploy Components<a class="headerlink" href="#config-and-deploy-components" title="Permalink to this heading"></a></h1>
+<p>This guide describes how to select components and deploy on clusters with <a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> tool.</p>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow any of the <span class="xref myst">Cluster Deployment Guides</span> to deploy a cluster.</p>
+<p>Once a cluster has been created (or re-used as per the existing cluster deployment model), the Edge Conductor tool can be used to deploy components by performing the following 3 steps:</p>
+<ul class="simple">
+<li><p>Download Helm charts, yaml and other files and upload to a local HTTP server</p></li>
+<li><p>Download needed container images and push to local container registry</p></li>
+<li><p>Deploy services on the target cluster</p></li>
+</ul>
+<p>For example, to deploy components:</p>
+<ol class="arabic simple">
+<li><p>Wrap it up as the helm chart tarball or a .yml file</p></li>
+<li><p>Place the helm chart tarball or .yml file in a public accessible web server or directly in a Day-0 host local folder</p></li>
+<li><p>Add the URL (https://… or file://…) into the component_manifest.yml file.</p></li>
+</ol>
+<p>In this guide we will take <a class="reference internal" href="cluster-deploy-KIND.html"><span class="doc std std-doc">KIND Cluster</span></a> as an example to config and deploy the components.</p>
+</section>
+<section id="how-to-deploy-default-components">
+<h2>How to Deploy Default Components<a class="headerlink" href="#how-to-deploy-default-components" title="Permalink to this heading"></a></h2>
+<p>Enter the workspace folder which is used to deploy the cluster.</p>
+<p>Edge Conductor tool defined a list of components that have been tested on the clusters, in <span class="xref myst">component_manifest.yml</span>.</p>
+<p>Edge Conductor tool also defined a list of default components selected for each type of clusters. This list is defined as a Component Selector list, which can be found in the Edge Conductor kit file. It is made up by</p>
+<ul class="simple">
+<li><p>A list of common components in <span class="xref myst">kit/common.yml</span></p></li>
+<li><p>And a list of components specific for the cluster in cluster kit configs. Take KIND cluster as an example, you can find the list here in <span class="xref myst">kit/kind.yml</span>.</p></li>
+</ul>
+<p>To build and deploy the default components defined for the cluster, enter the commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service build
+./conductor service deploy
+</pre></div>
+</div>
+<p>To check what components have been deployed on the cluster, enter this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service list
+</pre></div>
+</div>
+</section>
+<section id="how-to-add-remove-modify-components-from-current-cluster">
+<h2>How to Add/Remove/Modify Components from Current Cluster<a class="headerlink" href="#how-to-add-remove-modify-components-from-current-cluster" title="Permalink to this heading"></a></h2>
+<p>The Component Selector list is defined in a declarative way.</p>
+<p>Users can add/remove/modify the components in the selector list, like in the following example of a selector list in a kit config yaml.</p>
+<p>In this example,</p>
+<ul class="simple">
+<li><p>Users can add their own component_manifest.yml to define customized components. For more details of how to add a component manifest, please refer to the tutorial <a class="reference internal" href="../tutorials/samples/hello-cluster.html"><span class="doc std std-doc">Hello Cluster!</span></a>.</p></li>
+<li><p>All components defined in these component manifests can be selected by name.</p></li>
+<li><p>A selected component can be override in the selector list via “override” field.</p></li>
+<li><p>Users can add/remove/modify the selector list, and then run “conductor service build/deploy” again, no need to redo the “conductor init” or cluster deployment.</p></li>
+</ul>
+<p>Example of a selector list in a kit config yaml file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span><span class="w"></span>
+<span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># newly added manifest</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;my/own/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-ingress</span><span class="w"></span>
+<span class="w">    </span><span class="nt">override</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># modified component</span><span class="w"></span>
+<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file:///my/own/kind-nginx-ingress.yml</span><span class="w"></span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml</span><span class="w"></span>
+<span class="w">      </span><span class="nt">images</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.gcr.io/ingress-nginx/controller:v1.1.2</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kind</span><span class="w"></span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># deleted</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># - name: portainer-ce</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># newly added (defined in &quot;my/own/component_manifest.yml&quot;)</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-important-service</span><span class="w"></span>
+</pre></div>
+</div>
+<p>To apply these changes in the selector list, enter the commands again:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service build
+./conductor service deploy
+</pre></div>
+</div>
+<p>During this service build/deploy operations,</p>
+<ul class="simple">
+<li><p>The deleted components will be uninstalled from the cluster.</p></li>
+<li><p>The newly added components will be installed to the cluster.</p></li>
+<li><p>The modified components will be upgraded in the cluster.</p></li>
+</ul>
+</section>
+<section id="how-to-handle-the-dependency-of-multiple-components">
+<h2>How to Handle the Dependency of Multiple Components<a class="headerlink" href="#how-to-handle-the-dependency-of-multiple-components" title="Permalink to this heading"></a></h2>
+<p>All the components in the selector list will be applied to clusters one-by-one, it’s following the order defined in the list.</p>
+<p>If there’s hard dependency on a component, use “wait” field so Edge Conductor tool will hold on to wait until this component is successfully running on the cluster, with a timeout limitation.</p>
+<p>This “wait” mechanism can be defined in the component manifest, or it can also be specified in the kit config selector list. See the following examples.</p>
+<p>Example of a component manifest:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-important-service</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://my/service/helm.tgz</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kind</span><span class="w"></span>
+<span class="w">    </span><span class="c1"># Add a wait for 300 seconds</span><span class="w"></span>
+<span class="w">    </span><span class="nt">wait</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Example of a selector list in a kit config yaml file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span><span class="w"></span>
+<span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">manifests</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;config/manifests/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;my/own/component_manifest.yml&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-important-service</span><span class="w"></span>
+<span class="w">    </span><span class="nt">override</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># Override the wait timeout to 500 seconds</span><span class="w"></span>
+<span class="w">      </span><span class="nt">wait</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span><span class="w"></span>
+</pre></div>
+</div>
+<p>During the service build/deploy operations, the tool will wait until “my-important-service” is successfully deployed, or it comes to a timeout.</p>
+</section>
+<section id="what-types-of-components-can-be-supported">
+<h2>What Types of Components Can Be Supported<a class="headerlink" href="#what-types-of-components-can-be-supported" title="Permalink to this heading"></a></h2>
+<p>Edge Conductor tool can deploy the following types of components:</p>
+<ul class="simple">
+<li><p>yaml: Apply to the cluster with a yaml file. See detailed descriptions below.</p></li>
+<li><p>helm: Apply to the cluster with a helm charts. See detailed descriptions below.</p></li>
+<li><p>dce: Apply to the cluster with DCE specs. See descriptions below. More details refer to DCE guide.</p></li>
+</ul>
+<p>Users can define the components in a component manifest file, like <span class="xref myst">component_manifest.yml</span>. Following are details of the different types of the components.</p>
+<p>Detailed description of yaml type:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name-of-yaml-component</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;url of the yaml file for this component, http|https|file are supported&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, the namespace to apply the component&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">images</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, upstream images used by the yaml file, will be downloaded at &quot;service build&quot;&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- ...</span><span class="w"></span>
+<span class="w">    </span><span class="nt">executor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, object of dce executor, which is to help users provide some build operations before applied&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">build</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, dce spec to run at &quot;service build&quot;&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, a list of name-value pairs for customized information, can be used by dce executor&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;name&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;value&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;a list of clusters that this component can be successfully applied, like kind|rke|capi&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- ...</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Detailed description of helm type:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name-of-helm-component</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span><span class="w"></span>
+<span class="w">    </span><span class="c1"># Use &lt;url&gt; or &lt;helmrepo&gt; + &lt;chartname&gt; + &lt;chartversion&gt; to get the helm charts</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;url of the helm file for this component, http|https|file are supported.&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">helmrepo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;url of a helm repo storing the helm charts&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">chartname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;name of the helm charts&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">chartversion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;version of the helm charts&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">chartoverride</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, url of the file to override the helm values&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, the namespace to apply the component&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">images</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, upstream images used by the helm file, will be downloaded at &quot;service build&quot;&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- ...</span><span class="w"></span>
+<span class="w">    </span><span class="nt">executor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, object of dce executor, which is to help users provide some build operations before applied&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">build</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, dce spec to run at &quot;service build&quot;&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, a list of name-value pairs for customized information, can be used by dce executor&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;name&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;value&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;a list of clusters that this component can be successfully applied, like kind|rke|capi&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- ...</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Detailed description of dce type:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Components</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name-of-dce-component</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dce</span><span class="w"></span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, url of the source code or resource used by dce executor, http|https|file are supported&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, the namespace to apply the component&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">executor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;object of dce executor&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">build</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;dce spec to run at &quot;service build&quot;&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain"># &lt;executor&gt;.&lt;deploy&gt; is only supported in dce components. An error will pop-up if this field is defined in other types.</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">deploy</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;dce spec to run at &quot;service deploy&quot;, only supported for dce components&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;optional, a list of name-value pairs for customized information, can be used by dce executor&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;name&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;value&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">supported-clusters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;a list of clusters that this component can be successfully applied, like kind|rke|capi&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- ...</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prepare the Edge Conductor tool &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Prepare the Edge Conductor tool</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#before-you-begin">Before You Begin</a></li>
+<li><a class="reference internal" href="#build-and-install-the-tool">Build and Install the Tool</a><ul>
+<li><a class="reference internal" href="#get-the-code-from-the-repository">Get the code from the repository:</a></li>
+<li><a class="reference internal" href="#build-the-code">Build the code:</a></li>
+<li><a class="reference internal" href="#change-to-the-workspace-folder">Change to the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-s-next">What’s Next</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Prepare the Edge Conductor tool</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/basics/how_to_install_tools.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/intel/edge-conductor">Edge Conductor</a> / <a class="reference internal" href="../index.html"><span class="doc std std-doc">Tutorials</span></a> / <a class="reference internal" href="#"><span class="doc std std-doc">How to install tools</span></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="prepare-the-edge-conductor-tool">
+<h1>Prepare the Edge Conductor tool<a class="headerlink" href="#prepare-the-edge-conductor-tool" title="Permalink to this heading"></a></h1>
+<p>This tutorial shows you how to prepare and install the Edge Conductor tool.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#before-you-begin"><span class="std std-doc">Before You Begin</span></a></p></li>
+<li><p><a class="reference internal" href="#build-and-install-the-tool"><span class="std std-doc">Build and Install the Tool</span></a></p></li>
+<li><p><a class="reference internal" href="#what-s-next"><span class="std std-doc">What’s Next</span></a></p></li>
+</ul>
+</section>
+<section id="before-you-begin">
+<h2>Before You Begin<a class="headerlink" href="#before-you-begin" title="Permalink to this heading"></a></h2>
+<p>Be sure your host meets the following requirements.</p>
+<p>Hardware:</p>
+<ul class="simple">
+<li><p>CPU: 2 or more cores</p></li>
+<li><p>Memory: 2 gigabytes (GB) or greater.</p></li>
+<li><p>Storage: 10 GB or greater available storage is required to build and run the Day-0 environment.</p></li>
+<li><p>Internet connection: Internet connectivity is necessary to download and use some features.</p></li>
+</ul>
+<blockquote>
+<div><p><em>NOTE:</em>  For each KIND node, you need to add 2 CPU cores and 2 gigabytes (GB) memory.</p>
+</div></blockquote>
+<p>OS and System:</p>
+<ul class="simple">
+<li><p>Ubuntu 18.04+</p></li>
+<li><p>make 4.1+</p></li>
+<li><p>DockerCE</p>
+<ul>
+<li><p>18.09.11+ (for DockerCE v18)</p></li>
+<li><p>19.03.13+ (for DockerCE v19)</p></li>
+<li><p>After you install DockerCE, configure a user group so you can use Docker without the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> command.
+For details, follow the Docker steps: <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">Post-installation steps for Linux</a>.</p></li>
+</ul>
+</li>
+<li><p>git 2.33.0+</p></li>
+</ul>
+<p>Additional software:</p>
+<ul class="simple">
+<li><p>Install <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl (v1.20.0)</a> to
+interact with the clusters created with Edge Conductor. For details, follow
+the Kubernetes steps: <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/">Install and Set Up kubectl on Linux</a>.</p></li>
+</ul>
+<p>Proxy setup:</p>
+<ul class="simple">
+<li><p>Be sure to set your proxies correctly. Some environments require network
+proxies for Docker operations (e.g. docker pull, docker push, docker run,
+and so on).</p></li>
+<li><p>For http_proxy/HTTP_PROXY and https_proxy/HTTPS_PROXY, you must test they
+are actually working. Also note that the no_proxy/NO_PROXY list <strong>MUST NOT
+contain spaces</strong> between the addresses.</p></li>
+<li><p>After you set your proxies, you can enter some commands to verify your proxies.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>   docker pull hello-world
+</pre></div>
+</div>
+</section>
+<section id="build-and-install-the-tool">
+<h2>Build and Install the Tool<a class="headerlink" href="#build-and-install-the-tool" title="Permalink to this heading"></a></h2>
+<section id="get-the-code-from-the-repository">
+<h3>Get the code from the repository:<a class="headerlink" href="#get-the-code-from-the-repository" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p>(For internal users only) Get the code from the git repo:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/intel/edge-conductor.git edge-conductor
+</pre></div>
+</div>
+</li>
+<li><p>Unzip the code package, for example, <code class="docutils literal notranslate"><span class="pre">edge_conductor_&lt;version&gt;.tar.gz</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar zxvf edge_conductor_&lt;version&gt;.tar.gz
+ln -sf edge_conductor_&lt;version&gt; edge-conductor
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="build-the-code">
+<h3>Build the code:<a class="headerlink" href="#build-the-code" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> edge-conductor
+make
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">make</span></code> is successful, no ERROR messages are displayed on the console.</p>
+<p>You will see output similar to the following.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -C api/schemas
+make -C api/proto build
+go mod tidy
+go run build/plugingenerator.go
+go vet ./pkg/... ./cmd/...
+Going to format and build code.
+go build -v -o _workspace/bin/conductor cmd/conductor/main.go
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">make</span></code> command does the following:</p>
+<ul class="simple">
+<li><p>Creates the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder.</p></li>
+<li><p>Generates binary files in the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder.</p></li>
+<li><p>Copies configuration files to the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder.</p></li>
+</ul>
+</section>
+<section id="change-to-the-workspace-folder">
+<h3>Change to the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder:<a class="headerlink" href="#change-to-the-workspace-folder" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> _workspace
+</pre></div>
+</div>
+<p>The file structure generated under the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>_workspace/
+├── bin
+├── config
+├── conductor -&gt; bin/conductor
+├── kubectl -&gt; bin/kubectl
+├── services
+└── workflow
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-s-next">
+<h2>What’s Next<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<p>Congratulations on running a simple setup using Edge Conductor.</p>
+<p>Next Tutorial: <a class="reference internal" href="deploy_a_kind_cluster.html"><span class="doc std std-doc">Deploy a KIND cluster</span></a></p>
+<p>Back to: <a class="reference internal" href="index.html"><span class="doc std std-doc">Edge Conductor Basics</span></a></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

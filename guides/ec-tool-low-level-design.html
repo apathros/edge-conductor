@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Tool Low Level Design &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Tool Low Level Design</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#design-objectives">Design Objectives</a><ul>
+<li><a class="reference internal" href="#terminology">Terminology</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design-overview">Design Overview</a></li>
+<li><a class="reference internal" href="#tool-implementation-logic">Tool Implementation Logic</a></li>
+<li><a class="reference internal" href="#plugin-design">Plugin Design</a></li>
+<li><a class="reference internal" href="#data-structure-design">Data Structure Design</a></li>
+<li><a class="reference internal" href="#workflow-design">Workflow Design</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Tool Low Level Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/ec-tool-low-level-design.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-tool-low-level-design">
+<h1>Edge Conductor Tool Low Level Design<a class="headerlink" href="#edge-conductor-tool-low-level-design" title="Permalink to this heading"></a></h1>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#design-objectives"><span class="std std-doc">Design Objectives</span></a></p></li>
+<li><p><a class="reference internal" href="#terminology"><span class="std std-doc">Terminology</span></a></p></li>
+<li><p><a class="reference internal" href="#design-overview"><span class="std std-doc">Design Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#tool-implementation-logic"><span class="std std-doc">Tool Implementation Logic</span></a></p></li>
+<li><p><a class="reference internal" href="#plugin-design"><span class="std std-doc">Plugin Design</span></a></p></li>
+<li><p><a class="reference internal" href="#data-structure-design"><span class="std std-doc">Data Structure Design</span></a></p></li>
+<li><p><a class="reference internal" href="#workflow-design"><span class="std std-doc">Workflow Design</span></a></p></li>
+</ul>
+</section>
+<section id="design-objectives">
+<h2>Design Objectives<a class="headerlink" href="#design-objectives" title="Permalink to this heading"></a></h2>
+<p>The Edge Conductor (Conductor) tool must meet the following design objectives:</p>
+<ul class="simple">
+<li><p>Support various third party cluster build tools, such as Kind, RKE, Tanzu,
+and others.</p></li>
+<li><p>Support building services from source. The build environment and process
+might be complex.</p></li>
+<li><p>Include many services, such as harbor sevice to provide file server, registry,
+and Helm repository.</p></li>
+<li><p>Provide a unified User Experience (UX). Users can use the same commands and
+steps to deploy different clusters and services.</p></li>
+<li><p>Provide a good Developer Experience (DX). Developers can easily extend Conductor
+capabilities.</p></li>
+</ul>
+<section id="terminology">
+<h3>Terminology<a class="headerlink" href="#terminology" title="Permalink to this heading"></a></h3>
+<p>Edge Conductor uses certain terminology in unique ways, including:</p>
+<p><strong>Pipeline:</strong> The Conductor tool provides commands for cluster and services
+deployment. The process of executing these commands to complete the deployment
+is called a <em>pipeline</em>.</p>
+<p><strong>Workflow and Plugin:</strong> The implementation of an Conductor command with steps is
+called a <em>workflow</em>. In a workflow, each step is realized by a <em>plugin</em>. The
+workflow is composed of plugins to achieve the goal of the command.</p>
+<p><strong>Data Schema</strong>:  json-schema is widely used in many projects, such as
+Kubernetes, OpenAPI, etc. The Conductor tool uses json-schema to define the data
+format, value constraints, and data description. The plugin input/output data
+structures are defined by yaml files, and the code generation tool can create
+the code automatically from yaml files.</p>
+</section>
+</section>
+<section id="design-overview">
+<h2>Design Overview<a class="headerlink" href="#design-overview" title="Permalink to this heading"></a></h2>
+<p>The Edge Conductor tool uses workflows and plugins to handle various requirements
+and third party components. The plugins and their relationships are defined in
+a <code class="docutils literal notranslate"><span class="pre">workflow.yaml</span></code> file, which is then executed by the engine, simplifying
+customization. Plugins and their inputs/outputs are defined in a <code class="docutils literal notranslate"><span class="pre">plugins.yaml</span></code>
+file. A plugin can run in a container, which is especially useful for plugins
+that need to work with third party tools. Also, multiple plugins can run in one
+container.</p>
+<p>The diagram below shows how the various components work together.</p>
+<p><img alt="Design diagram" src="../_images/conductortool-workflow-design.png" /></p>
+</section>
+<section id="tool-implementation-logic">
+<h2>Tool Implementation Logic<a class="headerlink" href="#tool-implementation-logic" title="Permalink to this heading"></a></h2>
+<p>A <em>pipeline</em> executes multiple Conductor commands for cluster and services deployment.
+Every Conductor command has a corresponding <em>workflow</em> and a workflow contains
+multiple <em>plugins</em>. This relationship is shown in the diagram below.</p>
+<p>The persistent plugin data, which is defined in <code class="docutils literal notranslate"><span class="pre">workflow.yaml</span></code>, can be used
+across different workflows. Plugin output data can override the previous data
+of the same name. All data with the same name should be defined by the same schema in the <code class="docutils literal notranslate"><span class="pre">plugins.yaml</span></code> file.</p>
+<p><img alt="Implementation logic" src="../_images/conductortool-implementation-logic.png" /></p>
+</section>
+<section id="plugin-design">
+<h2>Plugin Design<a class="headerlink" href="#plugin-design" title="Permalink to this heading"></a></h2>
+<p>Conductor plugins only care about their own function implementation. The workflow
+engine controls interaction with other plugins.</p>
+<p>One of the concepts of Conductor is to separate the design and implementation of
+plugins. The plugin and its interfaces are designed based on the known
+requirements, without writing any code. Then the code is generated from the
+<code class="docutils literal notranslate"><span class="pre">plugins.yaml</span></code> file. See the diagram below for details.</p>
+<p>This distinct separation means that developers can focus on implementing the
+plugin’s logic with clear input/output definitions. This also makes it
+easy to collaborate with other developers, since they can learn about the
+plugin and its interfaces without having to access the code.</p>
+<p><img alt="Plugin Design" src="../_images/conductortool-plugin-design-impl.png" /></p>
+</section>
+<section id="data-structure-design">
+<h2>Data Structure Design<a class="headerlink" href="#data-structure-design" title="Permalink to this heading"></a></h2>
+<p>Conductor data structures are designed with declarative programming. Similar to plugin
+design, data structure design and implementation are separated. First, the
+plugin data structures are designed based on the known requirements before
+implementation. The code is generated from the <code class="docutils literal notranslate"><span class="pre">api/plugins/*.yaml</span></code> file.
+See the diagram below for details.</p>
+<p>Collaboration with other developers is simplified, since they can learn
+about the data structures without having to access the code.</p>
+<p><img alt="Data Structure Design" src="../_images/conductortool-data-struct-design-impl.png" /></p>
+</section>
+<section id="workflow-design">
+<h2>Workflow Design<a class="headerlink" href="#workflow-design" title="Permalink to this heading"></a></h2>
+<p>Conductor workflows are designed with declarative programming. Similar to plugin
+design, workflow design and implementation are separated. First, the plugin
+functionality and interfaces must be clearly defined. Then, the
+workflows are designed based on the plugin requirements before
+implementation. See the diagram below for details.</p>
+<p>Conductor workflows use a template syntax that is similar to a Helm chart. The
+workflows are easy to customize and extendable.</p>
+<p><img alt="Workflow Design" src="../_images/conductortool-workflow-design-runtime.png" /></p>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

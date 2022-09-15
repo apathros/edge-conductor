@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor</a><ul>
+<li><a class="reference internal" href="#welcome-to-edge-conductor">Welcome to Edge Conductor</a></li>
+<li><a class="reference internal" href="#contents-of-this-guide">Contents of this guide</a></li>
+<li><a class="reference internal" href="#edge-conductor-documentation">Edge Conductor Documentation</a></li>
+<li><a class="reference internal" href="#edge-conductor-deployment-models">Edge Conductor Deployment Models</a></li>
+<li><a class="reference internal" href="#download-and-build-edge-conductor-code-internal-users-only">Download and Build Edge Conductor Code (Internal users only)</a></li>
+<li><a class="reference internal" href="#hw-requirements-for-edge-conductor-day-0-host">HW Requirements for Edge Conductor Day-0 Host</a></li>
+<li><a class="reference internal" href="#os-and-system-requirements-for-edge-conductor-day-0-host">OS and System Requirements for Edge Conductor Day-0 Host</a></li>
+<li><a class="reference internal" href="#faq">FAQ</a><ul>
+<li><a class="reference internal" href="#how-do-i-access-the-portainer-web-ui-on-kind-cluster">How do I access the Portainer Web UI on KIND cluster?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contribute">Contribute</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/edgeconductor.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor">
+<h1>Edge Conductor<a class="headerlink" href="#edge-conductor" title="Permalink to this heading"></a></h1>
+<section id="welcome-to-edge-conductor">
+<h2>Welcome to Edge Conductor<a class="headerlink" href="#welcome-to-edge-conductor" title="Permalink to this heading"></a></h2>
+<p><strong>Intel Edge Conductor</strong> provides complete end-to-end manageability and infrastructure orchestration for all edges across various IoT verticals such as retail, health care, manufacturing, banking and entertainment. It is designed and built from ground up using modular microservices-based software stack focusing on heterogeneous needs of IoT verticals. The two main functional components are manageability and infrastructure orchestration. It also provides additional value-add such as policy engine, security, AI/ML capabilities, telemetry, automation and can interoperate with any Kubernetes distribution.</p>
+</section>
+<section id="contents-of-this-guide">
+<h2>Contents of this guide<a class="headerlink" href="#contents-of-this-guide" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#edge-conductor-documentation"><span class="std std-doc">Edge Conductor Documentation</span></a></p></li>
+<li><p><a class="reference internal" href="#edge-conductor-deployment-models"><span class="std std-doc">Edge Conductor Deployment Models</span></a></p></li>
+<li><p><a class="reference internal" href="#download-and-build-edge-conductor-code-internal-users-only"><span class="std std-doc">Download and Build Edge Conductor Code (Internal users only)</span></a></p></li>
+<li><p><a class="reference internal" href="#hw-requirements-for-edge-conductor-day-0-host"><span class="std std-doc">HW Requirements for Edge Conductor Day-0 Host</span></a></p></li>
+<li><p><a class="reference internal" href="#os-and-system-requirements-for-edge-conductor-day-0-host"><span class="std std-doc">OS and System Requirements for Edge Conductor Day-0 Host</span></a></p></li>
+<li><p><a class="reference internal" href="#faq"><span class="std std-doc">FAQ</span></a></p></li>
+</ul>
+</section>
+<section id="edge-conductor-documentation">
+<h2>Edge Conductor Documentation<a class="headerlink" href="#edge-conductor-documentation" title="Permalink to this heading"></a></h2>
+<p>The following links will guide you through the Edge Conductor documents,
+including running a simple Get Started application and trying some tutorials.</p>
+<ul class="simple">
+<li><p>First time user? Use the <span class="xref myst">Get Started</span> guide to
+use the KIND cluster and default configuration files.</p></li>
+<li><p>Use the Edge Conductor <span class="xref myst">Tutorials</span> to learn what Edge
+Conductor is and what you can do with it. You will learn how to deploy some
+simple applications on the Kubernetes cluster you built with Edge Conductor.</p>
+<ul>
+<li><p><span class="xref myst">Example: Hello Cluster!</span></p></li>
+<li><p><span class="xref myst">Example: Hello Cluster! Helm Version</span></p></li>
+<li><p><span class="xref myst">Example: Web Indexing Sample Application</span></p></li>
+</ul>
+</li>
+<li><p>Learn about sample <span class="xref myst">Edge Conductor
+Configurations</span>, which are provided in
+<code class="docutils literal notranslate"><span class="pre">_workspace/kit</span></code>. You can modify configurations and use specific
+config files to run the Edge Conductor tool.</p></li>
+<li><p>Deploy a Target Cluster using the Edge Conductor tool. See the following
+guides for detailed instructions for different cluster types:</p>
+<ul>
+<li><p><span class="xref myst">Deploy a KIND Cluster</span></p></li>
+<li><p><span class="xref myst">Deploy an RKE Cluster</span></p></li>
+<li><p><span class="xref myst">Deploy a Cluster with ClusterAPI</span></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="edge-conductor-deployment-models">
+<h2>Edge Conductor Deployment Models<a class="headerlink" href="#edge-conductor-deployment-models" title="Permalink to this heading"></a></h2>
+<p>Edge Conductor can be used to deploy Kubernetes clusters in several different
+ways. All of the deployment methods rely on a “Day-0” host machine, which is a
+dedicated system that runs the Edge Conductor tools that download, build and
+provision the required software. (<em>Day-0</em> is a lifecycle term used in network
+automation and cloud deployment, where the high-level task on Day-0 is
+installation, Day-1 is configuration, and Day-2 is optimization. Here it
+indicates the host system used for installing the Edge Conductor tools.)</p>
+<p>All Edge Conductor deployment methods also rely
+on a management console to operate and administer the cluster.</p>
+<ul class="simple">
+<li><p>Virtual cluster: All nodes in the cluster are virtualized as container
+images and Kubernetes is deployed on the user’s local machine. The Day-0
+host and management console are also the user’s local machine. This
+deployment model is implemented using “kind” as described below.</p></li>
+<li><p>On-premise cluster: All nodes in the cluster are actual physical (or
+virtual) machines.  The Day-0  and management console functions are
+performed on machine(s) outside the cluster.  This deployment model is
+implemented using either Rancher RKE or the Cluster API as described below.</p></li>
+<li><p>Existing cluster: All nodes in the cluster have already been provisioned
+and are running Kubernetes, for example as in a StarlingX, VMWare Tanzu or
+OpenShift cluster or similar Kubernetes deployment. In this model only
+services are deployed and managed by the Edge Conductor tools. The Day-0 machine
+and management cluster are assumed to already exist.</p></li>
+</ul>
+</section>
+<section id="download-and-build-edge-conductor-code-internal-users-only">
+<h2>Download and Build Edge Conductor Code (Internal users only)<a class="headerlink" href="#download-and-build-edge-conductor-code-internal-users-only" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Get the code using one of the following methods:</p>
+<ul>
+<li><p>(For internal users only) Get the code from git repo:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/intel/edge-conductor.git edge-conductor
+</pre></div>
+</div>
+</li>
+<li><p>Unzip the code package, for example, <code class="docutils literal notranslate"><span class="pre">edge_conductor_&lt;version&gt;.tar.gz</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar zxvf edge_conductor_&lt;version&gt;.tar.gz
+ln -sf edge_conductor_&lt;version&gt; edge-conductor
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Build the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">edge</span><span class="o">-</span><span class="n">conductor</span>
+<span class="n">make</span>
+</pre></div>
+</div>
+<p>You will see output similar to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">api</span><span class="o">/</span><span class="n">schemas</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">api</span><span class="o">/</span><span class="n">proto</span> <span class="n">build</span>
+<span class="n">go</span> <span class="n">mod</span> <span class="n">tidy</span>
+<span class="n">go</span> <span class="n">run</span> <span class="n">build</span><span class="o">/</span><span class="n">plugingenerator</span><span class="o">.</span><span class="n">go</span>
+<span class="n">go</span> <span class="n">vet</span> <span class="o">./</span><span class="n">pkg</span><span class="o">/...</span> <span class="o">./</span><span class="n">cmd</span><span class="o">/...</span>
+<span class="n">Going</span> <span class="n">to</span> <span class="nb">format</span> <span class="ow">and</span> <span class="n">build</span> <span class="n">code</span><span class="o">.</span>
+<span class="o">...</span>
+<span class="n">go</span> <span class="n">build</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">o</span> <span class="n">_workspace</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">conductor</span> <span class="n">cmd</span><span class="o">/</span><span class="n">conductor</span><span class="o">/</span><span class="n">main</span><span class="o">.</span><span class="n">go</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">make</span></code> is successful, no ERROR messages are displayed on the console.</p>
+<p>With the <code class="docutils literal notranslate"><span class="pre">make</span></code> command, binary files are generated under <code class="docutils literal notranslate"><span class="pre">_workspace</span></code>
+folder and configuration files are also copied to <code class="docutils literal notranslate"><span class="pre">_workspace</span></code>.</p>
+</li>
+<li><p>Change to the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> directory, which is created after <code class="docutils literal notranslate"><span class="pre">make</span></code>
+completes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">_workspace</span>
+</pre></div>
+</div>
+<p>The file structure generated under the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>_workspace/
+├── bin
+├── config
+├── kit
+├── conductor -&gt; bin/conductor
+├── kubectl -&gt; bin/kubectl
+└── workflow
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Run <code class="docutils literal notranslate"><span class="pre">./conductor</span> <span class="pre">help</span></code> to see command line usage.</p>
+<p>Refer to <span class="xref myst">Get Started</span> to continue with common tasks
+such as deploying a target cluster, deploying services on the target cluster,
+and stopping Edge Conductor services.</p>
+</section>
+<section id="hw-requirements-for-edge-conductor-day-0-host">
+<h2>HW Requirements for Edge Conductor Day-0 Host<a class="headerlink" href="#hw-requirements-for-edge-conductor-day-0-host" title="Permalink to this heading"></a></h2>
+<p>The Day-0 host should meet the following minimal hardware requirements:</p>
+<ul class="simple">
+<li><p>CPU: 2 or more cores</p></li>
+<li><p>Memory: 2 gigabytes (GB) or greater.</p></li>
+<li><p>Storage: 10 GB or greater available storage is required to build and run the
+Day-0 environment.</p></li>
+<li><p>Internet connection: Internet connectivity is necessary to download and use
+some features.</p></li>
+</ul>
+<p>Node Requirements:</p>
+<ul class="simple">
+<li><p>CPU: 2 or more cores</p></li>
+<li><p>Memory: 2 gigabytes (GB) or greater.</p></li>
+<li><p>Storage: 10 GB or greater available storage is required to build and run the
+Day-0 environment.</p></li>
+<li><p>Internet connection: Internet connectivity is necessary to download and use
+some features.</p></li>
+</ul>
+</section>
+<section id="os-and-system-requirements-for-edge-conductor-day-0-host">
+<h2>OS and System Requirements for Edge Conductor Day-0 Host<a class="headerlink" href="#os-and-system-requirements-for-edge-conductor-day-0-host" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ubuntu 18.04+</p></li>
+<li><p>make 4.1+</p></li>
+<li><p>unzip 2.11+</p></li>
+<li><p>DockerCE</p>
+<ul>
+<li><p>20.10.3+ (for DockerCE v20)</p></li>
+<li><p>After you install DockerCE, configure a user group so you can use Docker
+without the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> command.
+For details, follow <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">Post-installation steps for Linux</a>.</p></li>
+</ul>
+</li>
+<li><p>git 2.33.0+</p></li>
+<li><p>sudo</p>
+<ul>
+<li><p>Passwordless sudo should be configured on every worker node. For details, follow <a class="reference external" href="https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux">How to setup passwordless sudo</a></p></li>
+</ul>
+</li>
+</ul>
+<p>Additional software:</p>
+<ul class="simple">
+<li><p>Install <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl (v1.20.0)</a> to
+interact with the clusters created with Edge Conductor. For details, follow
+the Kubernetes steps: <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/">Install and Set Up kubectl on Linux</a>.</p></li>
+</ul>
+<p>Proxy setup:</p>
+<ul class="simple">
+<li><p>Be sure to set your proxies correctly. Some environments require network
+proxies for Docker operations (e.g. docker pull, docker push, docker run,
+and so on).</p></li>
+<li><p>For http_proxy/HTTP_PROXY and https_proxy/HTTPS_PROXY, you must test they
+are actually working. Also note that the no_proxy/NO_PROXY list <strong>MUST NOT
+contain spaces</strong> between the addresses.</p></li>
+</ul>
+</section>
+<section id="faq">
+<h2>FAQ<a class="headerlink" href="#faq" title="Permalink to this heading"></a></h2>
+<p>Frequently asked questions.</p>
+<section id="how-do-i-access-the-portainer-web-ui-on-kind-cluster">
+<h3>How do I access the Portainer Web UI on KIND cluster?<a class="headerlink" href="#how-do-i-access-the-portainer-web-ui-on-kind-cluster" title="Permalink to this heading"></a></h3>
+<p>The latest KIND release doesn’t support LoadBalancer, so the External-IP for the
+Portainer service Web UI will always be pending as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl get pod,svc -n portainer
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/portainer-fc654c454-g4qvl   1/1     Running   26         3h26m
+
+NAME                TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
+service/portainer   LoadBalancer   10.96.182.150   &lt;pending&gt;     9000:31343/TCP,8000:32344/TCP   3h26m
+</pre></div>
+</div>
+<p>To access the Portainer service in this situation, use the <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span></code> command to forward a local port to Portainer service port 9000,
+which is used for the Web UI.</p>
+<p>For example, the following command will forward the access request from
+localhost 5990 port to Portainer service at 9000:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl port-forward -n portainer service/portainer 5990:9000
+Forwarding from 127.0.0.1:5990 -&gt; 9000
+</pre></div>
+</div>
+<p>When the port-forwarding is running (shown by the log message <code class="docutils literal notranslate"><span class="pre">Forwarding</span> <span class="pre">from</span> <span class="pre">...</span></code>), you can access the 127.0.0.1:5990 to visit the Portainer web UI and
+create the initial admin account.</p>
+<p><em><strong>NOTE</strong></em>: If there’s no client accessing the forwarded port for a while (50 seconds), the port-forwarding will stop automatically.</p>
+<p><em><strong>NOTE</strong></em>: If you do not create your admin account in 5 minutes after the service is launched, then the Portainer service will restart itself automatically. (See the Portainer issue reported here: https://github.com/portainer/portainer/issues/2475)</p>
+</section>
+</section>
+<section id="contribute">
+<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this heading"></a></h2>
+<p>Refer to <span class="xref myst">CONTRIBUTING.md</span></p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

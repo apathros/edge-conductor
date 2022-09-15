@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Tool: How to Deploy RKE Cluster &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Tool: How to Deploy RKE Cluster</a><ul>
+<li><a class="reference internal" href="#preparation">Preparation</a></li>
+<li><a class="reference internal" href="#edge-conductor-kit-for-rke">Edge Conductor Kit for RKE</a></li>
+<li><a class="reference internal" href="#custom-config">Custom Config</a></li>
+<li><a class="reference internal" href="#init-edge-conductor-environment">Init Edge Conductor Environment</a></li>
+<li><a class="reference internal" href="#os-provisioning">OS Provisioning</a></li>
+<li><a class="reference internal" href="#ssh-access">SSH Access</a></li>
+<li><a class="reference internal" href="#build-and-deploy-rke-cluster">Build and Deploy RKE Cluster</a></li>
+<li><a class="reference internal" href="#check-the-rke-cluster">Check the RKE Cluster</a></li>
+<li><a class="reference internal" href="#continue-to-deploy-services">Continue to Deploy Services</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Tool: How to Deploy RKE Cluster</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/cluster-deploy-RKE.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-tool-how-to-deploy-rke-cluster">
+<h1>Edge Conductor Tool: How to Deploy RKE Cluster<a class="headerlink" href="#edge-conductor-tool-how-to-deploy-rke-cluster" title="Permalink to this heading"></a></h1>
+<p>This document is about how to config and run Edge Conductor tool to deploy a RKE cluster.</p>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0 Host</span> and <span class="xref myst">OS and System Requirements for Edge Conductor Day-0 Host</span> to prepare the Day-0 host hardware and software.</p>
+<p>Follow <span class="xref myst">Build-and-Install-Edge-Conductor-Tool</span> to build and install Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+<p>Before the RKE deployment, users need to:</p>
+<ol class="arabic simple">
+<li><p>Make sure the nodes meet hardware and software requirements for RKE cluster deployment: <a class="reference external" href="https://rancher.com/docs/rancher/v2.x/en/installation/requirements">RKE installation requirements</a></p></li>
+<li><p>Provision nodes according to the requirements in <a class="reference external" href="https://rancher.com/docs/rke/latest/en/os/">RKE official website</a>.</p></li>
+<li><p>The ntp (Network Time Protocol) package should be installed and start the service to sync time for all nodes. This prevents errors with certificate validation that can occur when the time is not synchronized between the client and server.</p></li>
+<li><p>Some distributions of Linux may have default firewall rules that block communication with Helm. We recommend disabling firewalld. For Kubernetes 1.19 and 1.20, firewalld must be turned off.</p></li>
+</ol>
+</section>
+<section id="edge-conductor-kit-for-rke">
+<h2>Edge Conductor Kit for RKE<a class="headerlink" href="#edge-conductor-kit-for-rke" title="Permalink to this heading"></a></h2>
+<p>Examples of Edge Conductor Kit for RKE are under:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kit/
+├── rke_preinstalled.yml
+└── rke_ubuntu_20.04.yml
+</pre></div>
+</div>
+<p>We will use this Edge Conductor Kit to deploy the RKE cluster in this document.</p>
+<p>For more details of the Edge Conductor Kit, check the <span class="xref myst">Example of RKE Edge Conductor Kit</span></p>
+</section>
+<section id="custom-config">
+<h2>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h2>
+<p>Modify the Edge Conductor Kit config file (kit/rke_preinstalled.yml) following <a class="reference internal" href="ec-configurations.html#edge-conductor-kit-introduction"><span class="std std-doc">Edge Conductor Configurations | Edge Conductor Kit Introduction</span></a>, which is a mandatory parameter for “conductor init”.</p>
+<p>Follow the instruction in each of the Kit config files to config the node list and finish the preconditions.</p>
+</section>
+<section id="init-edge-conductor-environment">
+<h2>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h2>
+<p>Run the “init” commands with any RKE Kit config file to initialize the Edge Conductor environment.</p>
+<p>For example, for preinstalled systems:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./conductor init -c kit/rke_preinstalled.yml
+</pre></div>
+</div>
+<p>For bare metal setup to start from OS provisioning (in offline mode):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./conductor init -c kit/rke_ubuntu_20.04.yml
+</pre></div>
+</div>
+<p>The RKE cluster configurations will be generated automatically. The “rke_cluster.yml” and “.rkestate” files will be exported to “~/.ec/rke/cluster” folder by default, users can also specify an export folder in RKE Kit config file with “Cluster” - “export_config_folder”.</p>
+</section>
+<section id="os-provisioning">
+<h2>OS Provisioning<a class="headerlink" href="#os-provisioning" title="Permalink to this heading"></a></h2>
+<p>If an Kit config to start from OS provisioning is selected, follow the <a class="reference internal" href="os-provider-esp.html"><span class="doc std std-doc">OS Provisioning</span></a> guide to finish OS installation before cluster deployment.</p>
+</section>
+<section id="ssh-access">
+<h2>SSH Access<a class="headerlink" href="#ssh-access" title="Permalink to this heading"></a></h2>
+<p>To deploy RKE cluster, make sure it is able to access all hosts in the cluster from Day-0 host.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span><span class="o">-</span><span class="n">copy</span><span class="o">-</span><span class="nb">id</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">your</span> <span class="n">ssh</span> <span class="n">key</span> <span class="n">name</span> <span class="n">on</span> <span class="n">Day</span><span class="o">-</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">user</span> <span class="o">&gt;@&lt;</span> <span class="n">host</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-rke-cluster">
+<h2>Build and Deploy RKE Cluster<a class="headerlink" href="#build-and-deploy-rke-cluster" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to build and deploy RKE cluster.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">conductor</span> <span class="n">cluster</span> <span class="n">build</span>
+<span class="o">./</span><span class="n">conductor</span> <span class="n">cluster</span> <span class="n">deploy</span>
+</pre></div>
+</div>
+<p>The kubeconfig will be copied to the default path <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+</section>
+<section id="check-the-rke-cluster">
+<h2>Check the RKE Cluster<a class="headerlink" href="#check-the-rke-cluster" title="Permalink to this heading"></a></h2>
+<p>Install the <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl tool (v1.20.0)</a> to interact with the target cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get nodes
+</pre></div>
+</div>
+</section>
+<section id="continue-to-deploy-services">
+<h2>Continue to Deploy Services<a class="headerlink" href="#continue-to-deploy-services" title="Permalink to this heading"></a></h2>
+<p>To build and deploy the services, enter the commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service build
+./conductor service deploy
+</pre></div>
+</div>
+<blockquote>
+<div><p>Use <code class="docutils literal notranslate"><span class="pre">--kubeconfig</span></code> to specify the kubeconfig if you don’t want to use the default config file from <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+</div></blockquote>
+<p>To deploy service rook-ceph and rook-ceph-cluster, please ensure these is at least one additional disk with more than 1GB capacity left for ceph osd deployment on any one worker node.</p>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

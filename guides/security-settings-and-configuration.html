@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Security Settings and Configurations &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Edge Conductor Security Settings and Configurations</a><ul>
+<li><a class="reference internal" href="#certificate">Certificate</a></li>
+<li><a class="reference internal" href="#network-settings">Network Settings</a></li>
+<li><a class="reference internal" href="#usernames-and-credentials">Usernames and Credentials</a></li>
+<li><a class="reference internal" href="#confidential-content">Confidential Content</a></li>
+<li><a class="reference internal" href="#application-constraint">Application  Constraint</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Security Settings and Configurations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/security-settings-and-configuration.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-security-settings-and-configurations">
+<h1>Edge Conductor Security Settings and Configurations<a class="headerlink" href="#edge-conductor-security-settings-and-configurations" title="Permalink to this heading"></a></h1>
+<p>This document describes the Edge Conductor security settings and configurations.</p>
+<section id="certificate">
+<h2>Certificate<a class="headerlink" href="#certificate" title="Permalink to this heading"></a></h2>
+<p>Edge-Conductor Tool(aka conductor) provides a set of parameters for users to
+configure the certificates for secure communication as follows:</p>
+<ul class="simple">
+<li><p>Workflow Engine - Plugin Communication</p></li>
+</ul>
+<p>Edge-Conductor Tool is a workflow based tool with flexible plugins running as
+workflow steps. The workflow engine and plugins communicate via secure gRPC.
+The mutual TLS is apply for workflow engine server and it’s clients(plugins).
+The parameters are required for <code class="docutils literal notranslate"><span class="pre">conductor</span> <span class="pre">init</span></code> command:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>Usage:
+  conductor init [flags]
+
+Flags:
+      --cacert string            Edge-Conductor root ca cert file (default &quot;cert/pki/ca.pem&quot;)
+      --cakey string             Edge-Conductor root ca key file, for signing server and client certificates (default &quot;cert/pki/ca-key.pem&quot;)
+      --clientcert string        Edge-Conductor workflow client certificate file (default &quot;cert/pki/workflow/client.pem&quot;)
+      --clientkey string         Edge-Conductor workflow client certificate key file (default &quot;cert/pki/workflow/client-key.pem&quot;)
+      --servercert string        Edge-Conductor workflow server certificate file (default &quot;cert/pki/workflow/server.pem&quot;)
+      --serverkey string         Edge-Conductor workflow server certificate key file (default &quot;cert/pki/workflow/server-key.pem&quot;)
+			...
+</pre></div>
+</div>
+<p>All the parameters are file paths that could be a provided certificate file or
+intended certificate path. If the certificate and key do not exist, the certmgr
+of conductor will generate or issue the certificate bundle for the user.</p>
+<ul class="simple">
+<li><p>Local Registry (Harbor) Certificates</p></li>
+</ul>
+<p>Edge-Conductor Tool sets up a local registry using project Harbor - a CNCF graduated
+project for secure registry. Conductor will use or generate the certificates of
+the registry due to the existence of the file. The CA bundle of the certificates
+are the parameter inputs described in section ‘workflow engine-plugin communication’</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>Usage:
+  conductor init [flags]
+
+Flags:
+      --registrycert string      Edge-Conductor regisrty certificate file (default &quot;cert/pki/registry/registry.pem&quot;)
+      --registrykey string       Edge-Conductor registry certificate key file (default &quot;cert/pki/registry/registry-key.pem&quot;)
+			...
+</pre></div>
+</div>
+</section>
+<section id="network-settings">
+<h2>Network Settings<a class="headerlink" href="#network-settings" title="Permalink to this heading"></a></h2>
+<p>Some network settings of Edge-Conductor Tool are configurable in <code class="docutils literal notranslate"><span class="pre">init</span></code> phase.</p>
+<ul class="simple">
+<li><p>Registry port sets the Harbor service port on Day-0 machine.</p></li>
+<li><p>Working ip is the access ip of all the services on Day-0 machine, by default it’s
+the default interface ip.</p></li>
+<li><p>Workflow engine port defines the port opened to communicate with plugins.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Usage</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">conductor init [flags]</span><span class="w"></span>
+
+<span class="nt">Flags</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">--registry-port string     Edge-Conductor registry port (default 9000)</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">--host-ip string           Edge-Conductor Tool working ip (default xxx.xxx.xxx.xxx)</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">--wf-port string           Edge-Conductor workflow engine port (default 50088)</span><span class="w"></span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="usernames-and-credentials">
+<h2>Usernames and Credentials<a class="headerlink" href="#usernames-and-credentials" title="Permalink to this heading"></a></h2>
+<p>Edge-Conductor Tool itself does not require or store any username or password.
+When a third-party project requires username and password. A user maintained file
+is needed with specific schema called custom config.
+A custom config requires the username and password for Harbor setup (Supported
+in v0.1.0) or an external registry (Not supported in v0.1.0) in <code class="docutils literal notranslate"><span class="pre">init</span></code> phase.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Usage</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">conductor init [flags]</span><span class="w"></span>
+
+<span class="nt">Flags</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">-m, --custom-config string     Custom config file</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Custom config schema</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># user/password are required for local registry. Can be optional if externalurl is set.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; For local registry, use default user name &#39;admin&#39; or specify a new user &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; Password to login to the local registry &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># externalurl is optional. A local registry will be initialized if it is not specified.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">externalurl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; The external registry url &gt;</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># capath is optional.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">capath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt; The 3rd party CA certificate&gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">externalurl</span></code> is specified, the Edge-Conductor tool will not set up the local registry.
+(Not supported in v0.2.0)</p>
+</section>
+<section id="confidential-content">
+<h2>Confidential Content<a class="headerlink" href="#confidential-content" title="Permalink to this heading"></a></h2>
+<p>In Edge-Conductor Tool’s concept, each data transferring between plugins are
+files with particular schema, which leverages the protobuf for serialization.
+The workflow engine ensures the confidential data fetched or generated during
+the procedure of a workflow enclosed within permitted components. The workflow
+engine enables a parameter <code class="docutils literal notranslate"><span class="pre">confidential</span></code> for the data section to identify the
+underlying data is protected by the engine and could not be accessed from a
+data file.</p>
+<p>E.g. Kubeconfig is a confidential data which is fetched from target cluster.
+If the confidential flag is not set, a data file could be found in runtime/data
+folder without notification to the user. If the confidential flag is set,
+no file will be stored and Kubeconfig is not accessible by conductor users.
+In this situation, export-file plugin provides the user an approach to export
+any file content by their own.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conductor/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Workflow</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conductor-workflow</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">edgeconductor</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">data</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubeconfig</span><span class="w"></span>
+<span class="w">    </span><span class="nt">confidential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">      </span><span class="no">content: |</span><span class="w"></span>
+<span class="w">        </span><span class="no">{{ printf &quot;%s&quot; .Kubeconfig | readfile | nindent 8 }}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="application-constraint">
+<h2>Application  Constraint<a class="headerlink" href="#application-constraint" title="Permalink to this heading"></a></h2>
+<p>In Edge-Conductor Tool’s concept, there are some guides which the user shall follow to achieve security requirements in final production.</p>
+<ol class="arabic simple">
+<li><p>Grafana secure password change
+Currently Grafana is not capable of enforcing password policy.
+The user shall change the password when the Grafana UI password is changed from its default (which they will be forced to do on initial logic) - a good practice is 10-12 ascii printable characters or longer.</p></li>
+<li><p>SSH key rotation
+Currently Edge-Conductor utilizes the user’s SSH private key to make remote connections, so the customer shall be responsible for rotation of SSH keys.
+It’s highly recommended to refer SP 800-57 Part 1, specifically the crypto periods associated with various key lengths for rotation.</p></li>
+</ol>
+<p>Link to current version (rev 5):
+<a class="reference external" href="https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final">Recommendation for Key Management</a>
+Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

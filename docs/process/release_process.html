@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Process &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Release Process</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/process/release_process.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="release-process">
+<h1>Release Process<a class="headerlink" href="#release-process" title="Permalink to this heading"></a></h1>
+<p>This document describes the mechanics of the release process for Edge Conductor</p>
+<section id="code-freeze">
+<h2>Code Freeze<a class="headerlink" href="#code-freeze" title="Permalink to this heading"></a></h2>
+<p>Once the team decides the code is ready for code freeze, a release branch is created
+with a name in the form “edge_conductor_VERSION” where the VERSION is the
+semantic version number for the release.</p>
+<p>No new features should be committed to this branch.</p>
+</section>
+<section id="test-and-debug-phase">
+<h2>Test and Debug Phase<a class="headerlink" href="#test-and-debug-phase" title="Permalink to this heading"></a></h2>
+<p>Once the release branch is created, the Test phase of the release process begins and
+test cases are executed.  Any serious problems found during testing should be
+fixed, tested and merged to the main branch
+first and then cherry picked to the release branch.</p>
+<p>The Test and Debug Phase ends when testing meets release quality objectives and
+the release is approved by the Test Lead, the Software Quality Lead and the
+Security Lead.</p>
+</section>
+<section id="release-phase">
+<h2>Release Phase<a class="headerlink" href="#release-phase" title="Permalink to this heading"></a></h2>
+<p>Once the release branch is tested and the release is approved, the final steps
+to create the release are to tag the branch e.g. “ec_VERSION”
+and create the release in gitlab (or github).</p>
+<p>Release artifacts should then be posted to the artifact repo.</p>
+</section>
+<section id="post-release-updates">
+<h2>Post Release Updates<a class="headerlink" href="#post-release-updates" title="Permalink to this heading"></a></h2>
+<p>Should new fixes and changes be required for a release, they should be
+cherry picked from the main branch to the release branch, tested and approved.
+A new tag should be applied with the build (3rd) digit of the release
+version number incremented and a new gitlab/github release should be created.</p>
+<p>New release artifacts should then be posted to the artifact repo.</p>
+<p>Copyright (C) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

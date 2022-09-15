@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edge Conductor Tool: How to Deploy KIND Cluster &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Edge Conductor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Edge Conductor Tool: How to Deploy KIND Cluster</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/guides/cluster-deploy-KIND.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="edge-conductor-tool-how-to-deploy-kind-cluster">
+<h1>Edge Conductor Tool: How to Deploy KIND Cluster<a class="headerlink" href="#edge-conductor-tool-how-to-deploy-kind-cluster" title="Permalink to this heading"></a></h1>
+<p>This document is about how to config and run Edge Conductor tool to deploy a
+KIND cluster.</p>
+<blockquote>
+<div><p><em>NOTE:</em>  KIND is not intended for production use.</p>
+</div></blockquote>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this heading"></a></h2>
+<p>Follow <span class="xref myst">HW Requirements for Edge Conductor Day-0
+Host</span> and <span class="xref myst">OS and
+System Requirements for Edge Conductor Day-0
+Host</span>
+to prepare the Day-0 host hardware and software.</p>
+<blockquote>
+<div><p><em>NOTE:</em>  For each KIND node, 2 CPU cores and 2 gigabytes (GB) memory are
+needed additionally.</p>
+</div></blockquote>
+<p>Follow
+<span class="xref myst">Build-and-Install-Edge-Conductor-Tool</span>
+to build and install Edge Conductor tool.
+Enter <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder to run Edge Conductor tool.</p>
+</section>
+<section id="edge-conductor-kit-for-kind">
+<h2>Edge Conductor Kit for KIND<a class="headerlink" href="#edge-conductor-kit-for-kind" title="Permalink to this heading"></a></h2>
+<p>An example of Edge Conductor Kit for KIND is under:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kit/
+└── kind.yml
+</pre></div>
+</div>
+<p>We will use this Edge Conductor Kit to deploy the KIND cluster in this document.</p>
+<p>For more details of the Edge Conductor Kit, check the <span class="xref myst">Example of KIND
+Kit.yml</span></p>
+</section>
+<section id="custom-config">
+<h2>Custom Config<a class="headerlink" href="#custom-config" title="Permalink to this heading"></a></h2>
+<p>Modify the Edge Conductor Kit config file(kit/kind.yml) following
+<span class="xref myst">Edge Conductor Configurations | Edge Conductor Kit
+Introduction</span>, which is a
+mandatory parameter for “conductor init”.</p>
+</section>
+<section id="init-edge-conductor-environment">
+<h2>Init Edge Conductor Environment<a class="headerlink" href="#init-edge-conductor-environment" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to initialize the Edge Conductor environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor init -c kit/kind.yml
+</pre></div>
+</div>
+</section>
+<section id="build-and-deploy-kind-cluster">
+<h2>Build and Deploy KIND Cluster<a class="headerlink" href="#build-and-deploy-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>Run the following commands to build and deploy KIND cluster:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor cluster build
+./conductor cluster deploy
+</pre></div>
+</div>
+<p>The kubeconfig will be copied to the default path <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+</section>
+<section id="check-the-kind-cluster">
+<h2>Check the KIND Cluster<a class="headerlink" href="#check-the-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>Install the <a class="reference external" href="https://kubernetes.io/docs/tasks/tools/">kubectl tool (v1.20.0)</a> to
+interact with the target cluster.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl get nodes
+</pre></div>
+</div>
+</section>
+<section id="continue-to-deploy-services">
+<h2>Continue to Deploy Services<a class="headerlink" href="#continue-to-deploy-services" title="Permalink to this heading"></a></h2>
+<p>To build and deploy the services, enter the commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor service build
+./conductor service deploy
+</pre></div>
+</div>
+<blockquote>
+<div><p>Use <code class="docutils literal notranslate"><span class="pre">--kubeconfig</span></code> to specify the kubeconfig if you don’t want to use the default config file from <code class="docutils literal notranslate"><span class="pre">~/.kube/config</span></code>.</p>
+</div></blockquote>
+</section>
+<section id="remove-the-kind-cluster">
+<h2>Remove the KIND cluster<a class="headerlink" href="#remove-the-kind-cluster" title="Permalink to this heading"></a></h2>
+<p>To remove the KIND cluster, enter the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./conductor cluster remove
+</pre></div>
+</div>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

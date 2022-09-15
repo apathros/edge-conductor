@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plugin Development Guide &mdash; Edge Conductor 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Edge Conductor
+          </a>
+              <div class="version">
+                1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Plugin Development Guide</a><ul>
+<li><a class="reference internal" href="#development-process-overview">Development Process Overview</a><ul>
+<li><a class="reference internal" href="#flow-diagram">Flow Diagram</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#coding-language-and-standard">Coding Language and Standard</a></li>
+<li><a class="reference internal" href="#edge-conductor-commands-vs-workflows">Edge Conductor Commands vs. Workflows</a></li>
+<li><a class="reference internal" href="#development-examples">Development Examples</a><ul>
+<li><a class="reference internal" href="#example-1-generate-a-simple-hello-world-plugin">Example 1: Generate a Simple Hello-World Plugin</a></li>
+<li><a class="reference internal" href="#example-2-generate-plugins-with-input-and-output-schemas">Example 2: Generate Plugins with Input and Output Schemas</a></li>
+<li><a class="reference internal" href="#example-3-connect-plugins-into-an-existing-workflow">Example 3: Connect Plugins into an Existing Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Edge Conductor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Plugin Development Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/plugin-devel-guide.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="plugin-development-guide">
+<h1>Plugin Development Guide<a class="headerlink" href="#plugin-development-guide" title="Permalink to this heading"></a></h1>
+<p>This guide describes how to develop Edge Conductor plugins, including an overview and some simple examples that help you use plugins and workflows.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#development-process-overview"><span class="std std-doc">Development Process Overview</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#flow-diagram"><span class="std std-doc">Flow Diagram</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#coding-language-and-standard"><span class="std std-doc">Coding Language and Standard</span></a></p></li>
+<li><p><a class="reference internal" href="#edge-conductor-commands-vs-workflows"><span class="std std-doc">Edge Conductor Commands vs. Workflows</span></a></p></li>
+<li><p><a class="reference internal" href="#development-examples"><span class="std std-doc">Development Examples</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-1-generate-a-simple-hello-world-plugin"><span class="std std-doc">Example 1: Generate a Simple Hello-World Plugin</span></a></p></li>
+<li><p><a class="reference internal" href="#example-2-generate-plugins-with-input-and-output-schemas"><span class="std std-doc">Example 2: Generate Plugins with Input and Output Schemas</span></a></p></li>
+<li><p><a class="reference internal" href="#example-3-connect-plugins-into-an-existing-workflow"><span class="std std-doc">Example 3: Connect Plugins into an Existing Workflow</span></a></p></li>
+</ul>
+</li>
+</ul>
+<section id="development-process-overview">
+<h2>Development Process Overview<a class="headerlink" href="#development-process-overview" title="Permalink to this heading"></a></h2>
+<p>Prerequisite: Gather the requirements of the new feature.</p>
+<ol class="arabic simple">
+<li><p>Evaluate the plugin requirements.</p>
+<ul class="simple">
+<li><p>Divide the implementation of a WF into steps.</p></li>
+<li><p>Check if a step can be implemented with an existing plugin.</p></li>
+<li><p>Define the new plugins for other steps.</p></li>
+</ul>
+</li>
+<li><p>Define the plugin relationships and define the interfaces of the new plugins.</p>
+<ul class="simple">
+<li><p>Add data schema details under the <code class="docutils literal notranslate"><span class="pre">api/schemas/plugins/</span></code> directory.</p>
+<ul>
+<li><p>Only schema files under <code class="docutils literal notranslate"><span class="pre">api/schemas/plugins</span></code> can be used as input/output by plugins, if a plugin needs schema files under other folders, please create a soft-link under <code class="docutils literal notranslate"><span class="pre">api/schemas/plugins</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Modify <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/plugins.yml</span></code> with input/output details described with data schemas.</p>
+<ul>
+<li><p>Follow <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">schema</span> <span class="pre">standard</span></code> in <a class="reference internal" href="#coding-language-and-standard"><span class="std std-doc">Coding Language and Standard</span></a> to write data schema files under <code class="docutils literal notranslate"><span class="pre">api/schemas</span></code> folder.</p></li>
+</ul>
+</li>
+<li><p>Modify the file of a specific WF under <code class="docutils literal notranslate"><span class="pre">configs/workflow/</span></code> directory to insert the new plugins and connect the plugins in WFs. <code class="docutils literal notranslate"><span class="pre">configs/workflow/common/init.yml</span></code> will be used as an example in this guide.</p></li>
+</ul>
+</li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span></code> to generate the skeleton code.</p></li>
+<li><p>Implement <code class="docutils literal notranslate"><span class="pre">PluginMain()</span></code> in the <code class="docutils literal notranslate"><span class="pre">pkg/epplugs/&lt;plugin</span> <span class="pre">name&gt;/main.go</span></code>
+directory.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span></code> again. The plugin will be ready now.</p></li>
+</ol>
+<section id="flow-diagram">
+<h3>Flow Diagram<a class="headerlink" href="#flow-diagram" title="Permalink to this heading"></a></h3>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>flowchart TD
+st(Requirement) --&gt; requirement[Define plugins based on the requirement]
+requirement --&gt; con{Need data schema?}
+con --&gt; |Yes| define_schema[Define the plugin input&amp;#47output and data schema]
+define_schema -. create .-&gt; schema_yaml&gt;api&amp;#47schemas&amp;#47plugins&amp;#47&amp;#60schema name&amp;#62.yml]
+con --&gt; |No| define_plugin[Define the plugin relationships and interfaces]
+define_plugin -.modify .-&gt; plugins&gt;pkg&amp;#47epplugins&amp;#47plugins.yml]
+define_schema --&gt; define_plugin
+define_plugin --&gt; insert_WF[Insert plugins into WF]
+insert_WF -.modify .-&gt; workflow&gt;configs&amp;#47workflow&amp;#47common&amp;#47&amp;#60WF name&amp;#62.yml]
+insert_WF --&gt; make[code gen tool &amp;#40make&amp;#41]
+make -. create .-&gt;ep_plugins&gt;pkg&amp;#47epplugins&amp;#47&amp;#60plugin name&amp;#62&amp;#47*.go]
+make --&gt; implement_function(implement PluginMain&amp;#40&amp;#41)
+implement_function -. modify .-&gt; ep_plugins
+implement_function --&gt; make_again[make]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="coding-language-and-standard">
+<h2>Coding Language and Standard<a class="headerlink" href="#coding-language-and-standard" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Golang: <a class="reference external" href="https://golang.org/doc/code">How to Write Go Code</a></p></li>
+<li><p>Go template for yaml files: <a class="reference external" href="https://pkg.go.dev/text/template">Go Template</a></p>
+<ul>
+<li><p>All yaml files used in the tool are following the template format defined by Golang.</p></li>
+<li><p>The Sprig library provides functions for Go’s template language: <a class="reference external" href="http://masterminds.github.io/sprig/">Sprig Function Documentation</a></p></li>
+<li><p>See an example: <span class="xref myst">Example of Yaml Template Used in the Project</span></p></li>
+</ul>
+</li>
+<li><p>Data schema standard: <a class="reference external" href="https://goswagger.io/use/models/schemas.html">Schema Generation Rules</a></p>
+<ul>
+<li><p>Currently the following types are supported:</p>
+<ul>
+<li><p>string</p></li>
+<li><p>boolean</p></li>
+<li><p>integer</p></li>
+<li><p>object</p></li>
+<li><p>array</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="edge-conductor-commands-vs-workflows">
+<h2>Edge Conductor Commands vs. Workflows<a class="headerlink" href="#edge-conductor-commands-vs-workflows" title="Permalink to this heading"></a></h2>
+<p>Current Edge Conductor commands are mapped to workflows as the following form:</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Commands</p></th>
+<th class="head"><p>Subcommand</p></th>
+<th class="head"><p>Workflow Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>init</p></td>
+<td><p>-</p></td>
+<td><p>init</p></td>
+<td><p>Initialize Edge Conductor runtime config and environment.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deinit</p></td>
+<td><p>-</p></td>
+<td><p>deinit</p></td>
+<td><p>Clean Edge Conductor runtime environment.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster</p></td>
+<td><p>build</p></td>
+<td><p>cluster-build</p></td>
+<td><p>Build cluster configurations.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster</p></td>
+<td><p>deploy</p></td>
+<td><p>cluster-deploy</p></td>
+<td><p>Deploy cluster.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster</p></td>
+<td><p>reconcile</p></td>
+<td><p>cluster-reconcile</p></td>
+<td><p>Reconcile cluster and generate kubeconfig.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster</p></td>
+<td><p>join</p></td>
+<td><p>node-join</p></td>
+<td><p>Join new nodes to an existing cluster.</p></td>
+</tr>
+<tr class="row-even"><td><p>service</p></td>
+<td><p>build</p></td>
+<td><p>service-build</p></td>
+<td><p>Build service configurations.</p></td>
+</tr>
+<tr class="row-odd"><td><p>service</p></td>
+<td><p>deploy</p></td>
+<td><p>service-deploy</p></td>
+<td><p>Deploy services to the cluster.</p></td>
+</tr>
+<tr class="row-even"><td><p>service</p></td>
+<td><p>list</p></td>
+<td><p>service-list</p></td>
+<td><p>List current services with deploy status.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="development-examples">
+<h2>Development Examples<a class="headerlink" href="#development-examples" title="Permalink to this heading"></a></h2>
+<p>This section contains several examples of how to generate a plugin and insert
+it into a workflow.</p>
+<p>First, prepare the Edge Conductor codebase according to the <span class="xref myst">README</span>.</p>
+<section id="example-1-generate-a-simple-hello-world-plugin">
+<h3>Example 1: Generate a Simple Hello-World Plugin<a class="headerlink" href="#example-1-generate-a-simple-hello-world-plugin" title="Permalink to this heading"></a></h3>
+<p>Let’s start with a simple plugin, which prints a “hello-world” message. It does
+not have any input or output schema for data transferring.</p>
+<ol class="arabic">
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/plugins.yml</span></code> to define the new plugin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span></code> the Edge Conductor codebase. The code for the <code class="docutils literal notranslate"><span class="pre">hello-world</span></code> plugin
+will be auto-generated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pkg/epplugins/hello-world/
+├── generated.go
+├── generated_testutil.go
+├── main.go
+└── main_test.go
+</pre></div>
+</div>
+</li>
+<li><p>Add functional logic in the entry <code class="docutils literal notranslate"><span class="pre">PluginMain</span></code> in
+<code class="docutils literal notranslate"><span class="pre">pkg/epplugins/hello-world/main.go</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">func</span> <span class="n">PluginMain</span><span class="p">(</span><span class="ow">in</span> <span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">,</span> <span class="n">outp</span> <span class="o">*</span><span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Plugin: hello-world&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Hello, world!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span></code> again. The plugin <code class="docutils literal notranslate"><span class="pre">hello-world</span></code> is ready now.</p></li>
+</ol>
+</section>
+<section id="example-2-generate-plugins-with-input-and-output-schemas">
+<h3>Example 2: Generate Plugins with Input and Output Schemas<a class="headerlink" href="#example-2-generate-plugins-with-input-and-output-schemas" title="Permalink to this heading"></a></h3>
+<p>Let’s add 2 plugins, a <code class="docutils literal notranslate"><span class="pre">hello-world-with-output</span></code> to generate a message, and
+a <code class="docutils literal notranslate"><span class="pre">hello-world-with-input</span></code> to receive the message.</p>
+<ol class="arabic">
+<li><p>Define the schema for the message. Let’s create a schema file
+called <code class="docutils literal notranslate"><span class="pre">api/schemas/plugins/message.yml</span></code>:</p>
+<p><em>NOTE:</em> The name of the schema definition must be the same as the file
+name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">definitions</span><span class="p">:</span>
+  <span class="n">message</span><span class="p">:</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="n">properties</span><span class="p">:</span>
+      <span class="n">words</span><span class="p">:</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">string</span>
+</pre></div>
+</div>
+</li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/plugins.yml</span></code> to define the new plugins:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">output</span>
+  <span class="n">output</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">mymessage</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="n">api</span><span class="o">/</span><span class="n">schemas</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">message</span><span class="o">.</span><span class="n">yml</span>
+
+<span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="nb">input</span>
+  <span class="nb">input</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">mymessage</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="n">api</span><span class="o">/</span><span class="n">schemas</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">message</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span></code> the codebase. The code for the message schema and the 2 plugins will
+be generated automatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pkg/api/plugins/
+├── ...
+├── message.go
+└── ...
+pkg/epplugins/hello-world-with-input
+├── generated.go
+├── generated_testutil.go
+├── main.go
+└── main_test.go
+pkg/epplugins/hello-world-with-output
+├── generated.go
+├── generated_testutil.go
+├── main.go
+└── main_test.go
+</pre></div>
+</div>
+</li>
+<li><p>Edit the <code class="docutils literal notranslate"><span class="pre">PluginMain</span></code> functions of the 2 plugins:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PluginMain</span></code> in <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/hello-world-with-output/main.go</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">func</span> <span class="n">PluginMain</span><span class="p">(</span><span class="ow">in</span> <span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">,</span> <span class="n">outp</span> <span class="o">*</span><span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="n">output_mymessage</span> <span class="o">:=</span> <span class="n">output_mymessage</span><span class="p">(</span><span class="n">outp</span><span class="p">)</span>
+
+        <span class="o">//</span> <span class="n">Add</span> <span class="n">Plugin</span> <span class="n">Code</span> <span class="n">Here</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Plugin: hello-world-with-output&quot;</span><span class="p">)</span>
+        <span class="o">//</span> <span class="n">Follow</span> <span class="n">the</span> <span class="n">data</span> <span class="n">structure</span> <span class="n">generated</span> <span class="ow">in</span> <span class="n">pkg</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">message</span><span class="o">.</span><span class="n">go</span><span class="p">,</span>
+        <span class="o">//</span>  <span class="n">which</span> <span class="ow">is</span> <span class="n">auto</span><span class="o">-</span><span class="n">generated</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">schema</span> <span class="n">file</span> <span class="n">message</span><span class="o">.</span><span class="n">yml</span><span class="o">.</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Sending Message...&quot;</span><span class="p">)</span>
+        <span class="n">output_mymessage</span><span class="o">.</span><span class="n">Words</span> <span class="o">=</span> <span class="s2">&quot;Hello World from hello-world-with-output&quot;</span>
+
+        <span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PluginMain</span></code> in <code class="docutils literal notranslate"><span class="pre">pkg/epplugins/hello-world-with-input/main.go</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">func</span> <span class="n">PluginMain</span><span class="p">(</span><span class="ow">in</span> <span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">,</span> <span class="n">outp</span> <span class="o">*</span><span class="n">eputils</span><span class="o">.</span><span class="n">SchemaMapData</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="n">input_mymessage</span> <span class="o">:=</span> <span class="n">input_mymessage</span><span class="p">(</span><span class="ow">in</span><span class="p">)</span>
+
+        <span class="o">//</span> <span class="n">Add</span> <span class="n">Plugin</span> <span class="n">Code</span> <span class="n">Here</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Plugin: hello-world-with-input&quot;</span><span class="p">)</span>
+        <span class="o">//</span> <span class="n">Follow</span> <span class="n">the</span> <span class="n">data</span> <span class="n">structure</span> <span class="n">generated</span> <span class="ow">in</span> <span class="n">pkg</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">message</span><span class="o">.</span><span class="n">go</span><span class="p">,</span>
+        <span class="o">//</span>  <span class="n">which</span> <span class="ow">is</span> <span class="n">auto</span><span class="o">-</span><span class="n">generated</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">schema</span> <span class="n">file</span> <span class="n">message</span><span class="o">.</span><span class="n">yml</span><span class="o">.</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">Infof</span><span class="p">(</span><span class="s2">&quot; &gt;&gt;&gt; Received Message: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_mymessage</span><span class="o">.</span><span class="n">Words</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span></code> again. The plugins <code class="docutils literal notranslate"><span class="pre">hello-world-with-output</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hello-world-with-input</span></code> are ready now.</p></li>
+</ol>
+</section>
+<section id="example-3-connect-plugins-into-an-existing-workflow">
+<h3>Example 3: Connect Plugins into an Existing Workflow<a class="headerlink" href="#example-3-connect-plugins-into-an-existing-workflow" title="Permalink to this heading"></a></h3>
+<p>Let’s add the plugins we created into the <code class="docutils literal notranslate"><span class="pre">init</span></code> workflow, which will be
+launched when we run the <code class="docutils literal notranslate"><span class="pre">./conductor</span> <span class="pre">init</span></code> command.</p>
+<ol class="arabic">
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">configs/workflow/common/init.yml</span></code> to add the 3 plugins in the <code class="docutils literal notranslate"><span class="pre">init</span></code> workflow as
+below, then run <code class="docutils literal notranslate"><span class="pre">make</span></code> again:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apiVersion</span><span class="p">:</span> <span class="n">conductor</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">Workflow</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">conductor</span><span class="o">-</span><span class="n">workflow</span>
+  <span class="n">namespace</span><span class="p">:</span> <span class="n">edgeconductor</span>
+<span class="n">spec</span><span class="p">:</span>
+  <span class="n">workflows</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">init</span>
+    <span class="n">steps</span><span class="p">:</span>
+<span class="p">{{</span> <span class="k">if</span> <span class="n">eq</span> <span class="o">.</span><span class="n">Kitconfig</span><span class="o">.</span><span class="n">Parameters</span><span class="o">.</span><span class="n">Customconfig</span><span class="o">.</span><span class="n">Registry</span><span class="o">.</span><span class="n">Externalurl</span> <span class="s2">&quot;&quot;</span> <span class="p">}}</span>
+    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">docker</span><span class="o">-</span><span class="n">run</span>
+      <span class="nb">input</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">containers</span><span class="o">-</span><span class="n">harbor</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">containers</span>
+<span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+    <span class="c1">## Add test plugins here</span>
+    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">output</span>
+      <span class="n">output</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">message</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">mymessage</span>
+    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="nb">input</span>
+      <span class="nb">input</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">hello</span><span class="o">-</span><span class="n">message</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">mymessage</span>
+</pre></div>
+</div>
+</li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">_workspace/kit/kind.yml</span></code></p>
+<p><em>NOTE:</em> the Edge Conductor Kit config file(kit/kind.yml) is a mandatory parameter for <code class="docutils literal notranslate"><span class="pre">conductor</span> <span class="pre">init</span></code>. For more details of Kit config, please follow the instruction of <span class="xref myst">Custom Config</span> as reference.</p>
+</li>
+<li><p>Enter the <code class="docutils literal notranslate"><span class="pre">_workspace</span></code> folder and run <code class="docutils literal notranslate"><span class="pre">./conductor</span> <span class="pre">init</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">edge</span><span class="o">-</span><span class="n">conductor</span><span class="o">/</span><span class="n">_workspace</span>
+<span class="o">./</span><span class="n">conductor</span> <span class="n">init</span> <span class="o">-</span><span class="n">c</span> <span class="n">kit</span><span class="o">/</span><span class="n">kind</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>When we look at the log messages below, the 3 plugins are called
+one-by-one, and the message content is successfully passed from
+<code class="docutils literal notranslate"><span class="pre">hello-world-with-output</span></code> to <code class="docutils literal notranslate"><span class="pre">hello-world-with-input</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>...
+INFO[0007] kickoff plugin: hello-world
+INFO[0007] PluginConnect: plugin hello-world is connected
+INFO[0007] Connected Plugin hello-world
+INFO[0007] Exec Plugin hello-world
+INFO[0007]  &gt;&gt;&gt; Plugin: hello-world
+INFO[0007]  &gt;&gt;&gt; Hello, world!
+INFO[0007] Complete Plugin hello-world
+INFO[0007] PluginComplete: plugin hello-world, res Success
+INFO[0007] kickoff plugin: hello-world-with-output
+INFO[0007] PluginConnect: plugin hello-world-with-output is connected
+INFO[0007] Connected Plugin hello-world-with-output
+INFO[0007] Exec Plugin hello-world-with-output
+INFO[0007]  &gt;&gt;&gt; Plugin: hello-world-with-output
+INFO[0007]  &gt;&gt;&gt; Sending Message...
+INFO[0007] Complete Plugin hello-world-with-output
+INFO[0007] PluginComplete: plugin hello-world-with-output, res Success
+INFO[0007] kickoff plugin: hello-world-with-input
+INFO[0007] PluginConnect: plugin hello-world-with-input is connected
+INFO[0007] Connected Plugin hello-world-with-input
+INFO[0007] Exec Plugin hello-world-with-input
+INFO[0007]  &gt;&gt;&gt; Plugin: hello-world-with-input
+INFO[0007]  &gt;&gt;&gt; Received Message: Hello World from hello-world-with-output
+INFO[0007] Complete Plugin hello-world-with-input
+INFO[0007] PluginComplete: plugin hello-world-with-input, res Success
+INFO[0007] workflow finished
+</pre></div>
+</div>
+<p>These simple examples should give you a basic understanding of how Edge Conductor
+uses plugins and workflows, and provide a foundation for more complex development.</p>
+<p>Copyright (c) 2022 Intel Corporation</p>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
